@@ -49,6 +49,8 @@ def create_app(test_config=None):
 
     with app.app_context():
         db().executescript((ROOT / 'schema.sql').read_text())
+        # Keep legacy artwork-only samples editable, but out of the live catalog.
+        db().execute("UPDATE products SET active=0 WHERE images LIKE '%/static/art/%'")
         db().commit()
 
     def csrf():
@@ -200,8 +202,6 @@ def create_app(test_config=None):
         message += ['', f'Items total: PKR {total:,}', 'Delivery charges and availability: please confirm.',
                     '', f'Name: {clean(name)}', f'Phone: {clean(contact)}', f'City: {clean(city)}',
                     f'Address: {clean(address)}']
-        if any(x['product']['illustration'] for x in lines):
-            message += ['', 'Includes illustrated sample items. Please confirm actual designs before ordering.']
         message += ['', 'Please confirm this order and payment details.']
         return redirect('https://wa.me/' + phone + '?text=' + quote('\n'.join(message), safe=''), code=303)
 
@@ -243,7 +243,7 @@ def create_app(test_config=None):
     @admin_required
     def edit(pid=None):
         item = product(pid) if pid is not None else dict(name='', category=CATEGORIES[0], price='', compare_price='',
-                    fabric='', description='', sizes=['Custom Unstitched'], images=['/static/art/rose-unstitched.svg'], active=1, illustration=1)
+                    fabric='', description='', sizes=['Custom Unstitched'], images=[], active=1, illustration=0)
         if request.method == 'POST':
             try:
                 price = int(request.form.get('price', ''))
@@ -256,10 +256,9 @@ def create_app(test_config=None):
                     raise ValueError('Provide between one and six image paths.')
                 for image in images:
                     parsed = urlsplit(image)
-                    local = image in [f'/static/art/{a}.svg' for a in ART]
                     remote = parsed.scheme == 'https' and parsed.netloc and not parsed.username and not parsed.password
-                    if not (local or remote) or len(image) > 1000:
-                        raise ValueError('Use a bundled illustration path or an HTTPS product image URL.')
+                    if not remote or parsed.path.lower().endswith('.svg') or len(image) > 1000:
+                        raise ValueError('Use an HTTPS product image URL for an actual photograph, not a decorative SVG.')
                 category = request.form.get('category', '')
                 name = request.form.get('name', '').strip()
                 fabric = request.form.get('fabric', '').strip()
@@ -269,7 +268,7 @@ def create_app(test_config=None):
                 if not name or len(name) > 100 or not fabric or len(fabric) > 200 or len(description) > 3000:
                     raise ValueError('Provide a name (1–100 characters), fabric (1–200), and description (up to 3000).')
                 values = (name, category, price, compare, fabric, description, json.dumps(chosen_sizes), json.dumps(images),
-                          int('active' in request.form), int('illustration' in request.form or any(i.startswith('/static/art/') for i in images)))
+                          int('active' in request.form), 0)
                 if pid is None:
                     db().execute('INSERT INTO products (name,category,price,compare_price,fabric,description,sizes,images,active,illustration) VALUES (?,?,?,?,?,?,?,?,?,?)', values)
                 else:

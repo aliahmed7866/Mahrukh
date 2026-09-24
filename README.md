@@ -2,7 +2,7 @@
 
 A standalone Pakistani clothing storefront for Termux on Android, built with Flask, SQLite and a pure-Python Waitress server. Premium black (`#0A0A0A`) and gold (`#D4AF37`), responsive catalog, search/category filters, sizes, cart, WhatsApp order enquiries and a password-protected seller studio.
 
-Eight original editable SVG illustrations depict shalwar kameez, unstitched fabrics, abaya, lehenga, peshwas and formal dresses. They appear throughout the hero, category cards, product views and empty bag. All assets and styling are local: no Node.js, Docker, Tailwind build step or CDN is required.
+Original editable SVG women in traditional dress, garment vignettes and botanical borders establish the brand style in the hero, category navigation, editorial section and empty bag. Product cards and galleries use actual seller-provided photographs. All assets and styling are local: no Node.js, Docker, Tailwind build step or CDN is required.
 
 ## Install in Termux
 
@@ -79,7 +79,11 @@ Blank password preserves the current password; blank WhatsApp number preserves t
 
 ## Catalog and checkout
 
-The eight seeded products are **illustrated samples** with sample prices and fabric descriptions. Replace them with real inventory before selling. Admin supports adding, editing, hiding and deleting products; whole-PKR prices; optional original prices; sizes; descriptions; and up to six images per product. Use HTTPS URLs for product photos or a bundled SVG path shown in the editor. Bundled art always retains its illustration label. Multiple images produce gallery thumbnails.
+New installations start with an empty catalog. Add your real products in the seller studio, with up to six HTTPS photo URLs per product. These should be actual photos of the item you are selling. Decorative SVGs are not accepted as product images. Multiple photos produce gallery thumbnails, and product images are displayed without cropping.
+
+Upgrading from the earlier release hides listings that reference bundled artwork, preserving their records as editable drafts. Replace their image URLs, prices and descriptions with real inventory information and check Visible to publish them. Existing photographic product listings remain visible. No product records are deleted.
+
+The women in the hero and editorial section are original brand illustrations, not models of products for sale. The decorative garment vignettes remain in category navigation and empty states.
 
 The cart stores product IDs, sizes and quantities in a signed session cookie. The server validates them and calculates prices from SQLite at checkout; client-supplied prices are ignored. Limits are 20 selections and 10 units per selection. Deleted/hidden products and invalidated sizes are excluded. The app does not reserve stock or persist orders.
 
@@ -93,9 +97,10 @@ Browsing works offline after installation; external product photos and WhatsApp 
 cd "$HOME/Mahrukh"
 .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python make_art.py
+.venv/bin/python make_brand_art.py
 ```
 
-The first command tests filtering, SVG delivery, cart constraints, recalculated prices, WhatsApp encoding, disabled checkout, admin CRUD/authentication, CSRF, throttling and hub preservation. The second regenerates all original SVGs using the Python standard library.
+The first command tests filtering, SVG delivery, cart constraints, recalculated prices, WhatsApp encoding, disabled checkout, admin CRUD/authentication, CSRF, throttling and hub preservation. The last two commands regenerate the garment vignettes and brand portraits/borders using the Python standard library.
 
 Admin sessions expire after four hours. Forms require CSRF tokens and login attempts are throttled. The server binds only to `127.0.0.1`, intended for phone-local use. Public deployment needs HTTPS and secure-cookie configuration. Back up `instance/` while Mahrukh is stopped, and never commit that directory.
 

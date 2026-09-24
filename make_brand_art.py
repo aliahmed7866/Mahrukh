@@ -1,0 +1,65 @@
+"""Original vector brand illustrations, separate from product photography."""
+from pathlib import Path
+
+OUT = Path(__file__).parent / 'static/art'
+
+
+def portrait(name, cloth, shadow, veil, ground):
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 760" role="img" aria-labelledby="title">
+<title id="title">{name}: a woman in traditional Pakistani clothing</title>
+<defs>
+ <linearGradient id="dress"><stop stop-color="{shadow}"/><stop offset=".5" stop-color="{cloth}"/><stop offset="1" stop-color="{shadow}"/></linearGradient>
+ <linearGradient id="veil" x1="0" y1="0" x2="1" y2="1"><stop stop-color="{veil}" stop-opacity=".85"/><stop offset="1" stop-color="{shadow}" stop-opacity=".9"/></linearGradient>
+ <g id="bloom" fill="none" stroke="#d9b875" stroke-width="1.5"><path d="M0-7C-12-18-15-3-6 0C-18 8-6 16 0 7C9 17 17 4 7 0C16-10 6-17 0-7Z"/><circle r="2" fill="#ebd5a6"/><path d="M0 9v19m0-9q-12-8-10 0q6 6 10 3m0-7q12-8 10 0q-6 6-10 3"/></g>
+ <pattern id="flowers" width="45" height="56" patternUnits="userSpaceOnUse"><use href="#bloom" transform="translate(22 23) scale(.5)" opacity=".75"/></pattern>
+</defs>
+<rect width="600" height="760" fill="{ground}"/>
+<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705Z" fill="#d4af37" opacity=".035"/>
+<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705M73 705V295C73 173 164 137 220 96Q281 79 300 61Q319 79 380 96C436 137 527 173 527 295V705" fill="none" stroke="#cba85a" stroke-opacity=".35"/>
+<circle cx="300" cy="229" r="103" fill="#dfbc71" opacity=".05"/>
+<g fill="none" stroke="#c1a168" opacity=".5"><path d="M87 678Q52 565 114 476M505 682Q558 582 498 495"/><path d="M85 631Q42 613 67 584Q97 592 85 631M85 597Q128 574 116 549Q87 551 85 597M91 546Q58 521 82 501Q103 516 91 546M520 627Q562 607 544 582Q516 593 520 627M521 590Q484 573 491 550Q518 556 521 590"/></g>
+<ellipse cx="311" cy="710" rx="143" ry="16" fill="#000" opacity=".22"/>
+<!-- Shoes and trousers -->
+<path d="M247 667L240 703Q225 710 216 714Q244 725 282 714L281 670M325 668L330 706Q348 722 387 715Q377 705 363 702L361 667" fill="#b89460"/>
+<path d="M235 552L239 691L283 693L303 586L324 693L367 689L358 552Z" fill="{shadow}"/>
+<path d="M240 682l43 2m42 0l41-3" stroke="#d7b575" stroke-width="4"/>
+<!-- Hair silhouette, neck and face -->
+<path d="M253 211Q236 155 281 136Q334 116 360 161Q373 191 351 252L262 258Z" fill="#171416"/>
+<path d="M287 219L283 258L267 270Q301 293 334 266L316 252L314 219" fill="#b97d5e"/>
+<path d="M269 174Q266 147 303 150Q340 150 340 187L333 218Q322 243 300 244Q276 237 269 211Z" fill="#d59e7a"/>
+<path d="M265 187Q269 157 310 151Q284 185 264 190M302 151Q337 163 341 201L348 174Q335 143 302 151" fill="#20191c"/>
+<path d="M277 194q8-5 15 0m18-1q8-5 15 0" fill="none" stroke="#583e35" stroke-width="2" stroke-linecap="round"/>
+<path d="M301 195l-4 15l6 2M290 224q10 5 20-1" fill="none" stroke="#9c6351" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M273 199q7 6 15 0m24 0q7 6 13-1" fill="none" stroke="#362e2c" stroke-width="1.5"/>
+<!-- Earrings -->
+<g fill="#d6b35f" stroke="#f5df9e"><circle cx="267" cy="209" r="3"/><path d="M267 213l-7 12q7 7 14 0Z"/><circle cx="339" cy="207" r="3"/><path d="M339 211l-7 12q7 7 14 0Z"/></g>
+<!-- Floating dupatta -->
+<path d="M252 259Q243 184 279 150Q304 132 335 154Q369 176 373 258Q404 342 424 417Q447 518 468 635Q434 659 400 639L353 337L329 265Q287 256 252 259Z M269 174Q266 147 303 150Q340 150 340 187L333 218Q322 243 300 244Q276 237 269 211Z" fill-rule="evenodd" fill="url(#veil)"/>
+<path d="M251 257Q254 163 294 147Q335 134 355 196L373 282L407 420L454 633M263 254Q264 174 296 160Q328 150 343 199L360 284L394 423L441 637" fill="none" stroke="#d6b36d" stroke-width="2"/>
+<path d="M405 619l53-9m-50 20l53-10" stroke="#d6b36d" stroke-width="3"/>
+<!-- Kameez and embroidered sleeves -->
+<path d="M278 258L239 266Q222 275 211 299L178 394L206 410L246 338L224 590Q297 616 379 590L354 338L387 400L416 382L378 290Q369 270 330 258Q307 280 278 258Z" fill="url(#dress)"/>
+<path d="M278 258L239 266Q222 275 211 299L178 394L206 410L246 338L224 590Q297 616 379 590L354 338L387 400L416 382L378 290Q369 270 330 258Q307 280 278 258Z" fill="url(#flowers)"/>
+<path d="M277 260Q302 287 331 260L321 298L304 331L287 299Z" fill="{shadow}" stroke="#d6b36d" stroke-width="2"/>
+<path d="M285 269Q302 287 323 270L305 315ZM303 287v25" fill="none" stroke="#e7cc98"/>
+<path d="M230 571Q301 593 375 571M228 583Q301 605 377 583M181 386l28 15M386 390l26-17" fill="none" stroke="#d6b36d" stroke-width="3"/>
+<path d="M254 365l-12 191m91-195l22 195" fill="none" stroke="#e6ca8f" opacity=".17"/>
+<!-- One hand gathers the dupatta; the other rests naturally -->
+<path d="M180 396L169 426Q168 439 179 445L190 448Q196 446 190 441L181 432L202 408Z" fill="#cd9673"/>
+<path d="M391 397L361 421L331 411Q320 403 310 407L297 410Q293 415 303 417L319 420L332 429Q351 440 365 434L410 411L415 385Z" fill="#cd9673"/>
+<path d="M330 412l-13 5m7-5l-15 3" fill="none" stroke="#a96e54" stroke-width="1.2"/>
+<path d="M377 408l9 12m-13-9l9 12M174 419l18 8" stroke="#e3bc65" stroke-width="3"/>
+<path d="M345 313Q364 354 359 413L346 479Q350 537 378 599L398 591Q370 522 371 475L386 415Q387 350 359 287Z" fill="url(#veil)" stroke="#d6b36d" stroke-width="1.5"/>
+<path d="M282 735h36" stroke="#d6b36d" opacity=".6"/><path d="M300 729l5 6-5 6-5-6Z" fill="#d6b36d"/>
+</svg>'''
+
+
+if __name__ == '__main__':
+    OUT.mkdir(parents=True, exist_ok=True)
+    for filename, palette in [
+        ('heritage-woman', ('Heritage in emerald', '#28624f', '#133c33', '#6f9277', '#151d18')),
+        ('festive-woman', ('An evening in ruby', '#923e50', '#572639', '#b67578', '#261d22')),
+    ]:
+        (OUT / (filename + '.svg')).write_text(portrait(*palette))
+    (OUT / 'botanical-border.svg').write_text('''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48"><g fill="none" stroke="#d4af37" stroke-width="1"><path d="M0 24Q30 0 60 24T120 24T180 24T240 24M0 24Q30 48 60 24T120 24T180 24T240 24"/><path d="M30 24q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4"/></g></svg>''')
+    print('Created two brand portraits and a botanical border.')
