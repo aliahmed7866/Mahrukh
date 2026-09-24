@@ -7,7 +7,7 @@ import re
 import secrets
 import sqlite3
 from werkzeug.security import generate_password_hash
-from app import ROOT, ART
+from app import ROOT
 
 
 def main():
@@ -52,28 +52,10 @@ def main():
     target.chmod(0o600)
     with sqlite3.connect(folder / 'mahrukh.sqlite3') as db:
         db.executescript((ROOT / 'schema.sql').read_text())
-        if not old and db.execute('SELECT count(*) FROM products').fetchone()[0] == 0:
-            seed(db)
     (folder / 'mahrukh.sqlite3').chmod(0o600)
     print(f"Mahrukh configured at http://127.0.0.1:{port}. Run python run.py to start.")
     print('If already running, restart the mahrukh service to apply configuration changes.')
 
-
-def seed(db):
-    samples = [
-        ('Mehr · Emerald', 'Stitched / Pret', 6490, 7490, 'Cotton silk · embroidered neckline', 'An emerald shalwar kameez with botanical embroidery and a softly draped dupatta.', ['S','M','L','XL']),
-        ('Gul · Rose', 'Unstitched', 4290, 0, 'Lawn · printed three-piece concept', 'Rose-toned fabrics with a delicate floral vocabulary, ready for your own silhouette.', ['Custom Unstitched']),
-        ('Noor · Midnight', 'Abayas', 7990, 0, 'Nida · gold embroidered accents', 'A flowing midnight silhouette with considered gold detailing along the opening and sleeves.', ['S','M','L','XL']),
-        ('Surkh · Celebration', 'Festive Wear', 15900, 18500, 'Raw silk · embroidered festive concept', 'A ruby lehenga, embroidered bodice and light dupatta for moments worth celebrating.', ['S','M','L','XL']),
-        ('Chand · Ivory', 'Luxury Formals', 18900, 0, 'Organza · embroidered formal concept', 'An elongated ivory silhouette inspired by luminous evenings and the quiet beauty of heritage.', ['S','M','L','XL']),
-        ('Neel · Indigo', 'Stitched / Pret', 5990, 6990, 'Cotton · botanical embroidery', 'An indigo everyday ensemble, finished with delicate botanical motifs and a matching dupatta.', ['S','M','L','XL']),
-        ('Mehfil · Saffron', 'Festive Wear', 12900, 0, 'Silk blend · festive peshwas concept', 'A full, saffron skirt and embroidered bodice that bring movement and warmth to every celebration.', ['S','M','L','XL']),
-        ('Shaam · Plum', 'Luxury Formals', 16900, 19500, 'Chiffon · embroidered formal concept', 'An evening palette of plum and antique gold, with a long silhouette and floating dupatta.', ['S','M','L','XL']),
-    ]
-    for item, art in zip(samples, ART):
-        name, category, price, original, fabric, description, sizes = item
-        db.execute('INSERT INTO products(name,category,price,compare_price,fabric,description,sizes,images) VALUES(?,?,?,?,?,?,?,?)',
-                   (name, category, price, original, fabric, description + '\n\nIllustrated sample design. Confirm actual fabric, included pieces and measurements with the seller.', json.dumps(sizes), json.dumps(['/static/art/'+art+'.svg'])))
 
 if __name__ == '__main__':
     main()

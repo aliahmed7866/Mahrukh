@@ -14,9 +14,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from app import create_app
 from register import merge_registry
-spec = importlib.util.spec_from_file_location('shop_setup', ROOT / 'setup.py')
-setup = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(setup)
 
 
 class ShopTests(unittest.TestCase):
@@ -26,7 +23,13 @@ class ShopTests(unittest.TestCase):
         self.app = create_app(dict(TESTING=True, SECRET_KEY='test-secret', DATABASE=self.database,
                  ADMIN_HASH=generate_password_hash('long-test-password', method='pbkdf2:sha256'), SELLER_PHONE='923001234567'))
         with sqlite3.connect(self.database) as connection:
-            setup.seed(connection)
+            fixtures = [('Mehr · Emerald','Stitched / Pret',6490), ('Gul · Rose','Unstitched',4290),
+                        ('Noor · Midnight','Abayas',7990), ('Surkh','Festive Wear',15900),
+                        ('Chand','Luxury Formals',18900), ('Neel · Indigo','Stitched / Pret',5990),
+                        ('Mehfil','Festive Wear',12900), ('Shaam','Luxury Formals',16900)]
+            for name, category, price in fixtures:
+                connection.execute('INSERT INTO products(name,category,price,fabric,description,sizes,images,illustration) VALUES(?,?,?,?,?,?,?,0)',
+                    (name,category,price,'Cotton','Photo fixture',json.dumps(['S','M','L','XL']),json.dumps(['https://example.com/product.jpg'])))
         self.client = self.app.test_client()
         self.client.get('/')
 
@@ -100,7 +103,7 @@ class ShopTests(unittest.TestCase):
         self.assertEqual(self.client.get('/admin').status_code, 200)
         self.client.get('/admin/product/new')
         fields = dict(name='Test piece', category='Abayas',price=3000,compare_price=4000,
-                      fabric='Cotton',description='Test',sizes=['M'],images='/static/art/midnight-abaya.svg',active='on')
+                      fabric='Cotton',description='Test',sizes=['M'],images='https://example.com/abaya.jpg',active='on')
         self.assertEqual(self.post('/admin/product/new', fields).status_code, 303)
         fields['name']='Edited piece'
         self.assertEqual(self.post('/admin/product/9', fields).status_code, 303)
@@ -122,6 +125,38 @@ class ShopTests(unittest.TestCase):
         self.app.config['SELLER_PHONE']=''
         self.post('/cart',dict(id=1,size='S',quantity=1))
         self.assertEqual(self.post('/checkout').status_code,503)
+
+    def test_brand_art_is_separate_from_product_photographs(self):
+        html = self.client.get('/').get_data(as_text=True)
+        self.assertIn('art/heritage-woman.svg', html)
+        self.assertIn('art/festive-woman.svg', html)
+        detail = self.client.get('/product/1').get_data(as_text=True)
+        self.assertIn('https://example.com/product.jpg', detail)
+        self.assertNotIn('/static/art/', detail)
+        self.login()
+        fields = dict(name='Wrong artwork', category='Abayas', price=3000, fabric='Cotton',
+                      sizes=['M'], images='/static/art/heritage-woman.svg', active='on')
+        response = self.post('/admin/product/new', fields)
+        self.assertIn('actual photograph', response.get_data(as_text=True))
+        with sqlite3.connect(self.database) as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM products').fetchone()[0], 8)
+
+    def test_upgrade_hides_art_samples_but_preserves_real_products(self):
+        with sqlite3.connect(self.database) as db:
+            db.execute('UPDATE products SET images=? WHERE id=1', (json.dumps(['/static/art/emerald-pret.svg']),))
+        upgraded = create_app(dict(TESTING=True, SECRET_KEY='test-secret', DATABASE=self.database,
+                                  ADMIN_HASH='existing-hash'))
+        with sqlite3.connect(self.database) as db:
+            self.assertEqual(db.execute('SELECT active FROM products WHERE id=1').fetchone()[0], 0)
+            self.assertEqual(db.execute('SELECT active FROM products WHERE id=2').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT count(*) FROM products').fetchone()[0], 8)
+        self.assertEqual(upgraded.test_client().get('/product/1').status_code, 404)
+
+    def test_new_database_has_no_sample_inventory(self):
+        fresh = str(Path(self.tmp.name) / 'fresh.sqlite3')
+        create_app(dict(TESTING=True, SECRET_KEY='test-secret', DATABASE=fresh, ADMIN_HASH='existing-hash'))
+        with sqlite3.connect(fresh) as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM products').fetchone()[0], 0)
 
     def test_standalone_registration_does_not_create_hub(self):
         folder = Path(self.tmp.name)
