@@ -4,6 +4,10 @@ A standalone Pakistani clothing storefront for Termux on Android, built with Fla
 
 Original editable SVG women in traditional dress, garment vignettes and botanical borders establish the brand style in the hero, category navigation, editorial section and empty bag. Product cards and galleries use actual seller-provided photographs. All assets and styling are local: no Node.js, Docker, Tailwind build step or CDN is required.
 
+## Visual direction
+
+The supplied Mahrukh packaging guides the wordmark and tone: spaced gold serif lettering on textured charcoal, with its “Timeless style · Everyday you” tagline. Warm ivory, antique gold, muted rose and emerald add a welcoming feel. Decorative SVG portraits, floral borders and jaali-inspired geometry reference Pakistani dress and architectural patterns. The packaging photo is a reference only, not embedded in the site; the wordmark remains editable text so a future logo can replace it easily. Product photography stays separate from these decorative elements.
+
 ## Install in Termux
 
 Your supplied scan found port **5050 available** and 8080 occupied. Mahrukh therefore defaults to 5050. Availability may change; startup refuses an occupied port without stopping the other process.

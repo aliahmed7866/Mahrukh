@@ -15,9 +15,9 @@ def portrait(name, cloth, shadow, veil, ground):
 </defs>
 <rect width="600" height="760" fill="{ground}"/>
 <path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705Z" fill="#d4af37" opacity=".035"/>
-<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705M73 705V295C73 173 164 137 220 96Q281 79 300 61Q319 79 380 96C436 137 527 173 527 295V705" fill="none" stroke="#cba85a" stroke-opacity=".35"/>
+<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705M73 705V295C73 173 164 137 220 96Q281 79 300 61Q319 79 380 96C436 137 527 173 527 295V705" fill="none" stroke="#98733c" stroke-opacity=".5"/>
 <circle cx="300" cy="229" r="103" fill="#dfbc71" opacity=".05"/>
-<g fill="none" stroke="#c1a168" opacity=".5"><path d="M87 678Q52 565 114 476M505 682Q558 582 498 495"/><path d="M85 631Q42 613 67 584Q97 592 85 631M85 597Q128 574 116 549Q87 551 85 597M91 546Q58 521 82 501Q103 516 91 546M520 627Q562 607 544 582Q516 593 520 627M521 590Q484 573 491 550Q518 556 521 590"/></g>
+<g fill="none" stroke="#8e7247" opacity=".65"><path d="M87 678Q52 565 114 476M505 682Q558 582 498 495"/><path d="M85 631Q42 613 67 584Q97 592 85 631M85 597Q128 574 116 549Q87 551 85 597M91 546Q58 521 82 501Q103 516 91 546M520 627Q562 607 544 582Q516 593 520 627M521 590Q484 573 491 550Q518 556 521 590"/></g>
 <ellipse cx="311" cy="710" rx="143" ry="16" fill="#000" opacity=".22"/>
 <!-- Shoes and trousers -->
 <path d="M247 667L240 703Q225 710 216 714Q244 725 282 714L281 670M325 668L330 706Q348 722 387 715Q377 705 363 702L361 667" fill="#b89460"/>
@@ -57,8 +57,8 @@ def portrait(name, cloth, shadow, veil, ground):
 if __name__ == '__main__':
     OUT.mkdir(parents=True, exist_ok=True)
     for filename, palette in [
-        ('heritage-woman', ('Heritage in emerald', '#28624f', '#133c33', '#6f9277', '#151d18')),
-        ('festive-woman', ('An evening in ruby', '#923e50', '#572639', '#b67578', '#261d22')),
+        ('heritage-woman', ('Heritage in emerald', '#28624f', '#133c33', '#6f9277', '#efe2c9')),
+        ('festive-woman', ('An evening in ruby', '#923e50', '#572639', '#b67578', '#e9d8c5')),
     ]:
         (OUT / (filename + '.svg')).write_text(portrait(*palette))
     (OUT / 'botanical-border.svg').write_text('''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48"><g fill="none" stroke="#d4af37" stroke-width="1"><path d="M0 24Q30 0 60 24T120 24T180 24T240 24M0 24Q30 48 60 24T120 24T180 24T240 24"/><path d="M30 24q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4"/></g></svg>''')
