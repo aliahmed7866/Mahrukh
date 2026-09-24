@@ -6,11 +6,11 @@
  <g id="bloom" fill="none" stroke="#d9b875" stroke-width="1.5"><path d="M0-7C-12-18-15-3-6 0C-18 8-6 16 0 7C9 17 17 4 7 0C16-10 6-17 0-7Z"/><circle r="2" fill="#ebd5a6"/><path d="M0 9v19m0-9q-12-8-10 0q6 6 10 3m0-7q12-8 10 0q-6 6-10 3"/></g>
  <pattern id="flowers" width="45" height="56" patternUnits="userSpaceOnUse"><use href="#bloom" transform="translate(22 23) scale(.5)" opacity=".75"/></pattern>
 </defs>
-<rect width="600" height="760" fill="#151d18"/>
+<rect width="600" height="760" fill="#efe2c9"/>
 <path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705Z" fill="#d4af37" opacity=".035"/>
-<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705M73 705V295C73 173 164 137 220 96Q281 79 300 61Q319 79 380 96C436 137 527 173 527 295V705" fill="none" stroke="#cba85a" stroke-opacity=".35"/>
+<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705M73 705V295C73 173 164 137 220 96Q281 79 300 61Q319 79 380 96C436 137 527 173 527 295V705" fill="none" stroke="#98733c" stroke-opacity=".5"/>
 <circle cx="300" cy="229" r="103" fill="#dfbc71" opacity=".05"/>
-<g fill="none" stroke="#c1a168" opacity=".5"><path d="M87 678Q52 565 114 476M505 682Q558 582 498 495"/><path d="M85 631Q42 613 67 584Q97 592 85 631M85 597Q128 574 116 549Q87 551 85 597M91 546Q58 521 82 501Q103 516 91 546M520 627Q562 607 544 582Q516 593 520 627M521 590Q484 573 491 550Q518 556 521 590"/></g>
+<g fill="none" stroke="#8e7247" opacity=".65"><path d="M87 678Q52 565 114 476M505 682Q558 582 498 495"/><path d="M85 631Q42 613 67 584Q97 592 85 631M85 597Q128 574 116 549Q87 551 85 597M91 546Q58 521 82 501Q103 516 91 546M520 627Q562 607 544 582Q516 593 520 627M521 590Q484 573 491 550Q518 556 521 590"/></g>
 <ellipse cx="311" cy="710" rx="143" ry="16" fill="#000" opacity=".22"/>
 <!-- Shoes and trousers -->
 <path d="M247 667L240 703Q225 710 216 714Q244 725 282 714L281 670M325 668L330 706Q348 722 387 715Q377 705 363 702L361 667" fill="#b89460"/>

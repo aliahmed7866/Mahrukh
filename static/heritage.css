@@ -1,0 +1,112 @@
+/* Packaging-led palette: charcoal fabric, antique gold and warm paper. */
+:root {
+  --bg: #191713;
+  --card: #24211b;
+  --gold: #d4af37;
+  --cream: #faf1df;
+  --muted: #c1b6a2;
+  --border: #484032;
+  --paper: #f2e7d2;
+  --ink: #352b20;
+  --paper-muted: #6d5b47;
+}
+body {
+  background-image: repeating-linear-gradient(0deg, transparent 0 3px, #e2c58b03 3px 4px),
+    repeating-linear-gradient(90deg, transparent 0 3px, #e2c58b03 3px 4px);
+}
+.announcement { background: #30291d; color: #eee0bc; letter-spacing: .2em; }
+.site-header { padding-block: 30px; }
+.brand { color: #dec68d; font-size: 2rem; letter-spacing: .23em; }
+.brand > span { display: block; text-align: center; }
+.brand > span::after {
+  content: ''; display: block; width: 68%; height: 1px;
+  margin: 12px auto 0; background: #c6a55f;
+}
+.brand small { font-size: .49rem; letter-spacing: .13em; color: #e4d3af; margin-top: 10px; }
+.main-nav { color: #e5d7bd; }
+.hero {
+  background: var(--paper); color: var(--ink);
+  border-bottom: 1px solid #ad8d5744;
+}
+.hero-copy { position: relative; padding-block: 66px; }
+.hero-copy::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: url('/static/art/jaali.svg') center / 96px;
+  opacity: .045;
+}
+.hero-copy > * { position: relative; }
+.hero h1 { font-size: clamp(2.8rem, 4.7vw, 5rem); line-height: 1.13; }
+.hero h1 em { color: #7e4b34; }
+.hero .eyebrow { color: #775833; }
+.welcome-urdu {
+  display: block; font-family: 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', Georgia, serif;
+  font-size: 1.6rem; font-weight: 400; letter-spacing: 0; line-height: 1.8;
+  text-align: left; margin-bottom: 12px; color: #775833;
+}
+.hero-copy > p:not(.eyebrow) { color: var(--paper-muted); font-size: .96rem; max-width: 375px; }
+.hero-note { color: #705d43; margin-top: 30px; }
+.hero-note span { color: #946c35; }
+.hero .button { background: #25291f; color: #f3e7cc; border-color: #25291f; }
+.hero .button:hover { background: #3a402d; }
+.brand-portrait { background: #efe2c9; }
+.brand-portrait .art-label, .brand-portrait .art-caption { color: #715933; }
+.brand-portrait .portrait { height: 580px; }
+.values { background: #27271e; color: #e0d0a8; padding-block: 24px; }
+.category-section {
+  background: var(--paper); color: var(--ink);
+  margin-block: 0 55px; padding-top: 30px; padding-bottom: 48px;
+}
+.category-section .eyebrow { color: #795d34; }
+.category-section::before { opacity: .65; }
+.categories { gap: 20px; }
+.categories a { background: #e6d7bc; border: 1px solid #b99c674d; border-radius: 45% 45% 2px 2px; overflow: hidden; }
+.categories a:hover { border-color: #7d6335; }
+.categories img { height: 205px; filter: saturate(.8); }
+.categories span { background: #e8dbc3; color: #3f3324; padding-block: 18px; }
+.categories b { color: #7c5f2b; }
+.product-image { border: 1px solid #6d5c3b; }
+.product-image > img, .detail-image img { background: #eae3d7; }
+.product-info h3 { color: #f4e6c9; }
+.product-info .eyebrow { color: #d2b779; }
+.product-info > p:not(.eyebrow) { color: #f1d695; }
+.product-info del { color: #bbaf99; }
+.brand-story { background: #eee2cf; color: #352b20; border: 1px solid #bb9b6259; }
+.brand-story > img { background: #e9d8c5; height: 490px; }
+.brand-story .eyebrow { color: #795b35; }
+.brand-story h2 em { color: #834b3e; }
+.brand-story p:not(.eyebrow) { color: #695543; }
+.brand-story .text-link { color: #57431f; border-color: #947342; }
+footer { background: #1d211b; padding-top: 60px; color: #c2b8a0; }
+footer::before { background-color: #1d211b; }
+.footer-brand { color: #dec68d; }
+.footer-brand span { color: #d8c298; }
+.empty img { border-radius: 50% 50% 3px 3px; }
+#cart-drawer { background: #1e1b16; }
+.drawer-top { border-color: #635237; }
+input, textarea, select { background: #26221b; border-color: #675b47; }
+input::placeholder { color: #c1b6a2; }
+.caption { color: var(--muted); }
+@media (max-width: 1000px) {
+  .categories img { height: 165px; }
+  .brand-portrait .portrait { height: 500px; }
+  .hero-copy { padding-block: 42px; }
+}
+@media (max-width: 650px) {
+  .site-header { padding-block: 22px 16px; }
+  .brand { font-size: 1.6rem; }
+  .brand small { font-size: .42rem; }
+  .brand > span::after { margin-top: 9px; }
+  .hero-copy { padding: 30px 7% 35px; }
+  .hero h1 { font-size: 2.9rem; }
+  .hero-copy > p:not(.eyebrow) { font-size: .88rem; max-width: 340px; }
+  .welcome-urdu { font-size: 1.35rem; margin-bottom: 7px; }
+  .brand-portrait { height: 440px; min-height: 440px; }
+  .brand-portrait .portrait { height: 410px; }
+  .category-section { margin-bottom: 30px; padding-bottom: 30px; }
+  .categories { gap: 12px; }
+  .categories img { height: 170px; }
+  .categories span { padding: 13px 8px; }
+  .brand-story > img { height: 390px; }
+  .values { padding-block: 18px; }
+  footer { padding-top: 40px; }
+}
