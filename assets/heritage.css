@@ -31,7 +31,7 @@ body {
 .hero-copy { position: relative; padding-block: 66px; }
 .hero-copy::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: url('/static/art/jaali.svg') center / 96px;
+  background: url('art/jaali.svg') center / 96px;
   opacity: .045;
 }
 .hero-copy > * { position: relative; }
