@@ -3,25 +3,36 @@
  if(grid){
   const cards=[...grid.querySelectorAll('.product-card')];
   const params=new URLSearchParams(location.search);
-  const query=params.get('q')||'';
-  const category=params.get('category')||'';
-  const sort=params.get('sort')||'featured';
-  const search=document.querySelector('#search');search.value=query;
-  const form=document.querySelector('.sort-form');
+  const form=document.querySelector('.catalog-filters');
+  const chosen={};
+  for(const name of ['category','occasion','fabric_family','size','sort']){
+   const select=form.querySelector('[name="'+name+'"]');
+   const value=params.get(name)||'';
+   chosen[name]=[...select.options].some(o=>o.value===value)?value:(name==='sort'?'featured':'');
+   select.value=chosen[name];
+  }
+  const query=(params.get('q')||'').trim().slice(0,100);
+  const rawBudget=params.get('budget')||'';
+  const validBudget=!rawBudget||(/^\d{1,8}$/.test(rawBudget)&&Number(rawBudget)>=1&&Number(rawBudget)<=10000000);
+  document.querySelector('#search').value=query;
   form.querySelector('[name=q]').value=query;
-  form.querySelector('[name=category]').value=category;
-  document.querySelector('#sort').value=['featured','price-low','price-high'].includes(sort)?sort:'featured';
+  form.querySelector('[name=budget]').value=validBudget?rawBudget:'';
+  const {category,occasion,fabric_family,size,sort}=chosen;
   let count=0;
   for(const card of cards){
-   const matches=(!category||card.dataset.category===category)&&card.dataset.name.toLowerCase().includes(query.toLowerCase());
+   const matches=validBudget&&(!category||card.dataset.category===category)&&card.dataset.name.toLowerCase().includes(query.toLowerCase())&&(!occasion||card.dataset.occasions.split('|').includes(occasion))&&(!fabric_family||card.dataset.fabric===fabric_family)&&(!size||card.dataset.sizes.split('|').includes(size))&&(!rawBudget||Number(card.dataset.price)<=Number(rawBudget));
    card.hidden=!matches;if(matches)count++;
   }
   if(sort==='price-low'||sort==='price-high')cards.sort((a,b)=>(Number(a.dataset.price)-Number(b.dataset.price))*(sort==='price-low'?1:-1)).forEach(card=>grid.append(card));
   document.querySelector('#result-count').textContent=count;
   document.querySelector('#collection-title').textContent=category||(query?'Search results':'The sample collection');
-  document.querySelector('#no-results').hidden=count!==0;
+  const empty=document.querySelector('#no-results');empty.hidden=count!==0;
+  if(!validBudget)empty.textContent='Enter a maximum price from PKR 1 to 10,000,000.';
   document.querySelectorAll('.main-nav a').forEach(a=>{if((new URL(a.href).searchParams.get('category')||'')===category)a.setAttribute('aria-current','page');});
-  if(query||category)document.querySelector('#collection').scrollIntoView({behavior:'instant'});
+  if(query||category||occasion||fabric_family||size||rawBudget){
+   document.querySelectorAll('.hero,.values,.category-section').forEach(el=>el.hidden=true);
+   document.querySelector('#collection').scrollIntoView({behavior:'instant'});
+  }
  }
  document.querySelectorAll('[name=demo-size]').forEach(input=>input.addEventListener('change',()=>{document.querySelector('#size-preview').textContent='Previewing size: '+input.value;}));
 })();
