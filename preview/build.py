@@ -1,6 +1,7 @@
 """Build a public, non-selling design demo. Never reads the live app or database."""
 from pathlib import Path
 import json
+import hashlib
 import shutil
 from urllib.parse import urlencode
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -35,7 +36,8 @@ def build():
     for path in (OUT/'assets').glob('*.css'):
         path.write_text(path.read_text().replace('/static/art/','art/'))
     env=Environment(loader=FileSystemLoader([str(HERE/'templates'),str(ROOT/'templates')]),autoescape=select_autoescape())
-    env.globals.update(url_for=url_for,categories=CATEGORIES,demo=True)
+    asset_version=hashlib.sha256(b''.join((OUT/'assets'/name).read_bytes() for name in ('preview.js','preview.css','business.css','heritage.css','style.css'))).hexdigest()[:12]
+    env.globals.update(url_for=url_for,categories=CATEGORIES,demo=True,asset_version=asset_version)
     env.filters['pkr']=lambda value:f'PKR {value:,.0f}'
     page=(ROOT/'templates/index.html').read_text()
     page=page.replace('Order with WhatsApp', 'Explore the design')
