@@ -27,3 +27,6 @@ CREATE TABLE IF NOT EXISTS orders (
 CREATE INDEX IF NOT EXISTS orders_owner ON orders(owner);
 CREATE INDEX IF NOT EXISTS orders_source_time ON orders(source_hash, created_at);
 CREATE TABLE IF NOT EXISTS order_events (id INTEGER PRIMARY KEY AUTOINCREMENT, reference TEXT NOT NULL, created_at TEXT NOT NULL, note TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS product_details (
+ product_id INTEGER PRIMARY KEY, data TEXT NOT NULL
+);

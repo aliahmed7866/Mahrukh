@@ -80,3 +80,11 @@ Choose and document a retention period after checking tax/accounting and dispute
 - [Ministry of Commerce FAQs](https://www.commerce.gov.pk/about-us/faqs/): e-commerce policy context; policy is not a substitute for applicable law.
 - [W3C contrast minimum](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) and [target sizes](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html).
 - [Flask security guidance](https://flask.palletsprojects.com/en/stable/web-security/).
+
+## Listing confidence and growth
+
+Use **Seller studio → Shop health** to find incomplete buying information. Add included/excluded pieces, supplier-verified composition, lining/opacity, care and actual measurements. Garment chart chest/hip entries are flat one-side widths in inches, not body circumference. For unstitched pieces, supply each panel’s length and width with units. Optional occasion and fabric labels enable discovery filters; they do not prove origin, fibre content or handmade technique.
+
+New orders save the product facts as reviewed at checkout. Changes to facts force a fresh quote review; editing a live product does not rewrite earlier orders. Customers can remove browser order access for a shared device; shop records remain for fulfilment and applicable retention obligations.
+
+The shop-health paid total is manually recorded, includes delivery and is not audited revenue or profit. Use [RESEARCH-AND-GROWTH.md](RESEARCH-AND-GROWTH.md) for source-backed design decisions, customer interviews, merchandising, unit economics, metrics and the proposed 90-day plan. Legal/tax review remains specific to the actual business and current rules.

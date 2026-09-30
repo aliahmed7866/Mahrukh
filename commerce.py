@@ -100,7 +100,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
         return 0 if s['free_shipping_at'] and total >= s['free_shipping_at'] else s['shipping_fee']
 
     def quote_hash(lines, s):
-        payload = json.dumps([[x['product']['id'], x['size'], x['quantity'], x['product']['price']] for x in lines], sort_keys=True)
+        payload = json.dumps([[x['product']['id'], x['size'], x['quantity'], x['product']['price'], x['product']['name'], x['product']['fabric'], x['product']['description'], x['product']['details']] for x in lines], sort_keys=True)
         payload += json.dumps(s, sort_keys=True)
         return hmac.new(app.secret_key.encode(), payload.encode(), hashlib.sha256).hexdigest()
 
@@ -187,7 +187,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
             # Read current settings while locked; quotes cannot silently adopt new prices/policies.
             row = connection.execute('SELECT data FROM shop_settings WHERE id=1').fetchone()
             if row: s = {**DEFAULTS, **json.loads(row['data'])}
-            if not hmac.compare_digest(request.form.get('quote_hash',''), quote_hash(lines,s)): abort(409, 'Prices, delivery or shop details changed. Review your bag and submit again.')
+            if not hmac.compare_digest(request.form.get('quote_hash',''), quote_hash(lines,s)): abort(409, 'Product details, prices, delivery or shop details changed. Review your bag and submit again.')
             source = hmac.new(app.secret_key.encode(), (request.remote_addr or '').encode(), hashlib.sha256).hexdigest()
             recent = connection.execute("SELECT count(*) FROM orders WHERE source_hash=? AND created_at > strftime('%Y-%m-%dT%H:%M:%S', 'now', '-10 minutes')", (source,)).fetchone()[0]
             if recent >= 5: abort(429, 'Too many recent orders. Please wait ten minutes or contact the shop.')
@@ -196,7 +196,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
                 p = line['product']
                 changed = connection.execute('UPDATE inventory SET quantity=quantity-? WHERE product_id=? AND size=? AND quantity>=?', (line['quantity'],p['id'],line['size'],line['quantity'])).rowcount
                 if not changed: abort(409, f"{p['name']} in {line['size']} is no longer available in that quantity. Please update your bag.")
-                items.append(dict(id=p['id'],name=p['name'],size=line['size'],quantity=line['quantity'],price=p['price'],subtotal=line['subtotal']))
+                items.append(dict(id=p['id'],name=p['name'],size=line['size'],quantity=line['quantity'],price=p['price'],subtotal=line['subtotal'],fabric=p['fabric'],description=p['description'],details=p['details']))
             subtotal = sum(x['subtotal'] for x in items)
             delivery = shipping(subtotal,s)
             ref = 'MH-' + secrets.token_hex(6).upper()
@@ -214,6 +214,13 @@ def install_commerce(app, db, admin_required, cart_lines, product):
     def my_orders():
         rows = db().execute('SELECT reference,total,status,created_at FROM orders WHERE owner=? ORDER BY id DESC LIMIT 100', (session.get('order_owner',''),)).fetchall()
         return render_template('my_orders.html', orders=rows)
+
+    @app.post('/orders/forget')
+    def forget_orders():
+        session.pop('order_owner', None)
+        session.pop('checkout_token', None)
+        flash('Order history access has been removed from this browser. The shop still keeps its order records. Contact Mahrukh if you need help with an existing order.', 'success')
+        return redirect(url_for('my_orders'), code=303)
 
     @app.get('/order/<reference>')
     def order_detail(reference):
