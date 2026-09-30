@@ -1,3 +1,4 @@
+<details class="filter-drawer" open><summary>Filter & sort <span class="filter-hint">A fabric, a fit, a favourite</span></summary>
 <form class="catalog-filters" action="{{ url_for('index') }}#collection" aria-label="Find your piece">
 <input type="hidden" name="q" value="{{ query }}">
 <label>Collection<select name="category"><option value="">All collections</option>{% for c in categories %}<option value="{{ c }}" {% if selected==c %}selected{% endif %}>{{ c }}</option>{% endfor %}</select></label>
@@ -8,3 +9,4 @@
 <label>Sort by<select name="sort" id="sort"><option value="featured" {% if sort=='featured' %}selected{% endif %}>Latest additions</option><option value="price-low" {% if sort=='price-low' %}selected{% endif %}>Price: low to high</option><option value="price-high" {% if sort=='price-high' %}selected{% endif %}>Price: high to low</option></select></label>
 <div class="filter-actions"><button class="button">Find my pieces</button><a href="{{ url_for('index') }}#collection">Clear filters</a></div>
 </form>
+</details>

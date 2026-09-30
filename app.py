@@ -14,6 +14,7 @@ from urllib.parse import quote, urlsplit
 from flask import Flask, abort, flash, g, jsonify, redirect, render_template, request, session, url_for, send_from_directory
 from werkzeug.security import check_password_hash
 from commerce import install_commerce, launch_gaps
+from boutique import install_boutique
 from catalog import OCCASIONS, FABRICS, MEASUREMENTS, empty_details, decode_details, form_details, validate_details, missing_facts
 
 ROOT = Path(__file__).resolve().parent
@@ -130,6 +131,8 @@ def create_app(test_config=None):
 
     settings, checkout_context = install_commerce(app, db, admin_required, cart_lines, product)
 
+    related_pieces = install_boutique(app, db, product, settings)
+
     app.jinja_env.filters['pkr'] = lambda value: f'PKR {value:,.0f}'
 
     @app.get('/health')
@@ -169,7 +172,13 @@ def create_app(test_config=None):
         if size:
             clauses.append('EXISTS (SELECT 1 FROM inventory WHERE product_id=products.id AND size=? AND quantity>0 AND size IN (SELECT value FROM json_each(products.sizes)))'); params.append(size)
         rows = db().execute('SELECT products.*, facts.data AS details_json, (SELECT coalesce(sum(quantity),0) FROM inventory WHERE product_id=products.id AND size IN (SELECT value FROM json_each(products.sizes))) AS stock_total FROM products LEFT JOIN product_details AS facts ON facts.product_id=products.id WHERE ' + ' AND '.join(clauses) + ' ORDER BY ' + order, params).fetchall()
-        return render_template('index.html', products=[dict(r, images=json.loads(r['images']), details=decode_details(r['details_json'])) for r in rows],
+        filter_values = dict(q=query, category=category, occasion=occasion, fabric_family=fabric_family, size=size, budget=budget, sort=sort)
+        chips = []
+        for key, label in [('q', query), ('category', category), ('occasion', OCCASIONS.get(occasion,'')), ('fabric_family', fabric_family), ('size', size), ('budget', f'Up to PKR {int(budget):,}' if budget else '')]:
+            if filter_values[key]:
+                remaining = {k:v for k,v in filter_values.items() if k!=key and v}
+                chips.append(dict(label=label, url=url_for('index', **remaining)+'#collection'))
+        return render_template('index.html', chips=chips, products=[dict(r, images=json.loads(r['images']), details=decode_details(r['details_json'])) for r in rows],
                                query=query, selected=category, sort=sort, filters=dict(occasion=occasion, fabric_family=fabric_family, size=size, budget=budget), filtered=bool(query or category or occasion or fabric_family or size or budget))
 
     @app.get('/our-roots')
@@ -185,7 +194,7 @@ def create_app(test_config=None):
         item = product(pid)
         if not item['active']:
             abort(404)
-        return render_template('product.html', item=item)
+        return render_template('product.html', item=item, related=related_pieces(item), available_sizes=[s for s in item['sizes'] if item['stock'].get(s,0)>0])
 
     @app.route('/cart', methods=['GET', 'POST'])
     def cart():
@@ -246,8 +255,10 @@ def create_app(test_config=None):
                 db().commit()
                 cart = session.get('cart',{})
                 order_owner = session.get('order_owner')
+                saved = session.get('saved', [])
                 session.clear()
                 session['cart'] = cart
+                session['saved'] = saved
                 if order_owner: session['order_owner'] = order_owner
                 session['admin'] = True
                 session['admin_since'] = int(time.time())

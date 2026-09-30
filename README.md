@@ -103,9 +103,19 @@ Garment charts store finished flat measurements in inches, with optional browser
 
 `/our-roots` contains a sourced cultural notebook with four original decorative SVG studies. `/fabric-and-fit` explains measurements, unstitched panels and included pieces. `/admin/insights` lists product information gaps and order figures for the seller. Customers using shared devices can remove their browser’s access from **My orders** without deleting or cancelling the shop’s records.
 
+## A more personal boutique experience
+
+Shoppers can save up to 24 pieces for their current browser session, open a dedicated saved collection, remove individual favourites or clear the list. Saving does not reserve inventory. The live workflow uses the existing signed session cookie and CSRF-protected forms; the design preview uses only tab session storage. Hidden/deleted live products drop out of the saved collection.
+
+Product photographs now open in an accessible enlarged viewer with Escape, previous/next controls and arrow-key navigation when multiple photos are present. Without JavaScript the photo link opens the original image. Selecting a size highlights its measurement row, shows current available quantity and carries the size into topic-specific WhatsApp questions. The customer still chooses whether to send the draft. Fully sold-out pieces have a disabled purchase button and retain the contact route.
+
+Filter chips remove one choice while preserving the others. On narrow screens the filter panel starts closed when no filters are applied; all filters remain available without JavaScript. Related pieces help shoppers continue browsing. These suggestions use category and catalog order, not tracking or personal profiling.
+
+In **Shop settings → Your business**, Mahrukh can write an optional personal welcome and signature. In **Contact & social profiles**, she can list the languages she actually offers for support. The welcome stays hidden until she writes it; only the design preview contains a clearly labelled sample note. This does not translate the storefront.
+
 ## Shareable design preview
 
-[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, working demo filters, sample measurement charts, a cultural notebook, fit guide, contact-page preview and seller feature tour. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
+[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, saved favourites, enlarged photographs, working demo filters, sample measurement charts, a cultural notebook, fit guide, contact-page preview and seller feature tour. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
 
 ```bash
 .venv/bin/python preview/check.py

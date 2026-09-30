@@ -55,3 +55,10 @@ def missing_facts(item):
         missing.append('chest width & length for every stitched size')
     if 'Custom Unstitched' in item['sizes'] and not details['fabric_lengths']: missing.append('fabric lengths & widths')
     return missing
+
+
+QUESTIONS = {
+    'fit': ('Help with my size', 'Could you help me choose a size and confirm the measurements?'),
+    'fabric': ('A closer look at the fabric', 'Could you tell me about the fabric, lining and opacity?'),
+    'delivery': ('Planning for an occasion', 'Could you help me check delivery timing before I order?'),
+}

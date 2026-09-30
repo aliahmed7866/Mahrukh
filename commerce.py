@@ -23,7 +23,7 @@ POLICIES = {'shipping': 'Shipping & delivery', 'returns': 'Returns & refunds',
             'privacy': 'Privacy & cookies', 'terms': 'Terms of sale'}
 DEFAULTS = dict(business_name='', business_address='', support_email='', whatsapp='',
     support_hours='', instagram='', facebook='', tiktok='', youtube='',
-    announcement='Timeless style · Everyday you', shipping_fee=250, free_shipping_at=0,
+    announcement='Timeless style · Everyday you', personal_note='', note_signature='', support_languages='', shipping_fee=250, free_shipping_at=0,
     dispatch_note='', service_cities='', cod=True, transfer=False, transfer_details='',
     hosted=False, provider='safepay', merchant_eligible=False, accepting_orders=False,
     tax_note='', registration='', shipping='', returns='', privacy='', terms='', updated_at='')
@@ -71,6 +71,8 @@ def validate_settings(form):
         else:
             s[k] = form.get(k, '').strip()
             if len(s[k]) > (10000 if k in POLICIES else 2000): raise ValueError('A setting is too long.')
+    for key, limit in [('personal_note',800),('note_signature',80),('support_languages',120)]:
+        if len(s[key])>limit: raise ValueError(f'{key.replace("_", " ").title()} must be at most {limit} characters.')
     s['whatsapp'] = re.sub(r'[\s+()-]', '', s['whatsapp'])
     if s['whatsapp'] and not re.fullmatch(r'[1-9]\d{9,14}', s['whatsapp']):
         raise ValueError('Use a WhatsApp number with country code, such as 923001234567.')
