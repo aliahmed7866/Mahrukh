@@ -31,3 +31,5 @@ Rebuild after changing templates, styling or `preview/products.json`, check the 
 The six `photos/*.webp` files were generated with the built-in image-generation tool and encoded as WebP without cropping or resizing. They are fictional concept images, not photos of real Mahrukh stock. All cards, detail pages and the footer label this clearly.
 
 Prompt set: portrait 4:5 premium studio catalog photographs on warm ivory plaster backgrounds, soft daylight, full modest outfits: emerald embroidered shalwar kameez; dusty rose kameez with ivory trousers; ivory antique-gold peshwas; midnight-black abaya; ruby embroidered lehenga; and folded indigo/cream unstitched fabrics. No logos, text or watermarks. The unstitched image is a textile still life with no person. All images are for a non-commercial website design preview.
+
+The enhanced preview also includes a session-only sample bag, an illustrative contact page, and a read-only seller feature tour. Social/WhatsApp controls open explanatory dialogs; they never send a message or lead to checkout. Preview photos remain fictional AI-generated concepts. Ten HTML pages are built and checked.

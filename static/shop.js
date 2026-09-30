@@ -34,6 +34,8 @@
     const form = e.target;
     if (form.dataset.confirm && !window.confirm(form.dataset.confirm)) { e.preventDefault(); return; }
     if (!form.matches('[data-cart-form]')) return;
+    const focusedName = e.submitter?.textContent;
+    const wasOpen = drawer.open;
     e.preventDefault();
     const data = new FormData(form);
     if (e.submitter?.name) data.set(e.submitter.name, e.submitter.value);
@@ -45,10 +47,12 @@
         toast(doc.querySelector('main .page p:not(.eyebrow)')?.textContent || 'Unable to update the bag. Reload and try again.'); return;
       }
       body.innerHTML = await response.text();
-      document.querySelectorAll('[data-cart-count]').forEach(el => el.textContent = response.headers.get('X-Cart-Count'));
+      document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = response.headers.get('X-Cart-Count'); el.closest('[data-open-cart]')?.setAttribute('aria-label', 'Shopping cart, ' + el.textContent + ' items'); });
       // Keep the non-modal cart page consistent after edits.
       if (location.pathname === '/cart' && !drawer.open) { location.reload(); return; }
       openDrawer();
+      if (wasOpen) { body.querySelector('input[type=number], .button, a')?.focus(); }
+      toast(focusedName?.includes('Remove') ? 'Item removed from your bag.' : 'Your bag is updated.');
     } catch { toast('Connection interrupted. Reload the bag to check whether your update was saved.'); }
     finally { buttons.forEach(b => b.disabled = false); }
   });

@@ -13,6 +13,9 @@ from werkzeug.security import generate_password_hash
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from app import create_app
+from commerce import DEFAULTS
+import re
+from html import unescape
 from register import merge_registry
 
 
@@ -30,6 +33,10 @@ class ShopTests(unittest.TestCase):
             for name, category, price in fixtures:
                 connection.execute('INSERT INTO products(name,category,price,fabric,description,sizes,images,illustration) VALUES(?,?,?,?,?,?,?,0)',
                     (name,category,price,'Cotton','Photo fixture',json.dumps(['S','M','L','XL']),json.dumps(['https://example.com/product.jpg'])))
+            for pid in range(1,9):
+                connection.executemany('INSERT INTO inventory VALUES(?,?,?)', [(pid,size,20) for size in ['S','M','L','XL']])
+            settings = {**DEFAULTS, 'business_name':'Test shop', 'business_address':'Business address', 'whatsapp':'923001234567', 'support_email':'shop@example.com', 'dispatch_note':'3–5 days', 'service_cities':'Lahore\nKarachi', 'tax_note':'Tax included', 'shipping':'Test shipping', 'returns':'Test returns', 'privacy':'Test privacy', 'terms':'Test terms', 'accepting_orders':True}
+            connection.execute('INSERT INTO shop_settings VALUES(1,?)', (json.dumps(settings),))
         self.client = self.app.test_client()
         self.client.get('/')
 
@@ -60,20 +67,32 @@ class ShopTests(unittest.TestCase):
         self.assertEqual(self.client.get('/product/1').status_code, 200)
         self.assertEqual(self.client.get('/product/999').status_code, 404)
 
+    def quote(self):
+        html = self.client.get('/cart').get_data(as_text=True)
+        return {k: unescape(re.search('name="' + k + '" value="([^"]+)"', html).group(1)) for k in ('checkout_token','quote_hash')}
+
+    def order_fields(self):
+        return dict(name='A & B', city='Lahore', contact='03001234567', address='Street #2', payment_method='cod', agree='yes', **self.quote())
+
     def test_cart_checkout_recomputes_prices_and_encodes_message(self):
         self.assertEqual(self.post('/cart', dict(id=1, size='M', quantity=2, price=1)).status_code, 303)
+        fields = self.order_fields()
         with sqlite3.connect(self.database) as db:
             db.execute('UPDATE products SET price=7000 WHERE id=1')
-        response = self.post('/checkout', dict(name='A & B', city='Lahore', contact='03001234567', address='Street #2'))
+        self.assertEqual(self.post('/checkout',fields).status_code,409)
+        fields.update(self.quote())
+        response = self.post('/checkout', fields)
         self.assertEqual(response.status_code, 303)
-        self.assertTrue(response.location.startswith('https://wa.me/923001234567?text='))
-        decoded = unquote(response.location)
-        self.assertIn('Items total: PKR 14,000', decoded)
-        self.assertIn('Qty 2', decoded)
-        self.assertIn('A & B', decoded)
-        self.assertIn('Street #2', decoded)
-        self.assertEqual(self.post('/cart', dict(id=1, size='M', quantity=0, action='update')).status_code, 303)
-        self.assertEqual(self.post('/checkout').status_code, 400)
+        self.assertTrue(response.location.startswith('/order/MH-'))
+        html = self.client.get(response.location).get_data(as_text=True)
+        self.assertIn('PKR 14,250',html)
+        self.assertIn('Street #2',html)
+        self.assertIn('Qty%202',html)
+        self.assertEqual(self.post('/checkout',fields).location,response.location)
+        with sqlite3.connect(self.database) as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM orders').fetchone()[0],1)
+            self.assertEqual(db.execute("SELECT quantity FROM inventory WHERE product_id=1 AND size='M'").fetchone()[0],18)
+        self.assertEqual(self.app.test_client().get(response.location).status_code,404)
 
     def test_bad_cart_and_csrf(self):
         self.assertEqual(self.client.post('/cart', data=dict(id=1, size='M')).status_code, 400)
@@ -106,9 +125,11 @@ class ShopTests(unittest.TestCase):
                       fabric='Cotton',description='Test',sizes=['M'],images='https://example.com/abaya.jpg',active='on')
         self.assertEqual(self.post('/admin/product/new', fields).status_code, 303)
         fields['name']='Edited piece'
+        fields['edit_version']=re.search('name="edit_version" value="([^"]+)"',self.client.get('/admin/product/9').get_data(as_text=True)).group(1)
         self.assertEqual(self.post('/admin/product/9', fields).status_code, 303)
         self.assertIn('Edited piece', self.client.get('/product/9').get_data(as_text=True))
         fields['images']='javascript:alert(1)'
+        fields['edit_version']=re.search('name="edit_version" value="([^"]+)"',self.client.get('/admin/product/9').get_data(as_text=True)).group(1)
         response=self.post('/admin/product/9',fields)
         self.assertIn('HTTPS product image',response.get_data(as_text=True))
         self.assertEqual(self.post('/admin/product/9/delete').status_code,303)
@@ -122,9 +143,12 @@ class ShopTests(unittest.TestCase):
         self.assertEqual(self.login().status_code,429)
 
     def test_disabled_checkout(self):
-        self.app.config['SELLER_PHONE']=''
         self.post('/cart',dict(id=1,size='S',quantity=1))
-        self.assertEqual(self.post('/checkout').status_code,503)
+        fields=self.order_fields()
+        with sqlite3.connect(self.database) as db:
+            s=json.loads(db.execute('SELECT data FROM shop_settings').fetchone()[0]);s['accepting_orders']=False
+            db.execute('UPDATE shop_settings SET data=?',(json.dumps(s),))
+        self.assertEqual(self.post('/checkout',fields).status_code,503)
 
     def test_brand_art_is_separate_from_product_photographs(self):
         html = self.client.get('/').get_data(as_text=True)

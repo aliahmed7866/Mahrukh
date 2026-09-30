@@ -25,7 +25,7 @@ def build():
     OUT.mkdir(exist_ok=True)
     (OUT/'assets').mkdir(exist_ok=True)
     # Explicit allowlist: no instance files, credentials, backend, or real inventory.
-    for name in ('style.css','heritage.css'):
+    for name in ('style.css','heritage.css','business.css'):
         shutil.copyfile(ROOT/'static'/name, OUT/'assets'/name)
     shutil.copytree(ROOT/'static/art',OUT/'assets/art',dirs_exist_ok=True)
     shutil.copytree(HERE/'photos',OUT/'assets/photos',dirs_exist_ok=True)
@@ -35,7 +35,7 @@ def build():
     for path in (OUT/'assets').glob('*.css'):
         path.write_text(path.read_text().replace('/static/art/','art/'))
     env=Environment(loader=FileSystemLoader([str(HERE/'templates'),str(ROOT/'templates')]),autoescape=select_autoescape())
-    env.globals.update(url_for=url_for,categories=CATEGORIES)
+    env.globals.update(url_for=url_for,categories=CATEGORIES,demo=True)
     env.filters['pkr']=lambda value:f'PKR {value:,.0f}'
     page=(ROOT/'templates/index.html').read_text()
     page=page.replace('Order with WhatsApp', 'Explore the design')
@@ -48,6 +48,8 @@ def build():
     (OUT/'index.html').write_text(env.from_string(page).render(products=products,query='',selected='',sort='featured'))
     for p in products:
         (OUT/f"product-{p['id']}.html").write_text(env.get_template('demo-product.html').render(item=p))
+    for name in ('contact','studio'):
+        (OUT/f'{name}.html').write_text(env.get_template(f'demo-{name}.html').render())
     (OUT/'.nojekyll').write_text('')
     (OUT/'404.html').write_text(env.get_template('demo-404.html').render())
     print(f'Built {len(products)} sample product pages and homepage in {OUT}')
