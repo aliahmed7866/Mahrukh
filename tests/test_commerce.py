@@ -171,6 +171,14 @@ class CommerceTests(unittest.TestCase):
             self.assertEqual(db.execute('SELECT count(*) FROM orders').fetchone()[0],1)
             self.assertEqual(db.execute("SELECT quantity FROM inventory WHERE product_id=1 AND size='M'").fetchone()[0],0)
 
+    def test_reviewing_bag_removes_hidden_selection_and_allows_remaining_order(self):
+        self.post('/cart',dict(id=1,size='M',quantity=1))
+        self.post('/cart',dict(id=2,size='M',quantity=1))
+        with sqlite3.connect(self.database) as db: db.execute('UPDATE products SET active=0 WHERE id=2')
+        self.assertIn('Unavailable selections were removed',self.client.get('/cart').get_data(as_text=True))
+        self.assertEqual(self.post('/checkout',self.order_fields()).status_code,303)
+        with sqlite3.connect(self.database) as db: self.assertEqual(db.execute('SELECT subtotal FROM orders').fetchone()[0],6490)
+
     def test_paypal_requires_explicit_foreign_currency_quote(self):
         self.setting(hosted=True,merchant_eligible=True,provider='paypal')
         ref=self.place(payment_method='hosted')

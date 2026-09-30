@@ -191,8 +191,15 @@ def create_app(test_config=None):
             if request.headers.get('X-Mahrukh-Drawer') != '1':
                 return redirect(url_for('cart'), code=303)
         lines = cart_lines()
+        cart_notice = ''
+        current = session.get('cart', {})
+        valid_keys = {line['key'] for line in lines}
+        if len(valid_keys) != len(current):
+            session['cart'] = {key:entry for key,entry in current.items() if key in valid_keys}
+            session['checkout_token'] = secrets.token_urlsafe(24)
+            cart_notice = 'Unavailable selections were removed from your bag. Please review the updated total.'
         template = 'cart_contents.html' if request.headers.get('X-Mahrukh-Drawer') == '1' else 'cart.html'
-        response = app.make_response(render_template(template, lines=lines, total=sum(x['subtotal'] for x in lines), **checkout_context(lines)))
+        response = app.make_response(render_template(template, lines=lines, cart_notice=cart_notice, total=sum(x['subtotal'] for x in lines), **checkout_context(lines)))
         response.headers['X-Cart-Count'] = str(sum(x['quantity'] for x in lines))
         return response
 
