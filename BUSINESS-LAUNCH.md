@@ -88,3 +88,9 @@ Use **Seller studio → Shop health** to find incomplete buying information. Add
 New orders save the product facts as reviewed at checkout. Changes to facts force a fresh quote review; editing a live product does not rewrite earlier orders. Customers can remove browser order access for a shared device; shop records remain for fulfilment and applicable retention obligations.
 
 The shop-health paid total is manually recorded, includes delivery and is not audited revenue or profit. Use [RESEARCH-AND-GROWTH.md](RESEARCH-AND-GROWTH.md) for source-backed design decisions, customer interviews, merchandising, unit economics, metrics and the proposed 90-day plan. Legal/tax review remains specific to the actual business and current rules.
+
+## Your own voice and personal shopping help
+
+Add an optional welcome note/signature and actual support languages in Shop settings. Publish claims and response hours that match your service. These settings do not invent a founder biography or translate the site.
+
+Saved favourites use the essential signed browser-session cookie in the live store, while the public demo uses tab session storage for fictional product IDs. Describe this convenience in your privacy/cookie notice. Customers can clear favourites independently of their orders; saving does not reserve inventory. WhatsApp product questions carry the product name/reference and selected size where supplied, with no delivery address or customer contact data added automatically. The customer opens the draft and decides whether to send it.

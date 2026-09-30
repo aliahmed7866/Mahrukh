@@ -1,5 +1,5 @@
 (() => {
- const grid=document.querySelector('.product-grid');
+ const grid=document.querySelector('#catalog-grid');
  if(grid){
   const cards=[...grid.querySelectorAll('.product-card')];
   const params=new URLSearchParams(location.search);
@@ -25,9 +25,18 @@
   }
   if(sort==='price-low'||sort==='price-high')cards.sort((a,b)=>(Number(a.dataset.price)-Number(b.dataset.price))*(sort==='price-low'?1:-1)).forEach(card=>grid.append(card));
   document.querySelector('#result-count').textContent=count;
+  document.querySelector('#result-noun').textContent=count===1?'sample piece':'sample pieces';
+  const chips=document.querySelector('.active-filters');chips.replaceChildren();
+  for(const name of ['q','category','occasion','fabric_family','size','budget']){
+   const value=name==='q'?query:name==='budget'?(validBudget?rawBudget:''):chosen[name];if(!value)continue;
+   const label=name==='budget'?'Up to PKR '+Number(value).toLocaleString('en-PK'):name==='occasion'?form.querySelector('[name=occasion] option:checked').textContent:value;
+   const url=new URL(location.href);url.searchParams.delete(name);url.hash='collection';
+   const link=document.createElement('a');link.href=url.href;link.textContent=label+' ×';link.setAttribute('aria-label','Remove filter '+label);chips.append(link);
+  }
+  chips.hidden=chips.children.length===0;
   document.querySelector('#collection-title').textContent=category||(query?'Search results':'The sample collection');
   const empty=document.querySelector('#no-results');empty.hidden=count!==0;
-  if(!validBudget)empty.textContent='Enter a maximum price from PKR 1 to 10,000,000.';
+  if(!validBudget)empty.querySelector('p').textContent='Enter a maximum price from PKR 1 to 10,000,000.';
   document.querySelectorAll('.main-nav a').forEach(a=>{if((new URL(a.href).searchParams.get('category')||'')===category)a.setAttribute('aria-current','page');});
   if(query||category||occasion||fabric_family||size||rawBudget){
    document.querySelectorAll('.hero,.values,.category-section').forEach(el=>el.hidden=true);
@@ -55,7 +64,8 @@
  [cart,help].forEach(d=>d.addEventListener('close',()=>{document.body.classList.remove('drawer-open');opener?.focus();}));
  document.addEventListener('click',e=>{
   if(e.target.closest('[data-demo-cart]')){render();open(cart);}
-  if(e.target.closest('[data-demo-help]'))open(help);
+  const question=e.target.closest('[data-demo-help]');
+  if(question){const text=help.querySelector('[data-demo-question]');text.hidden=!question.dataset.question;if(question.dataset.question)text.textContent=question.dataset.productName+' · '+(document.querySelector('[name=demo-size]:checked')?.value||'Size not selected')+' — '+question.dataset.question;open(help);}
   if(e.target.closest('[data-demo-close]'))e.target.closest('dialog').close();
   const add=e.target.closest('[data-demo-add]');
   if(add){const size=document.querySelector('[name=demo-size]:checked')?.value||'Sample';const found=items.find(x=>x.id===add.dataset.id&&x.size===size);if(found){found.quantity=Math.min(found.quantity+1,10);}else if(items.length<20){items.push({id:add.dataset.id,name:add.dataset.name,size,price:Number(add.dataset.price),quantity:1});}save();open(cart);}

@@ -32,4 +32,10 @@ The six `photos/*.webp` files were generated with the built-in image-generation 
 
 Prompt set: portrait 4:5 premium studio catalog photographs on warm ivory plaster backgrounds, soft daylight, full modest outfits: emerald embroidered shalwar kameez; dusty rose kameez with ivory trousers; ivory antique-gold peshwas; midnight-black abaya; ruby embroidered lehenga; and folded indigo/cream unstitched fabrics. No logos, text or watermarks. The unstitched image is a textile still life with no person. All images are for a non-commercial website design preview.
 
-The enhanced preview also includes a session-only sample bag, an illustrative contact page, and a read-only seller feature tour. Social/WhatsApp controls open explanatory dialogs; they never send a message or lead to checkout. Preview photos remain fictional AI-generated concepts. Twelve HTML pages are built and checked. The cultural notebook and fabric/fit guide are shared with the Flask app. Filters use only the fictional fixture data; size charts and fabric dimensions are explicitly illustrative, not real product specifications.
+The enhanced preview also includes a session-only sample bag, an illustrative contact page, and a read-only seller feature tour. Social/WhatsApp controls open explanatory dialogs; they never send a message or lead to checkout. Preview photos remain fictional AI-generated concepts. Thirteen HTML pages are built and checked. The cultural notebook and fabric/fit guide are shared with the Flask app. Filters use only the fictional fixture data; size charts and fabric dimensions are explicitly illustrative, not real product specifications.
+
+## Boutique refinements
+
+The saved-pieces page and heart controls keep only fictional product IDs in `sessionStorage`. The list can be cleared and never reserves stock. The photo viewer, active filter chips and contextual question preview use the same local scripts/styles as the live storefront where practical. WhatsApp question buttons show a draft-style explanation inside the demo; they never contact a seller. The homepage letter is labelled “Sample brand note”; the real seller supplies her own copy.
+
+Product cards and the homepage now render shared templates directly. The build no longer rewrites template source strings, so future card refinements stay consistent across the live app and preview.
