@@ -93,9 +93,19 @@ Payment methods are cash on delivery, manual merchant bank/mobile-wallet transfe
 
 Read [BUSINESS-LAUNCH.md](BUSINESS-LAUNCH.md) for the seller setup sequence, payment limitations, Pakistan business/tax review, public HTTPS hosting, backups and privacy/retention operations. The app supports startup operations; it does not certify compliance or issue statutory tax invoices.
 
+## Research-led improvements
+
+Read [RESEARCH-AND-GROWTH.md](RESEARCH-AND-GROWTH.md) for the Pakistan shopper/culture research, evidence limits, assortment and content recommendations, and 90-day business plan.
+
+The collection now filters by occasion, fabric family, size currently in stock and maximum PKR price. Product editing includes supplied/excluded pieces, verified fibre composition, lining/opacity, care, fit, unstitched panel dimensions, craft/origin and a product-specific dispatch note. Optional XS, 2XL and 3XL labels expand the original range; only the seller’s selected, stocked sizes can be ordered.
+
+Garment charts store finished flat measurements in inches, with optional browser conversion to centimetres. They are not body measurements or universal size standards. A new database table is created automatically on startup; existing products remain editable with empty facts. Nothing fills in measurements on behalf of the seller. New order snapshots preserve product facts, and edits invalidate an older checkout quote. Earlier order receipts still work without these fields.
+
+`/our-roots` contains a sourced cultural notebook with four original decorative SVG studies. `/fabric-and-fit` explains measurements, unstitched panels and included pieces. `/admin/insights` lists product information gaps and order figures for the seller. Customers using shared devices can remove their browser’s access from **My orders** without deleting or cancelling the shop’s records.
+
 ## Shareable design preview
 
-[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, contact-page preview and seller feature tour. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
+[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, working demo filters, sample measurement charts, a cultural notebook, fit guide, contact-page preview and seller feature tour. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
 
 ```bash
 .venv/bin/python preview/check.py
@@ -112,7 +122,7 @@ cd "$HOME/Mahrukh"
 .venv/bin/python make_brand_art.py
 ```
 
-The test suite covers catalog/admin regressions, seller settings, malicious links, payment verification, saved order privacy, stock contention, duplicate submissions, stale edits and core colour contrast. The other two commands regenerate the original vector brand artwork with the Python standard library.
+The test suite covers catalog/admin regressions, seller settings, malicious links, payment verification, saved order privacy, stock contention, duplicate submissions, stale edits and core colour contrast, combined filters, factual detail validation, immutable product snapshots and shared-device privacy. The other two commands regenerate the original vector brand artwork with the Python standard library.
 
 Core shopping and seller forms work without JavaScript; JavaScript adds the slide-out bag and gallery controls. CSS/fonts are local. External image URLs, social sites and WhatsApp require connectivity. Uploaded product photos work locally.
 

@@ -28,5 +28,5 @@ for css in (OUT/'assets').glob('*.css'):
         assert (css.parent/ref).exists(),(css,ref)
 assert len(list(OUT.glob('product-*.html')))==6
 assert not list(OUT.rglob('*.sqlite3')) and not list(OUT.rglob('config.json'))
-assert len(list(OUT.glob('*.html')))==10
-print('Validated ten pages, all local links/assets, six sample photos, and no checkout/admin/private data.')
+assert len(list(OUT.glob('*.html')))==12
+print('Validated twelve pages, all local links/assets, six sample photos, and no checkout/admin/private data.')

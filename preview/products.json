@@ -1,8 +1,322 @@
 [
- {"id":1,"name":"Mehr · Emerald","category":"Stitched / Pret","price":6490,"compare_price":7490,"fabric":"Cotton-silk concept · botanical embroidery","photo":"emerald.webp","description":"An emerald ensemble with a softly draped dupatta and delicate gold details. A fictional design showing how a finished product page could look.","sizes":["S","M","L","XL"]},
- {"id":2,"name":"Gul · Dusty Rose","category":"Stitched / Pret","price":5990,"compare_price":0,"fabric":"Lawn concept · tonal embroidery","photo":"rose.webp","description":"A dusty rose palette with light ivory trousers and a breezy dupatta. A fictional everyday ensemble for this visual preview.","sizes":["S","M","L","XL"]},
- {"id":3,"name":"Chand · Ivory","category":"Luxury Formals","price":18900,"compare_price":0,"fabric":"Organza concept · antique-gold accents","photo":"ivory.webp","description":"An ivory formal silhouette with antique-gold detailing, imagined for memorable evenings. Sample styling, not an available product.","sizes":["S","M","L","XL"]},
- {"id":4,"name":"Noor · Midnight","category":"Abayas","price":7990,"compare_price":8990,"fabric":"Nida concept · understated gold detailing","photo":"abaya.webp","description":"A flowing midnight abaya with subtle details at the sleeves. This fictional piece demonstrates the modest-wear collection layout.","sizes":["S","M","L","XL"]},
- {"id":5,"name":"Surkh · Celebration","category":"Festive Wear","price":15900,"compare_price":18500,"fabric":"Silk-blend concept · festive embroidery","photo":"ruby.webp","description":"Ruby, gold and a graceful dupatta, imagined for a celebration. A fictional festive design to explore the website presentation.","sizes":["S","M","L","XL"]},
- {"id":6,"name":"Neel · Unstitched","category":"Unstitched","price":4290,"compare_price":0,"fabric":"Lawn concept · indigo botanical print","photo":"unstitched.webp","description":"Indigo and cream fabrics with a botanical vocabulary. A fictional three-piece concept illustrating the unstitched collection.","sizes":["Custom Unstitched"]}
+  {
+    "id": 1,
+    "name": "Mehr · Emerald",
+    "category": "Stitched / Pret",
+    "price": 6490,
+    "compare_price": 7490,
+    "fabric": "Cotton-silk concept · botanical embroidery",
+    "photo": "emerald.webp",
+    "description": "An emerald ensemble with a softly draped dupatta and delicate gold details. A fictional design showing how a finished product page could look.",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "details": {
+      "fabric_family": "Silk / silk blend",
+      "occasions": [
+        "gatherings",
+        "celebrations"
+      ],
+      "included": "Sample: stitched shirt, trousers and dupatta.",
+      "not_included": "Sample styling accessories, footwear and jewellery.",
+      "composition": "Fictional fabric specification. Real products will show supplier-verified fibre content.",
+      "lining": "Sample: ask about the inner layer and opacity of each piece before ordering.",
+      "care": "Demonstration only. Follow the care label supplied with a real garment.",
+      "fit": "Sample: a relaxed silhouette. Measurements below are invented to demonstrate the chart.",
+      "craft": "Visual concept only; no artisan, origin or handmade claim.",
+      "dispatch": "",
+      "fabric_lengths": "",
+      "measurements": {
+        "S": {
+          "chest": 19,
+          "hip": 21,
+          "length": 42,
+          "sleeve": 22
+        },
+        "M": {
+          "chest": 20,
+          "hip": 22,
+          "length": 42,
+          "sleeve": 22
+        },
+        "L": {
+          "chest": 22,
+          "hip": 24,
+          "length": 42,
+          "sleeve": 22
+        },
+        "XL": {
+          "chest": 24,
+          "hip": 26,
+          "length": 42,
+          "sleeve": 22
+        }
+      }
+    }
+  },
+  {
+    "id": 2,
+    "name": "Gul · Dusty Rose",
+    "category": "Stitched / Pret",
+    "price": 5990,
+    "compare_price": 0,
+    "fabric": "Lawn concept · tonal embroidery",
+    "photo": "rose.webp",
+    "description": "A dusty rose palette with light ivory trousers and a breezy dupatta. A fictional everyday ensemble for this visual preview.",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "details": {
+      "fabric_family": "Lawn",
+      "occasions": [
+        "everyday",
+        "gatherings"
+      ],
+      "included": "Sample: stitched shirt, trousers and dupatta.",
+      "not_included": "Sample styling accessories, footwear and jewellery.",
+      "composition": "Fictional fabric specification. Real products will show supplier-verified fibre content.",
+      "lining": "Sample: ask about the inner layer and opacity of each piece before ordering.",
+      "care": "Demonstration only. Follow the care label supplied with a real garment.",
+      "fit": "Sample: a relaxed silhouette. Measurements below are invented to demonstrate the chart.",
+      "craft": "Visual concept only; no artisan, origin or handmade claim.",
+      "dispatch": "",
+      "fabric_lengths": "",
+      "measurements": {
+        "S": {
+          "chest": 19,
+          "hip": 21,
+          "length": 42,
+          "sleeve": 22
+        },
+        "M": {
+          "chest": 20,
+          "hip": 22,
+          "length": 42,
+          "sleeve": 22
+        },
+        "L": {
+          "chest": 22,
+          "hip": 24,
+          "length": 42,
+          "sleeve": 22
+        },
+        "XL": {
+          "chest": 24,
+          "hip": 26,
+          "length": 42,
+          "sleeve": 22
+        }
+      }
+    }
+  },
+  {
+    "id": 3,
+    "name": "Chand · Ivory",
+    "category": "Luxury Formals",
+    "price": 18900,
+    "compare_price": 0,
+    "fabric": "Organza concept · antique-gold accents",
+    "photo": "ivory.webp",
+    "description": "An ivory formal silhouette with antique-gold detailing, imagined for memorable evenings. Sample styling, not an available product.",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "details": {
+      "fabric_family": "Organza",
+      "occasions": [
+        "weddings",
+        "celebrations"
+      ],
+      "included": "Sample: stitched shirt, trousers and dupatta.",
+      "not_included": "Sample styling accessories, footwear and jewellery.",
+      "composition": "Fictional fabric specification. Real products will show supplier-verified fibre content.",
+      "lining": "Sample: ask about the inner layer and opacity of each piece before ordering.",
+      "care": "Demonstration only. Follow the care label supplied with a real garment.",
+      "fit": "Sample: a relaxed silhouette. Measurements below are invented to demonstrate the chart.",
+      "craft": "Visual concept only; no artisan, origin or handmade claim.",
+      "dispatch": "",
+      "fabric_lengths": "",
+      "measurements": {
+        "S": {
+          "chest": 19,
+          "hip": 21,
+          "length": 42,
+          "sleeve": 22
+        },
+        "M": {
+          "chest": 20,
+          "hip": 22,
+          "length": 42,
+          "sleeve": 22
+        },
+        "L": {
+          "chest": 22,
+          "hip": 24,
+          "length": 42,
+          "sleeve": 22
+        },
+        "XL": {
+          "chest": 24,
+          "hip": 26,
+          "length": 42,
+          "sleeve": 22
+        }
+      }
+    }
+  },
+  {
+    "id": 4,
+    "name": "Noor · Midnight",
+    "category": "Abayas",
+    "price": 7990,
+    "compare_price": 8990,
+    "fabric": "Nida concept · understated gold detailing",
+    "photo": "abaya.webp",
+    "description": "A flowing midnight abaya with subtle details at the sleeves. This fictional piece demonstrates the modest-wear collection layout.",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "details": {
+      "fabric_family": "Nida",
+      "occasions": [
+        "everyday",
+        "gatherings"
+      ],
+      "included": "Sample: abaya only.",
+      "not_included": "Sample styling accessories, footwear and jewellery.",
+      "composition": "Fictional fabric specification. Real products will show supplier-verified fibre content.",
+      "lining": "Sample: ask about the inner layer and opacity of each piece before ordering.",
+      "care": "Demonstration only. Follow the care label supplied with a real garment.",
+      "fit": "Sample: a relaxed silhouette. Measurements below are invented to demonstrate the chart.",
+      "craft": "Visual concept only; no artisan, origin or handmade claim.",
+      "dispatch": "",
+      "fabric_lengths": "",
+      "measurements": {
+        "S": {
+          "chest": 19,
+          "hip": 21,
+          "length": 54,
+          "sleeve": 22
+        },
+        "M": {
+          "chest": 20,
+          "hip": 22,
+          "length": 54,
+          "sleeve": 22
+        },
+        "L": {
+          "chest": 22,
+          "hip": 24,
+          "length": 54,
+          "sleeve": 22
+        },
+        "XL": {
+          "chest": 24,
+          "hip": 26,
+          "length": 54,
+          "sleeve": 22
+        }
+      }
+    }
+  },
+  {
+    "id": 5,
+    "name": "Surkh · Celebration",
+    "category": "Festive Wear",
+    "price": 15900,
+    "compare_price": 18500,
+    "fabric": "Silk-blend concept · festive embroidery",
+    "photo": "ruby.webp",
+    "description": "Ruby, gold and a graceful dupatta, imagined for a celebration. A fictional festive design to explore the website presentation.",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "details": {
+      "fabric_family": "Silk / silk blend",
+      "occasions": [
+        "celebrations",
+        "weddings"
+      ],
+      "included": "Sample: stitched shirt, trousers and dupatta.",
+      "not_included": "Sample styling accessories, footwear and jewellery.",
+      "composition": "Fictional fabric specification. Real products will show supplier-verified fibre content.",
+      "lining": "Sample: ask about the inner layer and opacity of each piece before ordering.",
+      "care": "Demonstration only. Follow the care label supplied with a real garment.",
+      "fit": "Sample: a relaxed silhouette. Measurements below are invented to demonstrate the chart.",
+      "craft": "Visual concept only; no artisan, origin or handmade claim.",
+      "dispatch": "",
+      "fabric_lengths": "",
+      "measurements": {
+        "S": {
+          "chest": 19,
+          "hip": 21,
+          "length": 42,
+          "sleeve": 22
+        },
+        "M": {
+          "chest": 20,
+          "hip": 22,
+          "length": 42,
+          "sleeve": 22
+        },
+        "L": {
+          "chest": 22,
+          "hip": 24,
+          "length": 42,
+          "sleeve": 22
+        },
+        "XL": {
+          "chest": 24,
+          "hip": 26,
+          "length": 42,
+          "sleeve": 22
+        }
+      }
+    }
+  },
+  {
+    "id": 6,
+    "name": "Neel · Unstitched",
+    "category": "Unstitched",
+    "price": 4290,
+    "compare_price": 0,
+    "fabric": "Lawn concept · indigo botanical print",
+    "photo": "unstitched.webp",
+    "description": "Indigo and cream fabrics with a botanical vocabulary. A fictional three-piece concept illustrating the unstitched collection.",
+    "sizes": [
+      "Custom Unstitched"
+    ],
+    "details": {
+      "fabric_family": "Lawn",
+      "occasions": [
+        "everyday",
+        "gatherings"
+      ],
+      "included": "Sample: unstitched shirt fabric, trouser fabric and dupatta.",
+      "not_included": "Sample styling accessories, footwear and jewellery.",
+      "composition": "Fictional fabric specification. Real products will show supplier-verified fibre content.",
+      "lining": "Sample: ask about the inner layer and opacity of each piece before ordering.",
+      "care": "Demonstration only. Follow the care label supplied with a real garment.",
+      "fit": "Sample: a relaxed silhouette. Measurements below are invented to demonstrate the chart.",
+      "craft": "Visual concept only; no artisan, origin or handmade claim.",
+      "dispatch": "",
+      "fabric_lengths": "Sample only: shirt 2.5 m × 1.1 m; trousers 2.0 m × 1.1 m; dupatta 2.5 m × 1.0 m. Not a specification for any real fabric.",
+      "measurements": {}
+    }
+  }
 ]

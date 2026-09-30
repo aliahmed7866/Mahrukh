@@ -14,10 +14,11 @@ from urllib.parse import quote, urlsplit
 from flask import Flask, abort, flash, g, jsonify, redirect, render_template, request, session, url_for, send_from_directory
 from werkzeug.security import check_password_hash
 from commerce import install_commerce, launch_gaps
+from catalog import OCCASIONS, FABRICS, MEASUREMENTS, empty_details, decode_details, form_details, validate_details, missing_facts
 
 ROOT = Path(__file__).resolve().parent
 CATEGORIES = ['Unstitched', 'Stitched / Pret', 'Luxury Formals', 'Abayas', 'Festive Wear']
-SIZES = ['S', 'M', 'L', 'XL', 'Custom Unstitched']
+SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', 'Custom Unstitched']
 ART = ['emerald-pret', 'rose-unstitched', 'midnight-abaya', 'ruby-lehenga', 'ivory-formal', 'indigo-pret', 'saffron-festive', 'plum-formal']
 
 
@@ -101,6 +102,8 @@ def create_app(test_config=None):
         item['sizes'] = json.loads(item['sizes'])
         item['images'] = json.loads(item['images'])
         item['stock'] = {r['size']:r['quantity'] for r in db().execute('SELECT size,quantity FROM inventory WHERE product_id=?', (pid,))}
+        facts = db().execute('SELECT data FROM product_details WHERE product_id=?', (pid,)).fetchone()
+        item['details'] = decode_details(facts['data'] if facts else None)
         item['edit_version'] = hmac.new(app.secret_key.encode(), json.dumps(item, sort_keys=True).encode(), hashlib.sha256).hexdigest()
         return item
 
@@ -121,6 +124,7 @@ def create_app(test_config=None):
     def context():
         lines = cart_lines()
         return dict(categories=CATEGORIES, sizes=SIZES, art=ART, csrf_token=csrf,
+                    occasions=OCCASIONS, fabrics=FABRICS, measurement_labels=MEASUREMENTS,
                     cart_count=sum(x['quantity'] for x in lines),
                     seller_ready=bool(settings()['whatsapp']))
 
@@ -138,17 +142,43 @@ def create_app(test_config=None):
         query = request.args.get('q', '').strip()[:100]
         category = request.args.get('category', '')
         sort = request.args.get('sort', 'featured')
-        order = {'featured': 'id DESC', 'price-low': 'price ASC', 'price-high': 'price DESC'}.get(sort, 'id DESC')
+        sort = sort if sort in ('featured', 'price-low', 'price-high') else 'featured'
+        order = {'featured': 'products.id DESC', 'price-low': 'price ASC, products.id DESC', 'price-high': 'price DESC, products.id DESC'}[sort]
+        category = category if category in CATEGORIES else ''
+        occasion = request.args.get('occasion', '')
+        occasion = occasion if occasion in OCCASIONS else ''
+        fabric_family = request.args.get('fabric_family', '')
+        fabric_family = fabric_family if fabric_family in FABRICS else ''
+        size = request.args.get('size', '')
+        size = size if size in SIZES else ''
+        budget = request.args.get('budget', '')
+        if budget and (not budget.isascii() or not budget.isdigit() or len(budget)>8 or not 1 <= int(budget) <= 10000000):
+            abort(400, 'Enter a maximum price from PKR 1 to 10,000,000.')
         clauses, params = ['active=1'], []
         if query:
-            clauses.append('(name LIKE ? OR fabric LIKE ?)')
-            params.extend([f'%{query}%', f'%{query}%'])
-        if category in CATEGORIES:
-            clauses.append('category=?')
-            params.append(category)
-        rows = db().execute('SELECT *, (SELECT coalesce(sum(quantity),0) FROM inventory WHERE product_id=products.id AND size IN (SELECT value FROM json_each(products.sizes))) AS stock_total FROM products WHERE ' + ' AND '.join(clauses) + ' ORDER BY ' + order, params).fetchall()
-        return render_template('index.html', products=[dict(r, images=json.loads(r['images'])) for r in rows],
-                               query=query, selected=category, sort=sort)
+            clauses.append('(name LIKE ? OR fabric LIKE ? OR description LIKE ?)')
+            params.extend([f'%{query}%'] * 3)
+        if category:
+            clauses.append('category=?'); params.append(category)
+        if occasion:
+            clauses.append("EXISTS (SELECT 1 FROM json_each(facts.data, '$.occasions') WHERE value=?)"); params.append(occasion)
+        if fabric_family:
+            clauses.append("json_extract(facts.data, '$.fabric_family')=?"); params.append(fabric_family)
+        if budget:
+            clauses.append('price<=?'); params.append(int(budget))
+        if size:
+            clauses.append('EXISTS (SELECT 1 FROM inventory WHERE product_id=products.id AND size=? AND quantity>0 AND size IN (SELECT value FROM json_each(products.sizes)))'); params.append(size)
+        rows = db().execute('SELECT products.*, facts.data AS details_json, (SELECT coalesce(sum(quantity),0) FROM inventory WHERE product_id=products.id AND size IN (SELECT value FROM json_each(products.sizes))) AS stock_total FROM products LEFT JOIN product_details AS facts ON facts.product_id=products.id WHERE ' + ' AND '.join(clauses) + ' ORDER BY ' + order, params).fetchall()
+        return render_template('index.html', products=[dict(r, images=json.loads(r['images']), details=decode_details(r['details_json'])) for r in rows],
+                               query=query, selected=category, sort=sort, filters=dict(occasion=occasion, fabric_family=fabric_family, size=size, budget=budget), filtered=bool(query or category or occasion or fabric_family or size or budget))
+
+    @app.get('/our-roots')
+    def roots():
+        return render_template('roots.html')
+
+    @app.get('/fabric-and-fit')
+    def fit_guide():
+        return render_template('fit_guide.html')
 
     @app.get('/product/<int:pid>')
     def detail(pid):
@@ -244,12 +274,21 @@ def create_app(test_config=None):
     def admin():
         return render_template('admin.html', gaps=launch_gaps(settings()), pending=db().execute("SELECT count(*) FROM orders WHERE status='pending'").fetchone()[0], products=db().execute('SELECT * FROM products ORDER BY id DESC').fetchall())
 
+    @app.get('/admin/insights')
+    @admin_required
+    def insights():
+        rows = [product(r['id']) for r in db().execute('SELECT id FROM products WHERE active=1 ORDER BY id DESC')]
+        checks = [dict(item=p, missing=missing_facts(p)) for p in rows]
+        counts = dict(db().execute('SELECT status,count(*) FROM orders GROUP BY status').fetchall())
+        paid = db().execute("SELECT coalesce(sum(total),0) FROM orders WHERE payment_status='paid'").fetchone()[0]
+        return render_template('insights.html', checks=checks, counts=counts, paid=paid, ready=sum(not c['missing'] for c in checks))
+
     @app.route('/admin/product/new', methods=['GET', 'POST'])
     @app.route('/admin/product/<int:pid>', methods=['GET', 'POST'])
     @admin_required
     def edit(pid=None):
         item = product(pid) if pid is not None else dict(name='', category=CATEGORIES[0], price='', compare_price='',
-                    fabric='', description='', sizes=['Custom Unstitched'], images=[], active=1, illustration=0, stock={})
+                    fabric='', description='', sizes=['Custom Unstitched'], images=[], active=1, illustration=0, stock={}, details=empty_details())
         if request.method == 'POST':
             try:
                 db().execute('BEGIN IMMEDIATE')
@@ -289,6 +328,7 @@ def create_app(test_config=None):
                     raise ValueError('Provide a name (1–100 characters), fabric (1–200), and description (up to 3000).')
                 stock = {size: int(request.form.get('stock_' + size) or 0) for size in chosen_sizes}
                 if any(q < 0 or q > 100000 for q in stock.values()): raise ValueError('Stock must be from 0 to 100,000 per size.')
+                details = validate_details(form_details(request.form, chosen_sizes), chosen_sizes)
                 folder = Path(app.config['DATABASE']).parent / 'uploads'
                 folder.mkdir(exist_ok=True, mode=0o700)
                 for filename, data in uploaded:
@@ -301,6 +341,7 @@ def create_app(test_config=None):
                     pid = cursor.lastrowid
                 else:
                     db().execute('UPDATE products SET name=?,category=?,price=?,compare_price=?,fabric=?,description=?,sizes=?,images=?,active=?,illustration=? WHERE id=?', (*values, pid))
+                db().execute('INSERT INTO product_details(product_id,data) VALUES(?,?) ON CONFLICT(product_id) DO UPDATE SET data=excluded.data', (pid, json.dumps(details)))
                 db().executemany('INSERT INTO inventory(product_id,size,quantity) VALUES(?,?,?) ON CONFLICT(product_id,size) DO UPDATE SET quantity=excluded.quantity', [(pid,size,q) for size,q in stock.items()])
                 db().commit()
                 flash('Product saved.', 'success')
@@ -308,7 +349,7 @@ def create_app(test_config=None):
             except (ValueError, TypeError) as exc:
                 db().rollback()
                 flash(str(exc), 'error')
-                item = dict(request.form, sizes=request.form.getlist('sizes'), images=request.form.get('images', '').splitlines(), active='active' in request.form, illustration='illustration' in request.form, stock={s:request.form.get('stock_' + s,0) for s in SIZES}, edit_version=request.form.get('edit_version',''))
+                item = dict(request.form, sizes=request.form.getlist('sizes'), images=request.form.get('images', '').splitlines(), active='active' in request.form, illustration='illustration' in request.form, stock={s:request.form.get('stock_' + s,0) for s in SIZES}, edit_version=request.form.get('edit_version',''), details=form_details(request.form, request.form.getlist('sizes')))
         return render_template('edit.html', item=item, pid=pid)
 
     @app.post('/admin/product/<int:pid>/delete')
@@ -316,6 +357,7 @@ def create_app(test_config=None):
     def delete(pid):
         db().execute('DELETE FROM products WHERE id=?', (pid,))
         db().execute('DELETE FROM inventory WHERE product_id=?', (pid,))
+        db().execute('DELETE FROM product_details WHERE product_id=?', (pid,))
         db().commit()
         flash('Product deleted.', 'success')
         return redirect(url_for('admin'), code=303)
