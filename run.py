@@ -24,4 +24,4 @@ if __name__ == '__main__':
         listener.close()
         raise SystemExit(f'Cannot bind Mahrukh to port {port}: {exc}. Choose another port with python setup.py; other apps were not stopped.')
     print(f'Mahrukh: http://127.0.0.1:{port} | Seller studio: /admin', flush=True)
-    serve(create_app(), sockets=[listener], threads=4, max_request_body_size=65536)
+    serve(create_app(), sockets=[listener], threads=4, max_request_body_size=25 * 1024 * 1024)

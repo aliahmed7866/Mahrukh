@@ -1,6 +1,6 @@
 # Mahrukh
 
-A standalone Pakistani clothing storefront for Termux on Android, built with Flask, SQLite and a pure-Python Waitress server. Premium black (`#0A0A0A`) and gold (`#D4AF37`), responsive catalog, search/category filters, sizes, cart, WhatsApp order enquiries and a password-protected seller studio.
+A standalone Pakistani clothing storefront for Termux on Android, built with Flask, SQLite and a pure-Python Waitress server. Premium black (`#0A0A0A`) and gold (`#D4AF37`), responsive catalog, search/category filters, sizes, cart, saved order requests, stock reservations, WhatsApp help and a password-protected seller studio.
 
 Original editable SVG women in traditional dress, garment vignettes and botanical borders establish the brand style in the hero, category navigation, editorial section and empty bag. Product cards and galleries use actual seller-provided photographs. All assets and styling are local: no Node.js, Docker, Tailwind build step or CDN is required.
 
@@ -69,7 +69,7 @@ If `~/.config/aycf/apps.json` exists, the installer adds/updates only the Mahruk
 
 Use `AYCF_CONFIG_DIR` or `AYCF_ADMIN_REGISTRY` when your existing hub registry is elsewhere. The registration checks for ports assigned to other apps, including stopped apps. Startup also checks actual socket availability. The hub Install button requires the initial password/number setup to have been completed interactively first.
 
-## Change settings or port
+## Change password or port
 
 ```bash
 cd "$HOME/Mahrukh"
@@ -77,23 +77,31 @@ cd "$HOME/Mahrukh"
 bash termux/install-mahrukh.sh
 ```
 
-Blank password preserves the current password; blank WhatsApp number preserves the current number, and `-` disables checkout. The installer refreshes hub URLs after a port change. Restart an already-running foreground process yourself after changing settings. `MAHRUKH_PORT` can override the listening port for temporary foreground testing, but does not update hub URLs; use setup for permanent changes.
+Blank password preserves the current password. The setup WhatsApp number is used as an initial fallback; after saving Shop settings, manage WhatsApp there. To pause checkout use the Accept orders switch in Shop settings. The installer refreshes hub URLs after a port change. Restart an already-running foreground process yourself after changing settings. `MAHRUKH_PORT` can override the listening port for temporary foreground testing, but does not update hub URLs; use setup for permanent changes.
 
 `MAHRUKH_INSTANCE` optionally selects a different persistent data directory. Use the same absolute value when running setup, the installer and the server. If you installed the earlier AYCF draft, stop its Mahrukh service and point `MAHRUKH_INSTANCE` at its existing `mahrukh/instance` directory to preserve your inventory/settings. Then run setup to change its saved port to 5050 and install from this repository. The installer replaces only the Mahrukh service launcher.
 
-## Catalog and checkout
+## Seller studio and shopping
 
-New installations start with an empty catalog. Add your real products in the seller studio, with up to six HTTPS photo URLs per product. These should be actual photos of the item you are selling. Decorative SVGs are not accepted as product images. Multiple photos produce gallery thumbnails, and product images are displayed without cropping.
+Open `/admin` → **Shop settings** to configure WhatsApp, email, response hours, social links, merchant identity, shipping fees/cities, policies and payment choices without a restart. Set available stock for each size, upload actual product photos from your phone (JPG/PNG/WebP, 4 MB each, six total), or use HTTPS photo URLs. Product artwork stays separate from real inventory.
 
-Upgrading from the earlier release hides listings that reference bundled artwork, preserving their records as editable drafts. Replace their image URLs, prices and descriptions with real inventory information and check Visible to publish them. Existing photographic product listings remain visible. No product records are deleted.
+New installations have no demo inventory. Upgrades preserve products, hide old bundled illustration listings and start with zero stock. The order switch defaults off until business details and policies are completed. The live app never reads `preview/products.json`.
 
-The women in the hero and editorial section are original brand illustrations, not models of products for sale. The decorative garment vignettes remain in category navigation and empty states.
+The server calculates prices/delivery, rejects stale quotes, reserves stock in a transaction and stores private order snapshots. Repeated submissions return the same order. Customers can open a structured WhatsApp follow-up themselves. Seller studio tracks pending, confirmed, dispatched, completed and cancelled requests; pre-dispatch cancellation returns stock once. Review the dashboard regularly — no automatic seller notification is sent.
 
-The cart stores product IDs, sizes and quantities in a signed session cookie. The server validates them and calculates prices from SQLite at checkout; client-supplied prices are ignored. Limits are 20 selections and 10 units per selection. Deleted/hidden products and invalidated sizes are excluded. The app does not reserve stock or persist orders.
+Payment methods are cash on delivery, manual merchant bank/mobile-wallet transfer, or order-specific hosted invoices via Safepay / an eligible PayPal account. **These are manually verified workflows, not an automated payment gateway.** No card data is collected. Payment links, provider onboarding and actual refunds are handled in the provider dashboard. All prices in the shop are PKR.
 
-WhatsApp checkout opens an encoded order enquiry containing items, sizes, quantities, total and customer delivery details. The customer reviews the message and presses Send in WhatsApp. The seller confirms availability, delivery charges and payment. No payment is taken on the site. Checkout is disabled until a seller number is configured.
+Read [BUSINESS-LAUNCH.md](BUSINESS-LAUNCH.md) for the seller setup sequence, payment limitations, Pakistan business/tax review, public HTTPS hosting, backups and privacy/retention operations. The app supports startup operations; it does not certify compliance or issue statutory tax invoices.
 
-Browsing works offline after installation; external product photos and WhatsApp require connectivity. Core catalog/cart forms work without JavaScript. CSS and system fonts are served locally rather than fetched from a CDN.
+## Shareable design preview
+
+[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, contact-page preview and seller feature tour. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
+
+```bash
+.venv/bin/python preview/check.py
+```
+
+This builds and validates `preview-site/`, an allowlisted output with no live database or config. Publish only that output to `gh-pages`; see [preview/README.md](preview/README.md).
 
 ## Development and checks
 
@@ -104,8 +112,8 @@ cd "$HOME/Mahrukh"
 .venv/bin/python make_brand_art.py
 ```
 
-The first command tests filtering, SVG delivery, cart constraints, recalculated prices, WhatsApp encoding, disabled checkout, admin CRUD/authentication, CSRF, throttling and hub preservation. The last two commands regenerate the garment vignettes and brand portraits/borders using the Python standard library.
+The test suite covers catalog/admin regressions, seller settings, malicious links, payment verification, saved order privacy, stock contention, duplicate submissions, stale edits and core colour contrast. The other two commands regenerate the original vector brand artwork with the Python standard library.
 
-Admin sessions expire after four hours. Forms require CSRF tokens and login attempts are throttled. The server binds only to `127.0.0.1`, intended for phone-local use. Public deployment needs HTTPS and secure-cookie configuration. Back up `instance/` while Mahrukh is stopped, and never commit that directory.
+Core shopping and seller forms work without JavaScript; JavaScript adds the slide-out bag and gallery controls. CSS/fonts are local. External image URLs, social sites and WhatsApp require connectivity. Uploaded product photos work locally.
 
-Code and server checks run on Linux. SVGs were rendered and visually inspected. Browser automation was blocked because Chromium could not be downloaded; mobile layout, full browser flows and the WhatsApp handoff still need testing on your Android phone.
+The server still defaults to loopback port 5050 and keeps its own environment, database and cookie name. It never stops or reconfigures your other Termux apps. See the launch guide before exposing it publicly. Back up private `instance/` regularly; never commit it.
