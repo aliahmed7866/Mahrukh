@@ -15,9 +15,13 @@ class Links(HTMLParser):
         self.refs, self.posts, self.language_links, self.inputs = [], [], [], []
         self.html = {}
         self.preview = False
+        self.in_title = False
+        self.titles = []
 
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
+        assert not self.in_title, "Markup inside title"
+        if tag == "title": self.in_title = True
         if tag == 'html':
             self.html = attributes
         if tag == 'body':
@@ -32,17 +36,24 @@ class Links(HTMLParser):
         if tag == 'input':
             self.inputs.append(attributes)
 
+    def handle_endtag(self,tag):
+        if tag == 'title': self.in_title = False
+
+    def handle_data(self,text):
+        if self.in_title: self.titles.append(text)
+
 
 def validate():
     for locale in ('en', 'ur'):
         folder = OUT / 'ur' if locale == 'ur' else OUT
         pages = list(folder.glob('*.html'))
-        assert len(pages) == 13, (locale, len(pages))
+        assert len(pages) == 14, (locale, len(pages))
         assert len(list(folder.glob('product-*.html'))) == 6
         for file in pages:
             source = file.read_text()
             parser = Links()
             parser.feed(source)
+            assert len(parser.titles)==1 and len(parser.titles[0])<100, file
             assert parser.html.get('lang') == locale, file
             assert parser.html.get('dir') == ('rtl' if locale == 'ur' else 'ltr'), file
             assert parser.preview and not parser.posts, file
@@ -71,8 +82,8 @@ def validate():
             assert (css.parent / ref).exists(), (css, ref)
     assert (OUT / 'assets/fonts/NotoNaskhArabic-Variable.ttf').is_file()
     assert not list(OUT.rglob('*.sqlite3')) and not list(OUT.rglob('config.json'))
-    assert len(list(OUT.rglob('*.html'))) == 26
-    print('Validated 26 English/Urdu pages, language links, local fonts/assets, and no transactions/private data.')
+    assert len(list(OUT.rglob('*.html'))) == 28
+    print('Validated 28 English/Urdu pages, language links, local fonts/assets, and no transactions/private data.')
 
 
 if __name__ == '__main__':

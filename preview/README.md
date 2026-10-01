@@ -47,3 +47,25 @@ The builder now emits the same 13 pages twice: English at `index.html` and Urdu 
 Switching keeps query filters, the page fragment and selected sample size. The sample bag and saved pieces share their existing tab-session storage across languages. The browser remembers the chosen preview language; no customer details are stored. Search checks the fictional fixture's stored English and Urdu names, descriptions and fabric text. Prices, IDs, measurements and size codes are shared unchanged. Sample product Urdu fields are translations of the explicitly fictional fixture, not real product information.
 
 `python preview/check.py` builds and validates both languages, all locale links, font/asset paths and the no-transactions boundary. `python -m unittest tests.test_preview_i18n` checks template translation coverage and stable fixture values. The Urdu copy is a draft and still needs review by a fluent Urdu speaker before publication. The source changes do not publish `gh-pages`; review the bilingual preview and pull request first.
+
+## Latest feature tour (1 October 2026)
+
+The preview now follows the shared English/Urdu implementation merged in PR #7. It builds 28 pages, including a bilingual read-only shopping-journey tour. The tour explains stock reservation, private order summaries, order statuses, manual payment verification and shared-device access. The seller tour includes optional Urdu product/settings/policy fields and immutable order-language snapshots. These are implemented Flask features; the static site cannot run them.
+
+Urdu copy is visibly marked as awaiting fluent review. The preview is a review surface, not approval of production wording or an announcement that the shop is accepting orders. Physical Android and screen-reader checks remain necessary before treating the bilingual release as final.
+
+Fictional discount badges have been removed and the festive sample correctly lists a lehenga skirt. Sample bags revalidate stored items against the public fixtures rather than trusting arbitrary stored prices/names. Clearing generated output before each build prevents old page/assets from leaking into publication. Only the allowlisted static output is published.
+
+### Browser verification recorded
+
+On 1 October 2026, the public GitHub Pages version was checked in Chromium:
+
+- English → Urdu switching preserved product M size, PKR 6,490 sample bag, saved favourites and combined fabric/size/budget/sort filters.
+- Urdu search for نیل found the same unstitched sample in both interface languages.
+- Photo Escape dismissal returned focus; the M chest measurement converted from 20 inches to 50.8 cm.
+- English and Urdu home/journey pages, the Urdu product page, expanded filters and sample-bag dialog were rendered in 360px review frames. Document width did not exceed viewport width. These are narrow browser rendering checks, not a physical Android test.
+- Urdu language/direction attributes and the local font were present; the new journey showed the five order states.
+
+The temporary unlinked frame harness was removed after review. Native 200% browser zoom, assistive-technology pronunciation and physical Android remain unverified. Fluent Urdu review is still required; automated coverage does not approve wording.
+
+[Recorded preview screenshot](review-home.jpg). This image shows the fictional design review, not a live shop.
