@@ -1,12 +1,12 @@
-<details class="filter-drawer" open><summary>Filter & sort <span class="filter-hint">A fabric, a fit, a favourite</span></summary>
-<form class="catalog-filters" action="{{ url_for('index') }}#collection" aria-label="Find your piece">
-<input type="hidden" name="q" value="{{ query }}">
-<label>Collection<select name="category"><option value="">All collections</option>{% for c in categories %}<option value="{{ c }}" {% if selected==c %}selected{% endif %}>{{ c }}</option>{% endfor %}</select></label>
-<label>For your day<select name="occasion"><option value="">Any occasion</option>{% for key,label in occasions.items() %}<option value="{{ key }}" {% if filters.occasion==key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
-<label>Fabric family<select name="fabric_family"><option value="">All fabrics</option>{% for f in fabrics %}<option {% if filters.fabric_family==f %}selected{% endif %}>{{ f }}</option>{% endfor %}</select></label>
-<label>{{ 'Sample size' if demo|default(false) else 'Size in stock' }}<select name="size"><option value="">All sizes</option>{% for s in sizes %}<option {% if filters.size==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></label>
-<label>Maximum price (PKR)<input name="budget" type="number" inputmode="numeric" min="1" max="10000000" placeholder="Any price" value="{{ filters.budget }}"></label>
-<label>Sort by<select name="sort" id="sort"><option value="featured" {% if sort=='featured' %}selected{% endif %}>Latest additions</option><option value="price-low" {% if sort=='price-low' %}selected{% endif %}>Price: low to high</option><option value="price-high" {% if sort=='price-high' %}selected{% endif %}>Price: high to low</option></select></label>
-<div class="filter-actions"><button class="button">Find my pieces</button><a href="{{ url_for('index') }}#collection">Clear filters</a></div>
+<details class="filter-drawer" open><summary>{{ t("Filter & sort") }} <span class="filter-hint">{{ t("A fabric, a fit, a favourite") }}</span></summary>
+<form class="catalog-filters" action="{{ url_for('index') }}#collection" aria-label="{{ t("Find your piece") }}">
+<input type="hidden" name="q" value="{{ query }}">{% if locale == 'ur' and not demo|default(false) %}<input type="hidden" name="lang" value="{{ locale }}">{% endif %}
+<label>{{ t("Collection") }}<select name="category"><option value="">{{ t("All collections") }}</option>{% for c in categories %}<option value="{{ c }}" {% if selected==c %}selected{% endif %}>{{ t(c) }}</option>{% endfor %}</select></label>
+<label>{{ t("For your day") }}<select name="occasion"><option value="">{{ t("Any occasion") }}</option>{% for key,label in occasions.items() %}<option value="{{ key }}" {% if filters.occasion==key %}selected{% endif %}>{{ t(label) }}</option>{% endfor %}</select></label>
+<label>{{ t("Fabric family") }}<select name="fabric_family"><option value="">{{ t("All fabrics") }}</option>{% for f in fabrics %}<option value="{{ f }}" {% if filters.fabric_family==f %}selected{% endif %}>{{ t(f) }}</option>{% endfor %}</select></label>
+<label>{{ t('Sample size') if demo|default(false) else t('Size in stock') }}<select name="size"><option value="">{{ t("All sizes") }}</option>{% for s in sizes %}<option value="{{ s }}" {% if filters.size==s %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></label>
+<label>{{ t("Maximum price (PKR)") }}<input name="budget" type="number" inputmode="numeric" min="1" max="10000000" placeholder="{{ t("Any price") }}" value="{{ filters.budget }}"></label>
+<label>{{ t("Sort by") }}<select name="sort" id="sort"><option value="featured" {% if sort=='featured' %}selected{% endif %}>{{ t("Latest additions") }}</option><option value="price-low" {% if sort=='price-low' %}selected{% endif %}>{{ t("Price: low to high") }}</option><option value="price-high" {% if sort=='price-high' %}selected{% endif %}>{{ t("Price: high to low") }}</option></select></label>
+<div class="filter-actions"><button class="button">{{ t("Find my pieces") }}</button><a href="{{ url_for('index') }}#collection">{{ t("Clear filters") }}</a></div>
 </form>
 </details>

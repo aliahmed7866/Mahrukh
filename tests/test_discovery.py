@@ -83,7 +83,9 @@ class DiscoveryTests(unittest.TestCase):
         receipt=self.client.get(response.location).get_data(as_text=True)
         self.assertIn('Shirt, trousers and dupatta',receipt)
         self.assertNotIn('Changed after order',receipt)
-        self.assertIn('Chest width: 21',receipt)
+        # Bidirectional isolation may wrap the numeric value without changing
+        # the customer-visible saved measurement.
+        self.assertIn('Chest width: 21',unescape(re.sub(r'<[^>]+>', '', receipt)))
 
     def test_legacy_products_and_unstitched_have_no_invented_chart(self):
         html=self.client.get('/product/1').get_data(as_text=True)

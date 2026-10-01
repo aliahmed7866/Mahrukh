@@ -12,6 +12,7 @@ import re
 import secrets
 from urllib.parse import quote, urlsplit
 from flask import abort, flash, redirect, render_template, request, session, url_for
+from i18n import current_locale, localized, t
 
 SOCIALS = {'instagram': ('Instagram', ('instagram.com',)),
            'facebook': ('Facebook', ('facebook.com',)),
@@ -27,6 +28,10 @@ DEFAULTS = dict(business_name='', business_address='', support_email='', whatsap
     dispatch_note='', service_cities='', cod=True, transfer=False, transfer_details='',
     hosted=False, provider='safepay', merchant_eligible=False, accepting_orders=False,
     tax_note='', registration='', shipping='', returns='', privacy='', terms='', updated_at='')
+TRANSLATABLE_SETTINGS = ('announcement', 'personal_note', 'note_signature',
+    'support_languages', 'support_hours', 'dispatch_note', 'tax_note',
+    'business_address', 'transfer_details', *POLICIES)
+DEFAULTS.update({key + '_ur': '' for key in TRANSLATABLE_SETTINGS})
 STATUSES = ('pending', 'confirmed', 'dispatched', 'completed', 'cancelled')
 PAYMENT_STATUSES = ('unpaid', 'paid', 'refunded')
 
@@ -59,7 +64,7 @@ def launch_gaps(s):
     return gaps
 
 
-def validate_settings(form):
+def validate_settings(form, previous=None):
     s = DEFAULTS.copy()
     bools = ('cod','transfer','hosted','merchant_eligible','accepting_orders')
     for k in s:
@@ -69,10 +74,13 @@ def validate_settings(form):
             except ValueError: raise ValueError('Delivery amounts must be whole PKR.')
             if not 0 <= s[k] <= 1000000: raise ValueError('Delivery amounts must be between 0 and 1,000,000 PKR.')
         else:
-            s[k] = form.get(k, '').strip()
-            if len(s[k]) > (10000 if k in POLICIES else 2000): raise ValueError('A setting is too long.')
+            # An older open settings form cannot erase translations it never showed.
+            fallback = (previous or {}).get(k, '') if k.endswith('_ur') else ''
+            s[k] = form.get(k, fallback).strip()
+            if len(s[k]) > (10000 if k.removesuffix('_ur') in POLICIES else 2000): raise ValueError('A setting is too long.')
     for key, limit in [('personal_note',800),('note_signature',80),('support_languages',120)]:
-        if len(s[key])>limit: raise ValueError(f'{key.replace("_", " ").title()} must be at most {limit} characters.')
+        for field in (key, key + '_ur'):
+            if len(s[field])>limit: raise ValueError(f'{field.replace("_", " ").title()} must be at most {limit} characters.')
     s['whatsapp'] = re.sub(r'[\s+()-]', '', s['whatsapp'])
     if s['whatsapp'] and not re.fullmatch(r'[1-9]\d{9,14}', s['whatsapp']):
         raise ValueError('Use a WhatsApp number with country code, such as 923001234567.')
@@ -102,7 +110,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
         return 0 if s['free_shipping_at'] and total >= s['free_shipping_at'] else s['shipping_fee']
 
     def quote_hash(lines, s):
-        payload = json.dumps([[x['product']['id'], x['size'], x['quantity'], x['product']['price'], x['product']['name'], x['product']['fabric'], x['product']['description'], x['product']['details']] for x in lines], sort_keys=True)
+        payload = json.dumps([[x['product']['id'], x['size'], x['quantity'], x['product']['price'], x['product']['name'], x['product']['fabric'], x['product']['description'], x['product']['details'], x['product'].get('translations', {})] for x in lines], sort_keys=True)
         payload += json.dumps(s, sort_keys=True)
         return hmac.new(app.secret_key.encode(), payload.encode(), hashlib.sha256).hexdigest()
 
@@ -118,7 +126,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
     def shop_context():
         s = settings()
         return dict(shop=s, social_links=[(k, label, s[k]) for k, (label, _) in SOCIALS.items() if s[k]],
-                    whatsapp_url=('https://wa.me/' + s['whatsapp'] + '?text=' + quote('Assalam-o-alaikum! I would like some help with Mahrukh.')) if s['whatsapp'] else '',
+                    whatsapp_url=('https://wa.me/' + s['whatsapp'] + '?text=' + quote(t('Assalam-o-alaikum! I would like some help with Mahrukh.'))) if s['whatsapp'] else '',
                     policy_names=POLICIES, provider_names={k:v[0] for k,v in PROVIDERS.items()},
                     seller_ready=bool(s['whatsapp']), shop_ready=s['accepting_orders'] and not launch_gaps(s))
 
@@ -128,7 +136,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
         s = settings()
         if request.method == 'POST':
             try:
-                s = validate_settings(request.form)
+                s = validate_settings(request.form, s)
                 db().execute('INSERT INTO shop_settings(id,data) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data', (json.dumps(s),))
                 db().commit()
                 flash('Shop settings saved. Your storefront is updated immediately.', 'success')
@@ -136,7 +144,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
             except ValueError as exc:
                 flash(str(exc), 'error')
                 # Keep the seller's draft, including unchecked boxes, after a validation error.
-                s = {**DEFAULTS, **request.form.to_dict()}
+                s = {**DEFAULTS, **settings(), **request.form.to_dict()}
                 for k in ('cod','transfer','hosted','merchant_eligible','accepting_orders'): s[k] = k in request.form
         return render_template('settings.html', settings=s, gaps=launch_gaps(s), socials=SOCIALS)
 
@@ -146,7 +154,7 @@ def install_commerce(app, db, admin_required, cart_lines, product):
     @app.get('/policies/<kind>')
     def policy(kind):
         if kind not in POLICIES: abort(404)
-        return render_template('policy.html', kind=kind, title=POLICIES[kind], content=settings()[kind])
+        return render_template('policy.html', kind=kind, title=POLICIES[kind], policy_body=settings()[kind], policy_content=settings())
 
     def owner():
         session.setdefault('order_owner', secrets.token_urlsafe(32))
@@ -157,25 +165,27 @@ def install_commerce(app, db, admin_required, cart_lines, product):
         if not row or (not session.get('admin') and not hmac.compare_digest(row['owner'], session.get('order_owner',''))): abort(404)
         order = dict(row)
         for k in ('items','policies','merchant'): order[k] = json.loads(order[k])
+        # Existing orders retain their English snapshot and need no migration.
+        order['locale'] = order['merchant'].get('locale', 'en')
         return order
 
     @app.post('/checkout')
     def checkout():
         s = settings()
         token = request.form.get('checkout_token','')
-        if not token or not hmac.compare_digest(token, session.get('checkout_token','')): abort(400, 'Reload your bag before submitting this order.')
+        if not token or not hmac.compare_digest(token, session.get('checkout_token','')): abort(400, t('Reload your bag before submitting this order.'))
         # A duplicate POST returns the original receipt, even if the bag was cleared.
         old = db().execute('SELECT reference FROM orders WHERE request_id=? AND owner=?', (token, owner())).fetchone()
         if old: return redirect(url_for('order_detail', reference=old['reference']), code=303)
-        if not s['accepting_orders'] or launch_gaps(s): abort(503, 'Ordering is paused. Please contact Mahrukh for help.')
-        if request.form.get('agree') != 'yes': abort(400, 'Please read and accept the terms and privacy notice.')
+        if not s['accepting_orders'] or launch_gaps(s): abort(503, t('Ordering is paused. Please contact Mahrukh for help.'))
+        if request.form.get('agree') != 'yes': abort(400, t('Please read and accept the terms and privacy notice.'))
         details = {k: ' '.join(request.form.get(k,'').split()) for k in ('name','city','contact','address')}
-        if not all(details.values()) or any(len(v)>300 for v in details.values()): abort(400, 'Complete your name, phone, city and address (up to 300 characters each).')
-        if not re.fullmatch(r'\+?[\d ()-]{7,30}', details['contact']): abort(400, 'Enter a valid contact phone number.')
+        if not all(details.values()) or any(len(v)>300 for v in details.values()): abort(400, t('Complete your name, phone, city and address (up to 300 characters each).'))
+        if not re.fullmatch(r'\+?[\d ()-]{7,30}', details['contact']): abort(400, t('Enter a valid contact phone number.'))
         cities = [x.strip().casefold() for x in s['service_cities'].splitlines() if x.strip()]
-        if details['city'].casefold() not in cities: abort(400, 'Please choose one of our listed delivery cities.')
+        if details['city'].casefold() not in cities: abort(400, t('Please choose one of our listed delivery cities.'))
         method = request.form.get('payment_method','')
-        if method not in ('cod','transfer','hosted') or not s[method]: abort(400, 'Choose an available payment method.')
+        if method not in ('cod','transfer','hosted') or not s[method]: abort(400, t('Choose an available payment method.'))
         connection = db()
         try:
             connection.execute('BEGIN IMMEDIATE')
@@ -185,26 +195,29 @@ def install_commerce(app, db, admin_required, cart_lines, product):
                 connection.rollback()
                 return redirect(url_for('order_detail', reference=old['reference']), code=303)
             lines = cart_lines()
-            if not lines or len(lines) != len(session.get('cart',{})): abort(409, 'An item changed availability. Review your bag before ordering.')
+            if not lines or len(lines) != len(session.get('cart',{})): abort(409, t('An item changed availability. Review your bag before ordering.'))
             # Read current settings while locked; quotes cannot silently adopt new prices/policies.
             row = connection.execute('SELECT data FROM shop_settings WHERE id=1').fetchone()
             if row: s = {**DEFAULTS, **json.loads(row['data'])}
-            if not hmac.compare_digest(request.form.get('quote_hash',''), quote_hash(lines,s)): abort(409, 'Product details, prices, delivery or shop details changed. Review your bag and submit again.')
+            if not hmac.compare_digest(request.form.get('quote_hash',''), quote_hash(lines,s)): abort(409, t('Product details, prices, delivery or shop details changed. Review your bag and submit again.'))
             source = hmac.new(app.secret_key.encode(), (request.remote_addr or '').encode(), hashlib.sha256).hexdigest()
             recent = connection.execute("SELECT count(*) FROM orders WHERE source_hash=? AND created_at > strftime('%Y-%m-%dT%H:%M:%S', 'now', '-10 minutes')", (source,)).fetchone()[0]
-            if recent >= 5: abort(429, 'Too many recent orders. Please wait ten minutes or contact the shop.')
+            if recent >= 5: abort(429, t('Too many recent orders. Please wait ten minutes or contact the shop.'))
             items = []
             for line in lines:
                 p = line['product']
                 changed = connection.execute('UPDATE inventory SET quantity=quantity-? WHERE product_id=? AND size=? AND quantity>=?', (line['quantity'],p['id'],line['size'],line['quantity'])).rowcount
-                if not changed: abort(409, f"{p['name']} in {line['size']} is no longer available in that quantity. Please update your bag.")
-                items.append(dict(id=p['id'],name=p['name'],size=line['size'],quantity=line['quantity'],price=p['price'],subtotal=line['subtotal'],fabric=p['fabric'],description=p['description'],details=p['details']))
+                if not changed: abort(409, t('{name} in {size} is no longer available in that quantity. Please update your bag.', name=localized(p, 'name'), size=line['size']))
+                items.append(dict(id=p['id'],name=p['name'],size=line['size'],quantity=line['quantity'],price=p['price'],subtotal=line['subtotal'],fabric=p['fabric'],description=p['description'],details=p['details'],translations=p.get('translations', {})))
             subtotal = sum(x['subtotal'] for x in items)
             delivery = shipping(subtotal,s)
             ref = 'MH-' + secrets.token_hex(6).upper()
             merchant = {k:s[k] for k in ('business_name','business_address','support_email','whatsapp','registration','tax_note','dispatch_note','transfer_details','provider')}
+            merchant.update({key + '_ur': s[key + '_ur'] for key in TRANSLATABLE_SETTINGS if key in merchant})
+            merchant['locale'] = current_locale()
+            policies = {key: s[key] for name in POLICIES for key in (name, name + '_ur')}
             connection.execute('''INSERT INTO orders(reference,request_id,owner,source_hash,name,contact,city,address,items,subtotal,shipping,total,payment_method,provider,policies,merchant,created_at,updated_at)
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', (ref,token,owner(),source,details['name'],details['contact'],details['city'],details['address'],json.dumps(items),subtotal,delivery,subtotal+delivery,method,s['provider'],json.dumps({k:s[k] for k in POLICIES}),json.dumps(merchant),now(),now()))
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', (ref,token,owner(),source,details['name'],details['contact'],details['city'],details['address'],json.dumps(items),subtotal,delivery,subtotal+delivery,method,s['provider'],json.dumps(policies),json.dumps(merchant),now(),now()))
             connection.commit()
         except Exception:
             connection.rollback()
@@ -221,15 +234,16 @@ def install_commerce(app, db, admin_required, cart_lines, product):
     def forget_orders():
         session.pop('order_owner', None)
         session.pop('checkout_token', None)
-        flash('Order history access has been removed from this browser. The shop still keeps its order records. Contact Mahrukh if you need help with an existing order.', 'success')
+        flash(t('Order history access has been removed from this browser. The shop still keeps its order records. Contact Mahrukh if you need help with an existing order.'), 'success')
         return redirect(url_for('my_orders'), code=303)
 
     @app.get('/order/<reference>')
     def order_detail(reference):
         order = read_order(reference)
-        message = ['Assalam-o-alaikum! Please confirm my Mahrukh order ' + reference, '']
-        message += [f"{x['name']} | {x['size']} | Qty {x['quantity']} | PKR {x['subtotal']:,}" for x in order['items']]
-        message += ['', f"Total including delivery: PKR {order['total']:,}", 'Payment choice: ' + order['payment_method'], 'Name: ' + order['name']]
+        message = [t('Assalam-o-alaikum! Please confirm my Mahrukh order {reference}', reference=reference), '']
+        message += [t('{name} | {size} | Qty {quantity} | PKR {subtotal}', name=localized(x, 'name'), size=x['size'], quantity=x['quantity'], subtotal=f"{x['subtotal']:,}") for x in order['items']]
+        payment = {'cod': t('Cash on delivery'), 'transfer': t('Manual transfer'), 'hosted': PROVIDERS[order['provider']][0]}[order['payment_method']]
+        message += ['', t('Total including delivery: PKR {total}', total=f"{order['total']:,}"), t('Payment choice: {method}', method=payment), t('Name: {name}', name=order['name'])]
         link = 'https://wa.me/' + order['merchant']['whatsapp'] + '?text=' + quote('\n'.join(message))
         return render_template('order.html', order=order, order_whatsapp=link)
 
