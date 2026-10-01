@@ -41,6 +41,8 @@ The English preview is generated at `preview-site/index.html`; Urdu is generated
 
 On 1 October 2026, the isolated Python test environment passed **69 tests**, including the existing commerce regressions and the new language, snapshot, field-limit and translation-coverage checks. `preview/check.py` validated **26 English/Urdu pages**, equivalent language links, local font/assets and non-selling boundaries. All five customer JavaScript files passed `node --check`.
 
+Ten focused checks executed the actual language JavaScript against DOM/event doubles. They passed checkout-cancel retention, no personal-data storage, size/filter/hash links, radio-group validation reset and preview-preference handling. These check script control flow, not browser layout or native validation behavior.
+
 Visual browser checks could not run here: no local browser executable was available, its download did not return a usable archive, and the cloud browser blocked the isolated localhost fixture. No mobile screenshot, rendered overflow/200% zoom result, real screen-reader result or Android-device result is claimed. The manual checks below and fluent Urdu approval remain release gates.
 
 ## Isolated Termux review

@@ -137,10 +137,12 @@ class TranslationCoverageTests(unittest.TestCase):
 
     def test_format_placeholders_match_and_translations_have_urdu_text(self):
         # Platform names are proper nouns, deliberately retained in Latin script.
-        proper_names = {'Instagram', 'Facebook', 'TikTok', 'YouTube', 'WhatsApp', 'Safepay', 'PayPal'}
+        proper_names = {'Instagram', 'Facebook', 'TikTok', 'YouTube', 'WhatsApp', 'Safepay', 'PayPal', 'MAHRUKH /', '· Mahrukh'}
         for source, translated in read_catalogs().items():
             with self.subTest(message=source):
                 self.assertEqual(format_fields(source), format_fields(translated))
+                if 'mahrukh' in source.casefold():
+                    self.assertIn('mahrukh', translated.casefold(), 'Keep the approved Latin brand name')
                 if source not in proper_names:
                     self.assertRegex(translated, r'[\u0600-\u06ff]', 'Translation needs Urdu copy or an explicit proper-name exception')
 
