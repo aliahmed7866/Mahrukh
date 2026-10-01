@@ -1,0 +1,8 @@
+Noto Naskh Arabic, variable weight 400–700
+Downloaded without modification from the Google Fonts repository:
+https://github.com/google/fonts/tree/main/ofl/notonaskharabic
+Font: NotoNaskhArabic[wght].ttf
+License: SIL Open Font License 1.1, reproduced in OFL-NotoNaskhArabic.txt.
+
+Served locally for English / Urdu pages; no runtime Google Fonts connection.
+Naskh typography is used for compact, readable Urdu shopping controls.

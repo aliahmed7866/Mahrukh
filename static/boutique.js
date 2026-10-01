@@ -1,6 +1,6 @@
 /* Progressive conveniences; live forms remain usable without JavaScript. */
 (() => {
- const t=(message,values={})=>window.MahrukhPreview?.t(message,values)||Object.entries(values).reduce((text,[key,value])=>text.replaceAll('{'+key+'}',value),message);
+ const t=window.MahrukhI18n?.t||((message,values={})=>message.replace(/\{(\w+)\}/g,(match,key)=>values[key]??match));
  const status=document.querySelector('#save-status');
  let statusTimer;
  function announce(message){
@@ -10,8 +10,8 @@
  }
  function paint(button,saved,name){
   button.setAttribute('aria-pressed',String(saved));
-  button.setAttribute('aria-label',t(saved?'Remove {name} from saved pieces':'Save {name}',{name:t(name)}));
-  button.querySelector('.save-label').textContent=t(saved?'Saved':'Save');
+  button.setAttribute('aria-label',saved?t('Remove {name} from saved pieces',{name}):t('Save {name}',{name}));
+  button.querySelector('.save-label').textContent=saved?t('Saved'):t('Save');
  }
  function counts(count){document.querySelectorAll('[data-saved-count]').forEach(el=>el.textContent=count);}
  function savedEmpty(){
@@ -27,7 +27,7 @@
    const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'X-Mahrukh-Saved':'1'}});
    if(!response.ok){
     const page=new DOMParser().parseFromString(await response.text(),'text/html');
-    announce(page.querySelector('main .page p:not(.eyebrow)')?.textContent||'We couldn’t save that change. Please try again.');return;
+    announce(page.querySelector('main .page p:not(.eyebrow)')?.textContent||t('We couldn’t save that change. Please try again.'));return;
    }
    const result=await response.json();
    document.querySelectorAll('[data-save-form]').forEach(other=>{
@@ -90,7 +90,7 @@
   photo.querySelector('[data-close-photo]').addEventListener('click',()=>photo.close());
   photo.querySelector('[data-photo-prev]').addEventListener('click',()=>show(current-1));
   photo.querySelector('[data-photo-next]').addEventListener('click',()=>show(current+1));
-  photo.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();show(current+(e.key==='ArrowLeft'?-1:1)*(document.documentElement.dir==='rtl'?-1:1));}});
+  photo.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();const direction=document.documentElement.dir==='rtl'?-1:1;show(current+(e.key==='ArrowLeft'?-1:1)*direction);}});
   photo.addEventListener('close',()=>{document.body.classList.remove('drawer-open');opener?.focus();});
  }
  function chooseSize(input){
@@ -100,9 +100,9 @@
   const feedback=document.querySelector('[data-size-feedback]'),quantity=document.querySelector('#quantity');
   if(feedback&&input.dataset.stock!==undefined){
    const stock=Number(input.dataset.stock),max=Math.min(stock,10);
-   feedback.textContent='Size '+size+' selected · '+stock+' available.';
+   feedback.textContent=t('Size {size} selected · {stock} available.',{size,stock});
    if(quantity){quantity.max=String(max);if(Number(quantity.value)>max)quantity.value=String(max);}
-   const label=document.querySelector('[data-add-label]');if(label)label.textContent='Add '+size+' to bag';
+   const label=document.querySelector('[data-add-label]');if(label)label.textContent=t('Add {size} to bag',{size});
   }
  }
  document.querySelectorAll('[name=size],[name=demo-size]').forEach(input=>{input.addEventListener('change',()=>chooseSize(input));if(input.checked)chooseSize(input);});

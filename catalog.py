@@ -6,6 +6,53 @@ OCCASIONS = {'everyday': 'Everyday & work', 'gatherings': 'Family & friends', 'c
 FABRICS = ['Lawn', 'Cotton', 'Linen', 'Khaddar', 'Silk / silk blend', 'Chiffon', 'Organza', 'Velvet', 'Nida', 'Other']
 MEASUREMENTS = {'chest': 'Chest width', 'hip': 'Hip width', 'length': 'Shirt / dress length', 'sleeve': 'Sleeve length'}
 TEXT_FIELDS = {'included': 600, 'not_included': 400, 'composition': 300, 'lining': 300, 'fit': 400, 'care': 600, 'fabric_lengths': 800, 'craft': 600, 'dispatch': 300}
+TRANSLATION_FIELDS = {'name': 100, 'fabric': 200, 'description': 3000, **TEXT_FIELDS}
+TRANSLATION_LABELS = {'name': 'product name', 'fabric': 'fabric details', 'description': 'description',
+                      'included': 'included pieces', 'not_included': 'excluded pieces',
+                      'composition': 'fibre composition', 'lining': 'lining and opacity',
+                      'fit': 'cut and fit', 'care': 'care instructions',
+                      'fabric_lengths': 'fabric dimensions', 'craft': 'craft and origin',
+                      'dispatch': 'dispatch note'}
+
+
+def decode_translations(raw):
+    """Read optional seller text; older products need no backfill or invented copy."""
+    try:
+        value = json.loads(raw) if raw else {}
+    except (TypeError, ValueError):
+        return {}
+    if not isinstance(value, dict):
+        return {}
+    return {key: value[key] for key in TRANSLATION_FIELDS
+            if isinstance(value.get(key), str) and value[key].strip()}
+
+
+def form_translations(form, existing=None):
+    # Older editor submissions must not erase an existing Urdu translation.
+    result = dict(existing or {})
+    for key in TRANSLATION_FIELDS:
+        if 'ur_' + key in form:
+            value = form.get('ur_' + key, '').strip()
+            if value:
+                result[key] = value
+            else:
+                result.pop(key, None)
+    return result
+
+
+def validate_translations(result):
+    for key, limit in TRANSLATION_FIELDS.items():
+        if len(result.get(key, '')) > limit:
+            raise ValueError(f'Urdu {TRANSLATION_LABELS[key]} must be at most {limit} characters.')
+    return result
+
+
+def missing_translations(item):
+    """Only flag translations for facts the seller has actually supplied."""
+    translated = item.get('translations', {})
+    return [TRANSLATION_LABELS[key] for key in TRANSLATION_FIELDS
+            if (item if key in ('name', 'fabric', 'description') else item['details']).get(key)
+            and not translated.get(key)]
 
 def empty_details():
     return dict({key: '' for key in TEXT_FIELDS}, fabric_family='', occasions=[], measurements={})

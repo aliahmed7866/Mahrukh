@@ -1,4 +1,5 @@
 (() => {
+  const t = window.MahrukhI18n?.t || ((message, values = {}) => message.replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match));
   const drawer = document.querySelector('#cart-drawer');
   const body = document.querySelector('#cart-body');
   let opener;
@@ -17,7 +18,7 @@
     if (open) {
       e.preventDefault();
       try {
-        const response = await fetch('/cart', {headers: {'X-Mahrukh-Drawer': '1'}});
+        const response = await fetch(open.href, {headers: {'X-Mahrukh-Drawer': '1'}});
         if (!response.ok) throw new Error();
         body.innerHTML = await response.text(); openDrawer();
       } catch { window.location.href = open.href; }
@@ -34,7 +35,7 @@
     const form = e.target;
     if (form.dataset.confirm && !window.confirm(form.dataset.confirm)) { e.preventDefault(); return; }
     if (!form.matches('[data-cart-form]')) return;
-    const focusedName = e.submitter?.textContent;
+    const removing = e.submitter?.value === 'remove';
     const wasOpen = drawer.open;
     e.preventDefault();
     const data = new FormData(form);
@@ -44,16 +45,16 @@
       const response = await fetch(form.action, {method: 'POST', body: data, headers: {'X-Mahrukh-Drawer': '1'}});
       if (!response.ok) {
         const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
-        toast(doc.querySelector('main .page p:not(.eyebrow)')?.textContent || 'Unable to update the bag. Reload and try again.'); return;
+        toast(doc.querySelector('main .page p:not(.eyebrow)')?.textContent || t('Unable to update the bag. Reload and try again.')); return;
       }
       body.innerHTML = await response.text();
-      document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = response.headers.get('X-Cart-Count'); el.closest('[data-open-cart]')?.setAttribute('aria-label', 'Shopping cart, ' + el.textContent + ' items'); });
+      document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = response.headers.get('X-Cart-Count'); el.closest('[data-open-cart]')?.setAttribute('aria-label', t('Shopping cart, {count} items', {count: el.textContent})); });
       // Keep the non-modal cart page consistent after edits.
       if (location.pathname === '/cart' && !drawer.open) { location.reload(); return; }
       openDrawer();
       if (wasOpen) { body.querySelector('input[type=number], .button, a')?.focus(); }
-      toast(focusedName?.includes('Remove') ? 'Item removed from your bag.' : 'Your bag is updated.');
-    } catch { toast('Connection interrupted. Reload the bag to check whether your update was saved.'); }
+      toast(removing ? t('Item removed from your bag.') : t('Your bag is updated.'));
+    } catch { toast(t('Connection interrupted. Reload the bag to check whether your update was saved.')); }
     finally { buttons.forEach(b => b.disabled = false); }
   });
 })();
