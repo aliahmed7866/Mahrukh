@@ -4,6 +4,7 @@ from urllib.parse import quote, urlsplit
 from flask import abort, flash, jsonify, redirect, render_template, request, session, url_for
 
 from catalog import QUESTIONS
+from i18n import t, localized
 
 
 def install_boutique(app, db, product, settings):
@@ -41,9 +42,9 @@ def install_boutique(app, db, product, settings):
         if not p['active']: abort(404)
         ids = saved_ids().copy()
         action = request.form.get('action')
-        if action not in ('save', 'remove'): abort(400, 'Choose save or remove.')
+        if action not in ('save', 'remove'): abort(400, t('Choose save or remove.'))
         if action == 'save' and pid not in ids:
-            if len(ids) >= 24: abort(409, 'Your saved collection has 24 pieces. Remove one to make room.')
+            if len(ids) >= 24: abort(409, t('Your saved collection has 24 pieces. Remove one to make room.'))
             ids.append(pid)
         elif action == 'remove' and pid in ids:
             ids.remove(pid)
@@ -51,7 +52,7 @@ def install_boutique(app, db, product, settings):
         request._saved_ids = ids
         if request.headers.get('X-Mahrukh-Saved') == '1':
             return jsonify(saved=pid in ids, count=len(ids))
-        flash('Saved for another look.' if pid in ids else 'Removed from your saved pieces.', 'success')
+        flash(t('Saved for another look.') if pid in ids else t('Removed from your saved pieces.'), 'success')
         target = request.form.get('return_to', '')
         try:
             parsed = urlsplit(target)
@@ -66,7 +67,7 @@ def install_boutique(app, db, product, settings):
     @app.post('/saved/clear')
     def clear_saved():
         session.pop('saved', None)
-        flash('Your saved collection has been cleared from this browser.', 'success')
+        flash(t('Your saved collection has been cleared from this browser.'), 'success')
         return redirect(url_for('saved'), code=303)
 
     @app.get('/product/<int:pid>/ask')
@@ -75,12 +76,12 @@ def install_boutique(app, db, product, settings):
         if not p['active']: abort(404)
         topic = request.args.get('topic', 'fit')
         size = request.args.get('size', '')
-        if topic not in QUESTIONS or (size and size not in p['sizes']): abort(400, 'Choose a listed question and size.')
+        if topic not in QUESTIONS or (size and size not in p['sizes']): abort(400, t('Choose a listed question and size.'))
         phone = settings()['whatsapp']
         if not phone: return redirect(url_for('contact'))
         # The visitor still reviews and sends the draft in WhatsApp.
-        message = f"Assalam-o-alaikum! I would like some help with {p['name']} (Mahrukh product {pid}).\n{QUESTIONS[topic][1]}"
-        if size: message += '\nSize I am considering: ' + size
+        message = t('Assalam-o-alaikum! I would like some help with {name} (Mahrukh product {id}).', name=localized(p, 'name'), id=pid) + '\n' + t(QUESTIONS[topic][1])
+        if size: message += '\n' + t('Size I am considering: {size}', size=size)
         return redirect('https://wa.me/' + phone + '?text=' + quote(message))
 
     return related

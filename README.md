@@ -1,6 +1,6 @@
 # Mahrukh
 
-A standalone Pakistani clothing storefront for Termux on Android, built with Flask, SQLite and a pure-Python Waitress server. Premium black (`#0A0A0A`) and gold (`#D4AF37`), responsive catalog, search/category filters, sizes, cart, saved order requests, stock reservations, WhatsApp help and a password-protected seller studio.
+A standalone Pakistani clothing storefront for Termux on Android, built with Flask, SQLite and a pure-Python Waitress server. Premium black (`#0A0A0A`) and gold (`#D4AF37`), English / اردو shopping, responsive catalog, search/category filters, sizes, cart, saved order requests, stock reservations, WhatsApp help and a password-protected seller studio.
 
 Original editable SVG women in traditional dress, garment vignettes and botanical borders establish the brand style in the hero, category navigation, editorial section and empty bag. Product cards and galleries use actual seller-provided photographs. All assets and styling are local: no Node.js, Docker, Tailwind build step or CDN is required.
 
@@ -111,11 +111,21 @@ Product photographs now open in an accessible enlarged viewer with Escape, previ
 
 Filter chips remove one choice while preserving the others. On narrow screens the filter panel starts closed when no filters are applied; all filters remain available without JavaScript. Related pieces help shoppers continue browsing. These suggestions use category and catalog order, not tracking or personal profiling.
 
-In **Shop settings → Your business**, Mahrukh can write an optional personal welcome and signature. In **Contact & social profiles**, she can list the languages she actually offers for support. The welcome stays hidden until she writes it; only the design preview contains a clearly labelled sample note. This does not translate the storefront.
+In **Shop settings → Your business**, Mahrukh can write an optional personal welcome and signature. In **Contact & social profiles**, she can list the languages she actually offers for support. The welcome stays hidden until she writes it; only the design preview contains a clearly labelled sample note. The support-language setting describes personal assistance; the separate **English / اردو** selector changes the storefront language.
+
+## English / اردو release candidate
+
+The customer selector shows the active language on desktop and mobile. Urdu pages use `lang="ur"`, right-to-left layout and a local Noto Naskh Arabic font. A separate `mahrukh_language` preference cookie remembers the live-shop choice for up to one year without replacing the cart/session cookie. Page links retain filters; JavaScript also carries an unsubmitted size choice across a language switch. Prices, stock, size codes and order references stay the same.
+
+The seller studio remains in English. Product editors accept optional Urdu names, descriptions, fabric and garment facts. Shop settings include optional Urdu announcements, welcome notes, signatures, contact/help text, delivery and payment instructions, and policies. Missing Urdu seller text falls back to escaped English with an **English** label; no product facts are invented. Search matches stored English and Urdu product text. WhatsApp drafts use the selected language and still require the customer to press Send.
+
+Before leaving a checkout with unsent details, JavaScript warns that switching language will clear those details and offers Cancel. Delivery details are not copied into URLs or browser storage. Without JavaScript, the selector and core live shopping forms still work; choose a language before filling checkout because the leave-page warning requires JavaScript. Receipts preserve both seller-language versions as they were when the order was submitted, plus the purchase language. Changing the viewing language does not rewrite an order.
+
+This is a release candidate on `feat/english-urdu-storefront`. Fluent Urdu review and testing on the owner's Android/Termux device are pending; the translations are not final. Merge and public preview publication are separate pending steps. Read [BILINGUAL.md](BILINGUAL.md) for the review checklist, validation commands and isolated Termux review setup.
 
 ## Shareable design preview
 
-[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, saved favourites, enlarged photographs, working demo filters, sample measurement charts, a cultural notebook, fit guide, contact-page preview and seller feature tour. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
+[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, saved favourites, enlarged photographs, working demo filters, sample measurement charts, a cultural notebook, fit guide, contact-page preview and seller feature tour. The bilingual branch builds English and Urdu versions; the public URL does not reflect this branch until separately published. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
 
 ```bash
 .venv/bin/python preview/check.py
@@ -132,7 +142,7 @@ cd "$HOME/Mahrukh"
 .venv/bin/python make_brand_art.py
 ```
 
-The test suite covers catalog/admin regressions, seller settings, malicious links, payment verification, saved order privacy, stock contention, duplicate submissions, stale edits and core colour contrast, combined filters, factual detail validation, immutable product snapshots and shared-device privacy. The other two commands regenerate the original vector brand artwork with the Python standard library.
+The test suite covers catalog/admin regressions, seller settings, malicious links, payment verification, saved order privacy, stock contention, duplicate submissions, stale edits and core colour contrast, combined filters, factual detail validation, immutable product snapshots and shared-device privacy. Bilingual checks include optional seller translations, English/Urdu search, locale-independent checkout quotes, immutable translated order snapshots, legacy receipts and translated validation. See [BILINGUAL.md](BILINGUAL.md) for the human review gates. The other two commands regenerate the original vector brand artwork with the Python standard library.
 
 Core shopping and seller forms work without JavaScript; JavaScript adds the slide-out bag and gallery controls. CSS/fonts are local. External image URLs, social sites and WhatsApp require connectivity. Uploaded product photos work locally.
 

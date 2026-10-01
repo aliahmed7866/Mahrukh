@@ -15,7 +15,8 @@ from flask import Flask, abort, flash, g, jsonify, redirect, render_template, re
 from werkzeug.security import check_password_hash
 from commerce import install_commerce, launch_gaps
 from boutique import install_boutique
-from catalog import OCCASIONS, FABRICS, MEASUREMENTS, empty_details, decode_details, form_details, validate_details, missing_facts
+from catalog import OCCASIONS, FABRICS, MEASUREMENTS, empty_details, decode_details, form_details, validate_details, missing_facts, decode_translations, form_translations, validate_translations, missing_translations
+from i18n import install_i18n, t
 
 ROOT = Path(__file__).resolve().parent
 CATEGORIES = ['Unstitched', 'Stitched / Pret', 'Luxury Formals', 'Abayas', 'Festive Wear']
@@ -40,6 +41,7 @@ def create_app(test_config=None):
     if not app.config['SECRET_KEY'] or not app.config['ADMIN_HASH']:
         raise RuntimeError('Run python setup.py first to configure Mahrukh.')
     Path(app.config['DATABASE']).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    install_i18n(app)
 
     def db():
         if 'db' not in g:
@@ -66,14 +68,19 @@ def create_app(test_config=None):
 
     @app.before_request
     def protect_forms():
-        if request.method == 'POST' and not request.path.startswith('/admin/product/') and request.content_length and request.content_length > 128 * 1024:
+        # Urdu policy characters expand when URL-encoded. Keep customer forms
+        # small while accepting the editor's four documented 10k-text limits.
+        form_limit = 1024 * 1024 if request.path == '/admin/settings' else 128 * 1024
+        if request.path == '/admin/settings':
+            request.max_form_memory_size = form_limit
+        if request.method == 'POST' and not request.path.startswith('/admin/product/') and request.content_length and request.content_length > form_limit:
             abort(413)
         if session.get('admin') and time.time() - session.get('admin_since',0) > 4 * 3600:
             session.pop('admin',None)
         if request.method == 'POST':
             supplied = request.form.get('csrf_token', '')
             if not supplied or not hmac.compare_digest(supplied, session.get('csrf', '')):
-                abort(400, 'This form expired. Reload the page and try again.')
+                abort(400, t('This form expired. Reload the page and try again.'))
 
     @app.after_request
     def headers(response):
@@ -105,6 +112,9 @@ def create_app(test_config=None):
         item['stock'] = {r['size']:r['quantity'] for r in db().execute('SELECT size,quantity FROM inventory WHERE product_id=?', (pid,))}
         facts = db().execute('SELECT data FROM product_details WHERE product_id=?', (pid,)).fetchone()
         item['details'] = decode_details(facts['data'] if facts else None)
+        translated = db().execute('SELECT data FROM product_translations WHERE product_id=?', (pid,)).fetchone()
+        item['translations'] = decode_translations(translated['data'] if translated else None)
+        item['details']['translations'] = item['translations']
         item['edit_version'] = hmac.new(app.secret_key.encode(), json.dumps(item, sort_keys=True).encode(), hashlib.sha256).hexdigest()
         return item
 
@@ -156,11 +166,11 @@ def create_app(test_config=None):
         size = size if size in SIZES else ''
         budget = request.args.get('budget', '')
         if budget and (not budget.isascii() or not budget.isdigit() or len(budget)>8 or not 1 <= int(budget) <= 10000000):
-            abort(400, 'Enter a maximum price from PKR 1 to 10,000,000.')
+            abort(400, t('Enter a maximum price from PKR 1 to 10,000,000.'))
         clauses, params = ['active=1'], []
         if query:
-            clauses.append('(name LIKE ? OR fabric LIKE ? OR description LIKE ?)')
-            params.extend([f'%{query}%'] * 3)
+            clauses.append("(name LIKE ? OR fabric LIKE ? OR description LIKE ? OR EXISTS (SELECT 1 FROM json_tree(facts.data) WHERE type='text' AND value LIKE ?) OR EXISTS (SELECT 1 FROM json_tree(translated.data) WHERE type='text' AND value LIKE ?))")
+            params.extend([f'%{query}%'] * 5)
         if category:
             clauses.append('category=?'); params.append(category)
         if occasion:
@@ -171,14 +181,20 @@ def create_app(test_config=None):
             clauses.append('price<=?'); params.append(int(budget))
         if size:
             clauses.append('EXISTS (SELECT 1 FROM inventory WHERE product_id=products.id AND size=? AND quantity>0 AND size IN (SELECT value FROM json_each(products.sizes)))'); params.append(size)
-        rows = db().execute('SELECT products.*, facts.data AS details_json, (SELECT coalesce(sum(quantity),0) FROM inventory WHERE product_id=products.id AND size IN (SELECT value FROM json_each(products.sizes))) AS stock_total FROM products LEFT JOIN product_details AS facts ON facts.product_id=products.id WHERE ' + ' AND '.join(clauses) + ' ORDER BY ' + order, params).fetchall()
+        rows = db().execute('SELECT products.*, facts.data AS details_json, translated.data AS translations_json, (SELECT coalesce(sum(quantity),0) FROM inventory WHERE product_id=products.id AND size IN (SELECT value FROM json_each(products.sizes))) AS stock_total FROM products LEFT JOIN product_details AS facts ON facts.product_id=products.id LEFT JOIN product_translations AS translated ON translated.product_id=products.id WHERE ' + ' AND '.join(clauses) + ' ORDER BY ' + order, params).fetchall()
         filter_values = dict(q=query, category=category, occasion=occasion, fabric_family=fabric_family, size=size, budget=budget, sort=sort)
         chips = []
-        for key, label in [('q', query), ('category', category), ('occasion', OCCASIONS.get(occasion,'')), ('fabric_family', fabric_family), ('size', size), ('budget', f'Up to PKR {int(budget):,}' if budget else '')]:
+        for key, label in [('q', query), ('category', t(category)), ('occasion', t(OCCASIONS.get(occasion,''))), ('fabric_family', t(fabric_family)), ('size', size), ('budget', t('Up to PKR {amount}', amount=f'{int(budget):,}') if budget else '')]:
             if filter_values[key]:
                 remaining = {k:v for k,v in filter_values.items() if k!=key and v}
                 chips.append(dict(label=label, url=url_for('index', **remaining)+'#collection'))
-        return render_template('index.html', chips=chips, products=[dict(r, images=json.loads(r['images']), details=decode_details(r['details_json'])) for r in rows],
+        products = []
+        for row in rows:
+            translated = decode_translations(row['translations_json'])
+            details = decode_details(row['details_json'])
+            details['translations'] = translated
+            products.append(dict(row, images=json.loads(row['images']), details=details, translations=translated))
+        return render_template('index.html', chips=chips, products=products,
                                query=query, selected=category, sort=sort, filters=dict(occasion=occasion, fabric_family=fabric_family, size=size, budget=budget), filtered=bool(query or category or occasion or fabric_family or size or budget))
 
     @app.get('/our-roots')
@@ -194,7 +210,9 @@ def create_app(test_config=None):
         item = product(pid)
         if not item['active']:
             abort(404)
-        return render_template('product.html', item=item, related=related_pieces(item), available_sizes=[s for s in item['sizes'] if item['stock'].get(s,0)>0])
+        selected_size = request.args.get('size', '')
+        selected_size = selected_size if selected_size in item['sizes'] else ''
+        return render_template('product.html', item=item, related=related_pieces(item), selected_size=selected_size, available_sizes=[s for s in item['sizes'] if item['stock'].get(s,0)>0])
 
     @app.route('/cart', methods=['GET', 'POST'])
     def cart():
@@ -208,7 +226,7 @@ def create_app(test_config=None):
                     pid = int(request.form.get('id', '0'))
                     quantity = int(request.form.get('quantity', '1'))
                 except ValueError:
-                    abort(400, 'Invalid item or quantity.')
+                    abort(400, t('Invalid item or quantity.'))
                 size = request.form.get('size', '')
                 key = f'{pid}:{size}'
                 if action == 'remove' or (action == 'update' and quantity == 0):
@@ -216,14 +234,14 @@ def create_app(test_config=None):
                 else:
                     item = product(pid)
                     if not item['active'] or size not in item['sizes'] or not 1 <= quantity <= 10:
-                        abort(400, 'Choose an available size and a quantity from 1 to 10.')
+                        abort(400, t('Choose an available size and a quantity from 1 to 10.'))
                     if action not in ('add', 'update'):
                         abort(400)
                     new_quantity = quantity + (items.get(key, {}).get('quantity', 0) if action == 'add' else 0)
                     if new_quantity > 10 or (key not in items and len(items) >= 20):
-                        abort(400, 'Limit: 10 per size and 20 different selections per bag.')
+                        abort(400, t('Limit: 10 per size and 20 different selections per bag.'))
                     if new_quantity > item['stock'].get(size,0):
-                        abort(409, 'That quantity is not available in this size. Please choose another size or contact us.')
+                        abort(409, t('That quantity is not available in this size. Please choose another size or contact us.'))
                     items[key] = dict(id=pid, size=size, quantity=new_quantity)
             session['cart'] = items
             session['checkout_token'] = secrets.token_urlsafe(24)
@@ -236,7 +254,7 @@ def create_app(test_config=None):
         if len(valid_keys) != len(current):
             session['cart'] = {key:entry for key,entry in current.items() if key in valid_keys}
             session['checkout_token'] = secrets.token_urlsafe(24)
-            cart_notice = 'Unavailable selections were removed from your bag. Please review the updated total.'
+            cart_notice = t('Unavailable selections were removed from your bag. Please review the updated total.')
         template = 'cart_contents.html' if request.headers.get('X-Mahrukh-Drawer') == '1' else 'cart.html'
         response = app.make_response(render_template(template, lines=lines, cart_notice=cart_notice, total=sum(x['subtotal'] for x in lines), **checkout_context(lines)))
         response.headers['X-Cart-Count'] = str(sum(x['quantity'] for x in lines))
@@ -299,7 +317,7 @@ def create_app(test_config=None):
     @admin_required
     def edit(pid=None):
         item = product(pid) if pid is not None else dict(name='', category=CATEGORIES[0], price='', compare_price='',
-                    fabric='', description='', sizes=['Custom Unstitched'], images=[], active=1, illustration=0, stock={}, details=empty_details())
+                    fabric='', description='', sizes=['Custom Unstitched'], images=[], active=1, illustration=0, stock={}, details=empty_details(), translations={})
         if request.method == 'POST':
             try:
                 db().execute('BEGIN IMMEDIATE')
@@ -340,6 +358,7 @@ def create_app(test_config=None):
                 stock = {size: int(request.form.get('stock_' + size) or 0) for size in chosen_sizes}
                 if any(q < 0 or q > 100000 for q in stock.values()): raise ValueError('Stock must be from 0 to 100,000 per size.')
                 details = validate_details(form_details(request.form, chosen_sizes), chosen_sizes)
+                translations = validate_translations(form_translations(request.form, item['translations']))
                 folder = Path(app.config['DATABASE']).parent / 'uploads'
                 folder.mkdir(exist_ok=True, mode=0o700)
                 for filename, data in uploaded:
@@ -353,6 +372,7 @@ def create_app(test_config=None):
                 else:
                     db().execute('UPDATE products SET name=?,category=?,price=?,compare_price=?,fabric=?,description=?,sizes=?,images=?,active=?,illustration=? WHERE id=?', (*values, pid))
                 db().execute('INSERT INTO product_details(product_id,data) VALUES(?,?) ON CONFLICT(product_id) DO UPDATE SET data=excluded.data', (pid, json.dumps(details)))
+                db().execute('INSERT INTO product_translations(product_id,data) VALUES(?,?) ON CONFLICT(product_id) DO UPDATE SET data=excluded.data', (pid, json.dumps(translations, ensure_ascii=False)))
                 db().executemany('INSERT INTO inventory(product_id,size,quantity) VALUES(?,?,?) ON CONFLICT(product_id,size) DO UPDATE SET quantity=excluded.quantity', [(pid,size,q) for size,q in stock.items()])
                 db().commit()
                 flash('Product saved.', 'success')
@@ -360,8 +380,8 @@ def create_app(test_config=None):
             except (ValueError, TypeError) as exc:
                 db().rollback()
                 flash(str(exc), 'error')
-                item = dict(request.form, sizes=request.form.getlist('sizes'), images=request.form.get('images', '').splitlines(), active='active' in request.form, illustration='illustration' in request.form, stock={s:request.form.get('stock_' + s,0) for s in SIZES}, edit_version=request.form.get('edit_version',''), details=form_details(request.form, request.form.getlist('sizes')))
-        return render_template('edit.html', item=item, pid=pid)
+                item = dict(request.form, sizes=request.form.getlist('sizes'), images=request.form.get('images', '').splitlines(), active='active' in request.form, illustration='illustration' in request.form, stock={s:request.form.get('stock_' + s,0) for s in SIZES}, edit_version=request.form.get('edit_version',''), details=form_details(request.form, request.form.getlist('sizes')), translations=form_translations(request.form, item['translations']))
+        return render_template('edit.html', item=item, pid=pid, translation_gaps=missing_translations(item))
 
     @app.post('/admin/product/<int:pid>/delete')
     @admin_required
@@ -369,6 +389,7 @@ def create_app(test_config=None):
         db().execute('DELETE FROM products WHERE id=?', (pid,))
         db().execute('DELETE FROM inventory WHERE product_id=?', (pid,))
         db().execute('DELETE FROM product_details WHERE product_id=?', (pid,))
+        db().execute('DELETE FROM product_translations WHERE product_id=?', (pid,))
         db().commit()
         flash('Product deleted.', 'success')
         return redirect(url_for('admin'), code=303)

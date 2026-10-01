@@ -39,3 +39,11 @@ The enhanced preview also includes a session-only sample bag, an illustrative co
 The saved-pieces page and heart controls keep only fictional product IDs in `sessionStorage`. The list can be cleared and never reserves stock. The photo viewer, active filter chips and contextual question preview use the same local scripts/styles as the live storefront where practical. WhatsApp question buttons show a draft-style explanation inside the demo; they never contact a seller. The homepage letter is labelled “Sample brand note”; the real seller supplies her own copy.
 
 Product cards and the homepage now render shared templates directly. The build no longer rewrites template source strings, so future card refinements stay consistent across the live app and preview.
+
+## English / اردو preview
+
+The builder now emits the same 13 pages twice: English at `index.html` and Urdu at `ur/index.html` (26 HTML pages total). Every page has a labelled language selector linking to its equivalent page. Urdu pages use `lang="ur"`, right-to-left layout and the locally bundled Noto Naskh Arabic font; the font's open-source licence is copied with the assets. Assets and links stay relative for `/Mahrukh/` hosting.
+
+Switching keeps query filters, the page fragment and selected sample size. The sample bag and saved pieces share their existing tab-session storage across languages. The browser remembers the chosen preview language; no customer details are stored. Search checks the fictional fixture's stored English and Urdu names, descriptions and fabric text. Prices, IDs, measurements and size codes are shared unchanged. Sample product Urdu fields are translations of the explicitly fictional fixture, not real product information.
+
+`python preview/check.py` builds and validates both languages, all locale links, font/asset paths and the no-transactions boundary. `python -m unittest tests.test_preview_i18n` checks template translation coverage and stable fixture values. The Urdu copy is a draft and still needs review by a fluent Urdu speaker before publication. The source changes do not publish `gh-pages`; review the bilingual preview and pull request first.
