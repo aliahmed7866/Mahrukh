@@ -5,6 +5,7 @@ import hashlib
 import shutil
 import sys
 from urllib.parse import urlencode
+from localize import localize, translate, MESSAGES, MISSING
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -26,11 +27,14 @@ def url_for(endpoint, **kwargs):
     raise ValueError('Live endpoint must not appear in preview: '+endpoint)
 
 def build():
+    MISSING.clear()
     products=json.loads((HERE/'products.json').read_text())
     for p in products:
         if not (HERE/'photos'/p['photo']).is_file():
             raise FileNotFoundError('Missing concept photo: '+p['photo'])
+        p['search_ur']=' '.join(translate(p[k]) for k in ('name','description','fabric','category'))
         p['images']=['assets/photos/'+p['photo']]
+    if OUT.exists(): shutil.rmtree(OUT)
     OUT.mkdir(exist_ok=True)
     (OUT/'assets').mkdir(exist_ok=True)
     # Explicit allowlist: no instance files, credentials, backend, or real inventory.
@@ -38,25 +42,33 @@ def build():
         shutil.copyfile(ROOT/'static'/name, OUT/'assets'/name)
     shutil.copytree(ROOT/'static/art',OUT/'assets/art',dirs_exist_ok=True)
     shutil.copytree(HERE/'photos',OUT/'assets/photos',dirs_exist_ok=True)
-    for name in ('preview.css','preview.js'):
+    for name in ('preview.css','preview.js','language.css','language.js'):
         shutil.copyfile(HERE/name,OUT/'assets'/name)
+    shutil.copytree(HERE/'fonts',OUT/'assets/fonts')
+    (OUT/'assets/locale.js').write_text('window.MAHRUKH_UR='+json.dumps(MESSAGES,ensure_ascii=False)+';window.MAHRUKH_PRODUCTS='+json.dumps([{k:p[k] for k in ('id','name','price','sizes')} for p in products],ensure_ascii=False)+';')
     # CSS paths must work at /Mahrukh/ and at a custom-domain root.
     for path in (OUT/'assets').glob('*.css'):
         path.write_text(path.read_text().replace('/static/art/','art/'))
     env=Environment(loader=FileSystemLoader([str(HERE/'templates'),str(ROOT/'templates')]),autoescape=select_autoescape())
-    asset_version=hashlib.sha256(b''.join((OUT/'assets'/name).read_bytes() for name in ('preview.js','preview.css','business.css','heritage.css','style.css','discovery.css','discovery.js','boutique.css','boutique.js'))).hexdigest()[:12]
+    asset_version=hashlib.sha256(b''.join((OUT/'assets'/name).read_bytes() for name in ('preview.js','preview.css','business.css','heritage.css','style.css','discovery.css','discovery.js','boutique.css','boutique.js','language.css','language.js','locale.js'))).hexdigest()[:12]
     env.globals.update(url_for=url_for,categories=CATEGORIES,demo=True,asset_version=asset_version,occasions=OCCASIONS,fabrics=FABRICS,sizes=SIZES,measurement_labels=MEASUREMENTS,enquiry_topics=QUESTIONS,saved_ids=[],demo_product_ids=[p['id'] for p in products],shop=dict(personal_note='A favourite outfit has a way of finding its place in your life. Worn on a busy morning, taken out for a family gathering, reached for simply because it feels like you.\n\nTake your time here. Look at the details, explore a little, and ask the questions that matter to you. There is always room for another conversation.',note_signature='With warmth, Mahrukh'))
     env.filters['pkr']=lambda value:f'PKR {value:,.0f}'
-    (OUT/'index.html').write_text(env.get_template('index.html').render(products=products,query='',selected='',sort='featured',filters=dict(occasion='',fabric_family='',size='',budget=''),filtered=False,chips=[]))
-    (OUT/'saved.html').write_text(env.get_template('saved.html').render(products=products,saved_page=True))
+    def write_page(name, template, **context):
+        env.globals['page_name']=name
+        html=env.get_template(template).render(**context)
+        (OUT/(name+'.html')).write_text(html)
+        (OUT/(name+'.ur.html')).write_text(localize(html))
+    write_page('index','index.html',products=products,query='',selected='',sort='featured',filters=dict(occasion='',fabric_family='',size='',budget=''),filtered=False,chips=[])
+    write_page('saved','saved.html',products=products,saved_page=True)
     for p in products:
-        (OUT/f"product-{p['id']}.html").write_text(env.get_template('demo-product.html').render(item=p,related=sorted([other for other in products if other['id']!=p['id']],key=lambda other:(other['category']!=p['category'],-other['id']))[:3]))
+        write_page(f"product-{p['id']}",'demo-product.html',item=p,related=sorted([other for other in products if other['id']!=p['id']],key=lambda other:(other['category']!=p['category'],-other['id']))[:3])
     for name,template in [('our-roots','roots.html'),('fabric-and-fit','fit_guide.html')]:
-        (OUT/f'{name}.html').write_text(env.get_template(template).render())
-    for name in ('contact','studio'):
-        (OUT/f'{name}.html').write_text(env.get_template(f'demo-{name}.html').render())
+        write_page(name,template)
+    for name in ('contact','studio','journey'):
+        write_page(name,f'demo-{name}.html')
     (OUT/'.nojekyll').write_text('')
-    (OUT/'404.html').write_text(env.get_template('demo-404.html').render())
+    write_page('404','demo-404.html')
+    if MISSING: print('Untranslated preview messages:', sorted(MISSING))
     print(f'Built {len(products)} sample product pages and homepage in {OUT}')
 
 if __name__=='__main__': build()

@@ -115,7 +115,7 @@ In **Shop settings → Your business**, Mahrukh can write an optional personal w
 
 ## Shareable design preview
 
-[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, saved favourites, enlarged photographs, working demo filters, sample measurement charts, a cultural notebook, fit guide, contact-page preview and seller feature tour. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
+[Open the Mahrukh design preview](https://aliahmed7866.github.io/Mahrukh/). It contains six fictional AI concept pieces, a sample bag, saved favourites, enlarged photographs, working demo filters, sample measurement charts, a cultural notebook, fit guide, contact-page preview and seller feature tour. It now offers English / اردو page variants, remembered language selection, Urdu layout and a read-only order-journey tour. Urdu preview wording is marked as awaiting fluent review. The live Flask bilingual milestone is still planned. It accepts no orders or payments and collects no customer details. The actual store requires a separately hosted Flask backend.
 
 ```bash
 .venv/bin/python preview/check.py
