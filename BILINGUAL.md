@@ -95,3 +95,11 @@ The owner's phone has not been inspected. Record device, Android/browser version
 - Review the generated static English and Urdu pages separately: demo state may contain only fictional IDs/quantities and language preference. Confirm demonstration notices remain visible and no real order, payment or message can be submitted.
 
 Record failures and fixes in the pull request. Merge, public preview publication and production rollout follow this review; they are not implied by completing the implementation.
+
+## Compact selector and art refinement
+
+The follow-up branch `feat/refined-header-art` changes the prominent language row to a small native dropdown. The active language is still named, and opening it reveals both full language names plus the current checkmark. At phone widths it shares the search row. Native disclosure and ordinary links work without JavaScript; Escape and outside interaction add convenient dismissal when JavaScript is available.
+
+The refinement also updates the original decorative SVG portraits, calms surface patterns and improves the photo gallery's thumbnail targets. New editorial concept images and photographic category tiles are confined to the explicitly labelled design preview. Their prompts/provenance are recorded in `preview/IMAGERY.md`.
+
+Refinement verification: all 69 tests and all 26 English/Urdu preview pages pass. Fourteen JavaScript control-flow checks pass for the language selector and retained checkout/state behavior. Both generated images and the three rendered SVG assets were visually reviewed. Mobile browser layout, 200% zoom and fluent Urdu review remain unverified here; the checks above still apply.

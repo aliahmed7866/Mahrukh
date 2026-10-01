@@ -1,0 +1,10 @@
+<details class="language-switcher" data-language-switcher>
+  <summary aria-label="{{ t('Language: {language}',language='اردو' if locale=='ur' else 'English') }}">
+    <svg class="language-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>
+    <span class="language-current" lang="{{ locale }}" dir="{{ direction }}">{{ 'اردو' if locale=='ur' else 'English' }}</span>
+    <svg class="language-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="m3 4.5 3 3 3-3"/></svg>
+  </summary>
+  <nav class="language-options" aria-label="{{ t('Language') }}">
+    {% for code,label in [('en','English'),('ur','اردو')] %}<a class="language-option" href="{{ language_url(code) }}" data-language-link data-language="{{ code }}" lang="{{ code }}" dir="{{ 'rtl' if code=='ur' else 'ltr' }}" hreflang="{{ code }}" {% if locale==code %}aria-current="true"{% endif %}><span>{{ label }}</span>{% if locale==code %}<span class="language-check" aria-hidden="true">✓</span>{% endif %}</a>{% endfor %}
+  </nav>
+</details>

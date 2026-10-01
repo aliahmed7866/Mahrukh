@@ -1,47 +1,62 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 760" role="img" aria-labelledby="title">
-<title id="title">An evening in ruby: a woman in traditional Pakistani clothing</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 760" role="img" aria-labelledby="title description">
+<title id="title">A woman in a ruby festive outfit and rose dupatta</title>
+<desc id="description">Original decorative fashion illustration. A woman turns gently in a full ruby outfit, holding a rose dupatta over one arm. Restrained gold details and a botanical branch complement the warm background.</desc>
 <defs>
- <linearGradient id="dress"><stop stop-color="#572639"/><stop offset=".5" stop-color="#923e50"/><stop offset="1" stop-color="#572639"/></linearGradient>
- <linearGradient id="veil" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b67578" stop-opacity=".85"/><stop offset="1" stop-color="#572639" stop-opacity=".9"/></linearGradient>
- <g id="bloom" fill="none" stroke="#d9b875" stroke-width="1.5"><path d="M0-7C-12-18-15-3-6 0C-18 8-6 16 0 7C9 17 17 4 7 0C16-10 6-17 0-7Z"/><circle r="2" fill="#ebd5a6"/><path d="M0 9v19m0-9q-12-8-10 0q6 6 10 3m0-7q12-8 10 0q-6 6-10 3"/></g>
- <pattern id="flowers" width="45" height="56" patternUnits="userSpaceOnUse"><use href="#bloom" transform="translate(22 23) scale(.5)" opacity=".75"/></pattern>
+ <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#f0e7df"/><stop offset="1" stop-color="#e9dfd0"/></linearGradient>
+ <radialGradient id="wash"><stop stop-color="#e4cec5" stop-opacity=".8"/><stop offset="1" stop-color="#e4cec5" stop-opacity="0"/></radialGradient>
+ <linearGradient id="emerald" x1="0" y1="0" x2="1" y2=".2"><stop stop-color="#163e37"/><stop offset=".45" stop-color="#346c5b"/><stop offset="1" stop-color="#204f44"/></linearGradient>
+ <linearGradient id="ruby" x1="0" y1="0" x2="1" y2=".35"><stop stop-color="#673441"/><stop offset=".48" stop-color="#a85b64"/><stop offset="1" stop-color="#763b49"/></linearGradient>
+ <linearGradient id="silk" x1="0" y1="0" x2="1" y2=".3"><stop stop-color="#c99a8e"/><stop offset=".5" stop-color="#dfb7a6"/><stop offset="1" stop-color="#ac766f"/></linearGradient>
+ <linearGradient id="sage" x1="0" y1="0" x2="1" y2=".7"><stop stop-color="#91a28b"/><stop offset=".6" stop-color="#bec7aa"/><stop offset="1" stop-color="#7d9480"/></linearGradient>
+ <g id="sprig" fill="none" stroke="#bda26d" stroke-width="1.2" stroke-linecap="round">
+  <path d="M0 10C1 2-1-6 0-14M0 3C-8 0-10-5-9-7C-3-7 0-2 0 3M0-4C7-6 9-11 8-13C2-12 0-8 0-4"/>
+  <circle cy="-17" r="1.7" fill="#cfb27d" stroke="none"/>
+ </g>
 </defs>
-<rect width="600" height="760" fill="#e9d8c5"/>
-<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705Z" fill="#d4af37" opacity=".035"/>
-<path d="M58 705V293C58 161 150 122 213 82Q300 65 300 29Q300 65 387 82C450 122 542 161 542 293V705M73 705V295C73 173 164 137 220 96Q281 79 300 61Q319 79 380 96C436 137 527 173 527 295V705" fill="none" stroke="#98733c" stroke-opacity=".5"/>
-<circle cx="300" cy="229" r="103" fill="#dfbc71" opacity=".05"/>
-<g fill="none" stroke="#8e7247" opacity=".65"><path d="M87 678Q52 565 114 476M505 682Q558 582 498 495"/><path d="M85 631Q42 613 67 584Q97 592 85 631M85 597Q128 574 116 549Q87 551 85 597M91 546Q58 521 82 501Q103 516 91 546M520 627Q562 607 544 582Q516 593 520 627M521 590Q484 573 491 550Q518 556 521 590"/></g>
-<ellipse cx="311" cy="710" rx="143" ry="16" fill="#000" opacity=".22"/>
-<!-- Shoes and trousers -->
-<path d="M247 667L240 703Q225 710 216 714Q244 725 282 714L281 670M325 668L330 706Q348 722 387 715Q377 705 363 702L361 667" fill="#b89460"/>
-<path d="M235 552L239 691L283 693L303 586L324 693L367 689L358 552Z" fill="#572639"/>
-<path d="M240 682l43 2m42 0l41-3" stroke="#d7b575" stroke-width="4"/>
-<!-- Hair silhouette, neck and face -->
-<path d="M253 211Q236 155 281 136Q334 116 360 161Q373 191 351 252L262 258Z" fill="#171416"/>
-<path d="M287 219L283 258L267 270Q301 293 334 266L316 252L314 219" fill="#b97d5e"/>
-<path d="M269 174Q266 147 303 150Q340 150 340 187L333 218Q322 243 300 244Q276 237 269 211Z" fill="#d59e7a"/>
-<path d="M265 187Q269 157 310 151Q284 185 264 190M302 151Q337 163 341 201L348 174Q335 143 302 151" fill="#20191c"/>
-<path d="M277 194q8-5 15 0m18-1q8-5 15 0" fill="none" stroke="#583e35" stroke-width="2" stroke-linecap="round"/>
-<path d="M301 195l-4 15l6 2M290 224q10 5 20-1" fill="none" stroke="#9c6351" stroke-width="1.8" stroke-linecap="round"/>
-<path d="M273 199q7 6 15 0m24 0q7 6 13-1" fill="none" stroke="#362e2c" stroke-width="1.5"/>
-<!-- Earrings -->
-<g fill="#d6b35f" stroke="#f5df9e"><circle cx="267" cy="209" r="3"/><path d="M267 213l-7 12q7 7 14 0Z"/><circle cx="339" cy="207" r="3"/><path d="M339 211l-7 12q7 7 14 0Z"/></g>
-<!-- Floating dupatta -->
-<path d="M252 259Q243 184 279 150Q304 132 335 154Q369 176 373 258Q404 342 424 417Q447 518 468 635Q434 659 400 639L353 337L329 265Q287 256 252 259Z M269 174Q266 147 303 150Q340 150 340 187L333 218Q322 243 300 244Q276 237 269 211Z" fill-rule="evenodd" fill="url(#veil)"/>
-<path d="M251 257Q254 163 294 147Q335 134 355 196L373 282L407 420L454 633M263 254Q264 174 296 160Q328 150 343 199L360 284L394 423L441 637" fill="none" stroke="#d6b36d" stroke-width="2"/>
-<path d="M405 619l53-9m-50 20l53-10" stroke="#d6b36d" stroke-width="3"/>
-<!-- Kameez and embroidered sleeves -->
-<path d="M278 258L239 266Q222 275 211 299L178 394L206 410L246 338L224 590Q297 616 379 590L354 338L387 400L416 382L378 290Q369 270 330 258Q307 280 278 258Z" fill="url(#dress)"/>
-<path d="M278 258L239 266Q222 275 211 299L178 394L206 410L246 338L224 590Q297 616 379 590L354 338L387 400L416 382L378 290Q369 270 330 258Q307 280 278 258Z" fill="url(#flowers)"/>
-<path d="M277 260Q302 287 331 260L321 298L304 331L287 299Z" fill="#572639" stroke="#d6b36d" stroke-width="2"/>
-<path d="M285 269Q302 287 323 270L305 315ZM303 287v25" fill="none" stroke="#e7cc98"/>
-<path d="M230 571Q301 593 375 571M228 583Q301 605 377 583M181 386l28 15M386 390l26-17" fill="none" stroke="#d6b36d" stroke-width="3"/>
-<path d="M254 365l-12 191m91-195l22 195" fill="none" stroke="#e6ca8f" opacity=".17"/>
-<!-- One hand gathers the dupatta; the other rests naturally -->
-<path d="M180 396L169 426Q168 439 179 445L190 448Q196 446 190 441L181 432L202 408Z" fill="#cd9673"/>
-<path d="M391 397L361 421L331 411Q320 403 310 407L297 410Q293 415 303 417L319 420L332 429Q351 440 365 434L410 411L415 385Z" fill="#cd9673"/>
-<path d="M330 412l-13 5m7-5l-15 3" fill="none" stroke="#a96e54" stroke-width="1.2"/>
-<path d="M377 408l9 12m-13-9l9 12M174 419l18 8" stroke="#e3bc65" stroke-width="3"/>
-<path d="M345 313Q364 354 359 413L346 479Q350 537 378 599L398 591Q370 522 371 475L386 415Q387 350 359 287Z" fill="url(#veil)" stroke="#d6b36d" stroke-width="1.5"/>
-<path d="M282 735h36" stroke="#d6b36d" opacity=".6"/><path d="M300 729l5 6-5 6-5-6Z" fill="#d6b36d"/>
+<rect width="600" height="760" fill="url(#paper)"/>
+<ellipse cx="307" cy="328" rx="261" ry="322" fill="url(#wash)"/>
+<!-- A softer oval opening, distinct from the emerald composition. -->
+<path d="M123 586V256C123 153 185 91 282 91C402 91 465 168 465 280V608" fill="none" stroke="#ad927b" stroke-width="1" opacity=".38"/>
+<ellipse cx="310" cy="701" rx="122" ry="10" fill="#694947" opacity=".08"/>
+<path d="M433 676C477 638 484 587 467 543M458 648C485 646 501 629 497 613C476 616 462 630 458 648M477 610C452 601 445 581 453 569C470 576 478 592 477 610M476 570C487 555 485 539 474 532C465 544 468 558 476 570" fill="none" stroke="#ad887b" stroke-width="1.5" opacity=".6"/>
+<!-- Shoes beneath the softly turning skirt. -->
+<path d="M267 676L265 687C250 690 235 695 237 700C253 707 276 701 291 695L294 676M329 675L336 692C349 697 363 698 374 694C372 689 357 684 354 676Z" fill="#96764e"/>
+<path d="M244 699C259 700 273 696 286 691M340 689L362 692" fill="none" stroke="#c9a970" stroke-width="1.4"/>
+<!-- A wide rose dupatta moves behind the figure. -->
+<path d="M285 246C258 240 236 257 217 290C190 335 178 385 169 437C162 481 150 522 129 550C151 574 180 585 207 571C227 530 239 481 250 439C263 395 287 353 307 313Z" fill="url(#silk)" opacity=".88"/>
+<path d="M267 253C222 304 199 382 188 446C180 492 168 540 152 565M259 256C214 306 192 381 181 445C173 491 160 538 145 559" fill="none" stroke="#d7ba88" stroke-width="1.5"/>
+<path d="M144 549C162 565 181 570 204 561" fill="none" stroke="#b69566" stroke-width="2"/>
+<!-- A lifted chin and low swept hair keep the gesture open. -->
+<path d="M268 175C260 151 271 124 296 119C326 112 347 136 345 159C344 180 337 196 321 211L284 210Z" fill="#342b2c"/>
+<path d="M266 178C247 167 238 183 245 198C250 212 266 215 277 207Z" fill="#3d3031"/>
+<path d="M286 209C289 228 284 238 270 249L294 268L324 249C307 244 306 228 310 211Z" fill="#ba8168"/>
+<path d="M280 154C291 139 316 139 328 155C336 165 335 181 340 188C345 192 344 196 337 198C335 214 324 226 311 226C297 225 283 211 278 195C274 181 275 165 280 154Z" fill="#d4a080"/>
+<path d="M277 179C285 170 291 156 295 145C308 153 322 156 332 170C335 150 321 136 300 138C283 138 274 156 277 179Z" fill="#342b2c"/>
+<path d="M317 178C322 176 327 177 330 180M319 183C323 186 327 185 329 182M331 199L336 198M315 211C320 213 326 212 329 209" fill="none" stroke="#795548" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M282 190C273 186 272 193 279 199" fill="none" stroke="#ad795f" stroke-width="1.4"/>
+<circle cx="280" cy="200" r="3" fill="#c6a064"/><path d="M280 204L273 219C276 225 285 225 289 217L283 204Z" fill="#bd9758"/><path d="M277 216L281 220L285 215" fill="none" stroke="#e1c38d" stroke-width="1.2"/>
+<!-- The fitted upper body opens into a broad, gently swinging hem. -->
+<path d="M272 245C250 247 231 261 226 281C222 309 235 341 246 364C252 380 253 393 250 410C239 463 223 504 204 548C182 597 174 638 170 663C217 692 275 699 326 693C368 690 408 679 436 661C403 611 386 563 365 515C346 470 329 432 327 400C324 382 327 363 332 344L354 381C367 382 379 374 385 361C371 334 358 305 349 280C344 261 330 250 317 245C304 260 290 260 272 245Z" fill="url(#ruby)"/>
+<path d="M250 396C276 405 303 407 327 396" fill="none" stroke="#c5a06b" stroke-width="2"/>
+<path d="M255 407C244 476 213 553 198 643M276 414C265 498 249 578 251 675M302 414C307 495 321 595 340 677M325 416C341 492 379 586 409 651" fill="none" stroke="#61303d" stroke-width="3" opacity=".43"/>
+<path d="M264 438C253 512 230 588 227 655M291 442C284 518 287 594 293 674M335 469C349 526 371 580 388 636" fill="none" stroke="#c17a7b" stroke-width="1.8" opacity=".4"/>
+<path d="M174 652C241 687 348 692 428 654M173 659C238 693 349 698 432 661" fill="none" stroke="#c2a06c" stroke-width="1.6"/>
+<use href="#sprig" transform="translate(205 650) rotate(-15)"/><use href="#sprig" transform="translate(253 666) rotate(-5)"/><use href="#sprig" transform="translate(304 669)"/><use href="#sprig" transform="translate(356 662) rotate(9)"/><use href="#sprig" transform="translate(401 646) rotate(18)"/>
+<path d="M273 246C277 269 286 284 298 292C310 281 316 265 317 246M279 250C284 269 290 278 299 285C307 276 312 263 312 250" fill="none" stroke="#d0aa71" stroke-width="1.5"/>
+<path d="M297 292L298 320" fill="none" stroke="#c7a26c" stroke-width="1.3"/><circle cx="298" cy="307" r="2" fill="#d6b886"/>
+<!-- A curved bent sleeve and one raised hand holding the dupatta. -->
+<path d="M247 275C237 297 246 326 263 348L286 330C274 312 266 292 264 274Z" fill="#8c4654"/>
+<path d="M258 339C266 336 275 330 280 326" fill="none" stroke="#d0aa71" stroke-width="2"/>
+<!-- The other hand supports the loose cloth at the hip. -->
+<path d="M357 378C354 390 348 400 339 407L329 412C326 417 331 420 337 416C334 422 338 425 343 421C354 414 365 405 374 390L377 379Z" fill="#c79577"/>
+<path d="M343 409L352 399" fill="none" stroke="#aa765f" stroke-width="1.3" stroke-linecap="round"/>
+<!-- A rose fold passes over the near shoulder and across the resting arm. -->
+<path d="M277 245C267 260 269 283 281 309C296 342 319 371 340 394C346 420 357 457 380 481C401 503 424 508 447 504C426 482 412 458 407 432C400 410 389 391 373 378C337 349 316 316 301 284C290 263 290 251 291 244Z" fill="url(#silk)"/>
+<path d="M281 250C280 283 310 337 347 383C357 412 371 456 391 477C406 492 421 498 439 499M275 255C276 289 309 347 341 387C351 419 366 461 387 483" fill="none" stroke="#dec191" stroke-width="1.5"/>
+<path d="M373 389C384 406 387 427 400 447M354 409C367 438 374 451 385 461" fill="none" stroke="#a16b68" stroke-width="1.6" opacity=".52"/>
+<!-- Her near hand rests in front of the fabric, with a continuous forearm. -->
+<path d="M264 347C281 351 298 341 309 323L315 313C320 312 330 308 330 305C329 302 322 307 318 306C321 301 325 296 324 293C320 292 314 302 310 305L307 312C300 321 290 331 280 332L276 330Z" fill="#d19c7c"/>
+<path d="M311 310L317 310M308 316L314 318" fill="none" stroke="#ae7b64" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M284 332L291 344M288 329L296 340" stroke="#d0aa71" stroke-width="2.5"/>
+
 </svg>

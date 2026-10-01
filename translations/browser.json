@@ -27,5 +27,6 @@
   "Please enter {max} or less.": "براہ کرم {max} یا اس سے کم درج کریں۔",
   "Please enter a valid number.": "براہ کرم درست عدد درج کریں۔",
   "Please use no more than {max} characters.": "براہ کرم {max} حروف سے زیادہ استعمال نہ کریں۔",
-  "Please use the requested format.": "براہ کرم بتائے گئے طریقے کے مطابق درج کریں۔"
+  "Please use the requested format.": "براہ کرم بتائے گئے طریقے کے مطابق درج کریں۔",
+  "Language: {language}": "زبان: {language}"
 }
