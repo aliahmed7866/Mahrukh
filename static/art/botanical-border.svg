@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48"><g fill="none" stroke="#d4af37" stroke-width="1"><path d="M0 24Q30 0 60 24T120 24T180 24T240 24M0 24Q30 48 60 24T120 24T180 24T240 24"/><path d="M30 24q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4m60 0q-14-17-17-4q3 13 17 4q14-17 17-4q-3 13-17 4"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" role="img" aria-labelledby="title">
+<title id="title">A fine antique-gold botanical vine</title>
+<g fill="none" stroke="#b69a62" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M0 27C28 27 37 15 60 21S99 34 120 27S153 15 180 21S215 31 240 27"/>
+ <path d="M26 23C21 18 19 11 22 8C30 10 33 17 26 23M43 20C46 26 52 30 56 27C57 22 50 19 43 20M78 26C77 17 81 12 85 12C89 19 86 25 78 26M99 29C104 33 111 34 115 31C113 25 106 25 99 29M144 22C140 16 141 10 144 8C151 11 152 17 144 22M162 19C164 25 170 29 175 26C176 20 169 17 162 19M198 26C197 19 201 13 205 13C210 19 205 25 198 26M220 29C225 34 231 34 235 30C232 25 226 25 220 29"/>
+</g>
+</svg>

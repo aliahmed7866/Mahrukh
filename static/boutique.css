@@ -9,4 +9,16 @@
 @media(min-width:1001px){.product-detail>div:first-child{position:sticky;top:24px;align-self:start}.product-detail{align-items:start}}
 @media(max-width:1000px){.personal-note{margin-inline:5%;padding:44px 8%}.header-actions{gap:12px}.related-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.header-actions{gap:8px}.header-actions .help-link{display:none}.site-header{column-gap:10px}.site-header .brand{font-size:1.4rem}.site-header .brand small{font-size:.44rem}.saved-link{min-width:42px;gap:4px}.bag-link{min-width:52px}.bag-link span{margin-left:3px}.filter-drawer summary{padding:17px 16px}.filter-hint{display:none}.filter-drawer .catalog-filters{padding:0 16px 18px}.active-filters{gap:8px}.active-filters a{font-size:.82rem;padding:9px 13px}.card-visual>form,.card-visual>.save-piece{right:8px;bottom:8px}.card-visual .save-piece{padding:10px;min-width:44px}.card-visual .save-label{display:none}.personal-note{margin-block:36px 48px;padding:38px 9%}.personal-note h2{font-size:2rem}.note-copy{font-size:1.07rem;line-height:1.8}.note-signature{font-size:1.3rem}.save-status{left:12px;bottom:16px;max-width:calc(100vw - 84px);padding:14px 16px;font-size:.85rem}.piece-help{padding:20px}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.related-section .section-heading{display:block}.related-section .text-link{display:inline-block;margin-top:18px}.photo-dialog{width:96vw;padding:14px}.photo-toolbar h2{font-size:1.2rem}.photo-stage img{max-height:62dvh}.photo-footer{gap:16px}.enlarge-photo{left:12px;bottom:12px;padding:10px 14px}.collection-empty{padding:24px 18px}.empty-actions{gap:20px}.empty-actions .button{justify-content:center;width:100%}}
+/* Keep every garment view easy to tap without cropping the product itself. */
+.product-detail > div { min-width: 0; }
+.thumbnails {
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 8px;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+.thumbnail { flex: 0 0 64px; min-height: 80px; }
+.thumbnail img { width: 100%; aspect-ratio: 4 / 5; object-fit: contain; }
+.product-image:hover > img { transform: none; }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}

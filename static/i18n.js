@@ -58,6 +58,26 @@
     } else rememberPreviewLanguage(current);
   }
 
+  const languageSwitchers = [...document.querySelectorAll('[data-language-switcher]')];
+  function closeLanguageSwitcher(switcher, restoreFocus = false) {
+    if (!switcher?.open) return;
+    switcher.open = false;
+    if (restoreFocus) switcher.querySelector('summary')?.focus();
+  }
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    const opened = languageSwitchers.find(switcher => switcher.open);
+    if (!opened) return;
+    event.preventDefault();
+    closeLanguageSwitcher(opened, true);
+  });
+  function dismissOutsideLanguage(event) {
+    languageSwitchers.filter(switcher => switcher.open && !switcher.contains(event.target))
+      .forEach(switcher => closeLanguageSwitcher(switcher));
+  }
+  document.addEventListener('click', dismissOutsideLanguage);
+  document.addEventListener('focusin', dismissOutsideLanguage);
+
   let submittingCheckout = false;
   function hasUnsavedCheckout() {
     if (submittingCheckout) return false;
@@ -80,15 +100,17 @@
     rememberPreviewLanguage(link.dataset.language);
     if (link.getAttribute('aria-current') === 'true' || link.getAttribute('aria-current') === 'page') {
       event.preventDefault();
+      closeLanguageSwitcher(link.closest('[data-language-switcher]'), true);
       return;
     }
     // Opening another tab leaves this draft intact. A normal switch may reload
     // the checkout, so customers explicitly choose whether to leave it.
     if (!event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && hasUnsavedCheckout()) {
       const leave = window.confirm(t('Your checkout details have not been submitted. Switching language will clear these details. Cancel to keep editing, or continue to switch language.'));
-      if (!leave) event.preventDefault();
-      else submittingCheckout = true;
+      if (!leave) { event.preventDefault(); return; }
+      submittingCheckout = true;
     }
+    closeLanguageSwitcher(link.closest('[data-language-switcher]'));
   });
   document.addEventListener('submit', event => {
     if (event.target.matches('[data-checkout-form], form.checkout-form')) submittingCheckout = true;

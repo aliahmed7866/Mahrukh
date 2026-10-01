@@ -110,3 +110,29 @@ input::placeholder { color: #c1b6a2; }
   .values { padding-block: 18px; }
   footer { padding-top: 40px; }
 }
+
+/* Quieter surfaces give the clothing and illustration more room. */
+body { background-image: none; }
+.hero-copy::before { opacity: .025; }
+.hero-art { min-width: 0; }
+.brand-portrait { padding: 34px 5%; background: #f0e5d3; }
+.brand-portrait .portrait { width: 100%; object-fit: contain; }
+.categories a { border-radius: 10px; transition: border-color .2s ease; }
+.categories img { object-fit: contain; filter: none; background: #efe5d5; }
+.category-section::before { opacity: .3; }
+.story-art { position: relative; align-self: stretch; margin: 0; overflow: hidden; background: #eddfd3; }
+.story-art img { width: 100%; height: 100%; max-height: 540px; object-fit: contain; }
+.editorial-portrait { padding: 0; background: #e6d9c4; min-height: 0; }
+.editorial-portrait::before { display: none; }
+.editorial-image { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.concept-stamp { position: absolute; inset-inline-start: 18px; bottom: 18px; max-width: calc(100% - 36px); padding: 8px 12px; border: 1px solid #c7b797; border-radius: 4px; background: #f7efdf; color: #433628; font-size: .75rem; line-height: 1.5; }
+.category-concept-note { font-size: .78rem; color: var(--paper-muted); margin-block: 18px 0; }
+@media (max-width: 650px) {
+  .hero-art.brand-portrait { height: 420px; min-height: 420px; padding: 14px 5% 24px; }
+  .brand-portrait .portrait { height: 390px; }
+  .hero-art.editorial-portrait { height: auto; min-height: 0; aspect-ratio: 4 / 5; }
+  .editorial-image { height: auto; aspect-ratio: 4 / 5; object-fit: contain; }
+  .story-art { min-height: 0; }
+  .story-art img { height: 390px; }
+  .concept-stamp { inset-inline-start: 12px; bottom: 12px; max-width: calc(100% - 24px); }
+}

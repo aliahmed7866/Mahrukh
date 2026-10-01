@@ -47,3 +47,7 @@ The builder now emits the same 13 pages twice: English at `index.html` and Urdu 
 Switching keeps query filters, the page fragment and selected sample size. The sample bag and saved pieces share their existing tab-session storage across languages. The browser remembers the chosen preview language; no customer details are stored. Search checks the fictional fixture's stored English and Urdu names, descriptions and fabric text. Prices, IDs, measurements and size codes are shared unchanged. Sample product Urdu fields are translations of the explicitly fictional fixture, not real product information.
 
 `python preview/check.py` builds and validates both languages, all locale links, font/asset paths and the no-transactions boundary. `python -m unittest tests.test_preview_i18n` checks template translation coverage and stable fixture values. The Urdu copy is a draft and still needs review by a fluent Urdu speaker before publication. The source changes do not publish `gh-pages`; review the bilingual preview and pull request first.
+
+## Editorial image refresh
+
+The preview homepage now pairs a courtyard outfit concept with a textile still life and photographic category tiles. The new images are explicitly labelled AI concepts in both languages. They stay under `preview/photos/`; the Flask storefront continues to use its decorative SVG artwork and seller-supplied product photographs. See [IMAGERY.md](IMAGERY.md) for provenance and the exact generation prompts. The full images are encoded as WebP without cropping or resizing.
