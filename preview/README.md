@@ -55,3 +55,17 @@ The preview now follows the shared English/Urdu implementation merged in PR #7. 
 Urdu copy is visibly marked as awaiting fluent review. The preview is a review surface, not approval of production wording or an announcement that the shop is accepting orders. Physical Android and screen-reader checks remain necessary before treating the bilingual release as final.
 
 Fictional discount badges have been removed and the festive sample correctly lists a lehenga skirt. Sample bags revalidate stored items against the public fixtures rather than trusting arbitrary stored prices/names. Clearing generated output before each build prevents old page/assets from leaking into publication. Only the allowlisted static output is published.
+
+### Browser verification recorded
+
+On 1 October 2026, the public GitHub Pages version was checked in Chromium:
+
+- English → Urdu switching preserved product M size, PKR 6,490 sample bag, saved favourites and combined fabric/size/budget/sort filters.
+- Urdu search for نیل found the same unstitched sample in both interface languages.
+- Photo Escape dismissal returned focus; the M chest measurement converted from 20 inches to 50.8 cm.
+- English and Urdu home/journey pages, the Urdu product page, expanded filters and sample-bag dialog were rendered in 360px review frames. Document width did not exceed viewport width. These are narrow browser rendering checks, not a physical Android test.
+- Urdu language/direction attributes and the local font were present; the new journey showed the five order states.
+
+The temporary unlinked frame harness was removed after review. Native 200% browser zoom, assistive-technology pronunciation and physical Android remain unverified. Fluent Urdu review is still required; automated coverage does not approve wording.
+
+[Recorded preview screenshot](review-home.jpg). This image shows the fictional design review, not a live shop.

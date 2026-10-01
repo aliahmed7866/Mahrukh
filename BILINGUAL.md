@@ -2,7 +2,7 @@
 
 Review branch: `feat/english-urdu-storefront`.
 
-This document describes the bilingual release candidate. It does not certify final Urdu wording, Android compatibility or business/legal readiness. Fluent Urdu review, testing on the owner's Android/Termux device, merge and public preview publication remain pending. No human reviewer has yet been confirmed. The draft pull request is the review surface; creating it does not deploy the live shop or publish GitHub Pages.
+This document describes the bilingual release candidate. It does not certify final Urdu wording, Android compatibility or business/legal readiness. The shared bilingual implementation was merged in PR #7, and the updated non-selling Pages design review was published on 1 October 2026. Fluent Urdu review, native 200% zoom, assistive-technology checks and testing on the owner's Android/Termux device remain pending. No human reviewer has yet been confirmed. Publishing the design review does not deploy the live Flask shop or approve production translations.
 
 ## Customer behavior
 
@@ -94,4 +94,8 @@ The owner's phone has not been inspected. Record device, Android/browser version
 - Turn JavaScript off: browse, filter, save, add to bag and submit a review checkout in both languages. Choose the language before entering the draft. Re-enable JavaScript and check enhancements still work.
 - Review the generated static English and Urdu pages separately: demo state may contain only fictional IDs/quantities and language preference. Confirm demonstration notices remain visible and no real order, payment or message can be submitted.
 
-Record failures and fixes in the pull request. Merge, public preview publication and production rollout follow this review; they are not implied by completing the implementation.
+Record failures and fixes in the pull request. The published Pages design review does not complete these release gates. Production rollout and final wording approval still require the remaining checks.
+
+## Pages review update
+
+The refreshed preview contains 28 English/Urdu pages, including the shopping journey and expanded seller feature tour. All 69 tests pass. Public-browser checks verified language/size/bag/favourite/filter continuity, Urdu search in both modes, photo focus restoration and measurement conversion. English/Urdu home and journey pages, the Urdu product, expanded filters and sample bag rendered without whole-page overflow in 360px review frames. These are browser layout checks, not physical Android results. See [the preview verification record](preview/README.md#browser-verification-recorded).
