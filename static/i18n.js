@@ -84,6 +84,11 @@
     return [...document.querySelectorAll('[data-checkout-form], form.checkout-form')].some(form =>
       [...form.elements].some(field => {
         if (!field.name || field.disabled || ['hidden', 'submit', 'button', 'reset'].includes(field.type)) return false;
+        // Server-returned values are still an unsent draft, even though they
+        // are now the controls' HTML defaults after validation failed.
+        if (form.dataset.checkoutRecovered === 'true') {
+          return ['checkbox', 'radio'].includes(field.type) ? field.checked : Boolean(field.value);
+        }
         if (['checkbox', 'radio'].includes(field.type)) return field.checked !== field.defaultChecked;
         if (field.tagName === 'SELECT') {
           const original = [...field.options].find(option => option.defaultSelected) || field.options[0];

@@ -89,6 +89,8 @@ New installations have no demo inventory. Upgrades preserve products, hide old b
 
 The server calculates prices/delivery, rejects stale quotes, reserves stock in a transaction and stores private order snapshots. Repeated submissions return the same order. Customers can open a structured WhatsApp follow-up themselves. Seller studio tracks pending, confirmed, dispatched, completed and cancelled requests; pre-dispatch cancellation returns stock once. Review the dashboard regularly — no automatic seller notification is sent.
 
+Checkout validation returns the bag and highlights every field needing attention together. Delivery details and available payment choices remain in the current response so shoppers can correct mistakes without retyping. These unsent details are never placed in session cookies, URLs or browser storage; the response remains `no-store`. Existing quote checks and duplicate-order protection remain in force. Language switching still warns before leaving unsent details, including after a rejected submission.
+
 Payment methods are cash on delivery, manual merchant bank/mobile-wallet transfer, or order-specific hosted invoices via Safepay / an eligible PayPal account. **These are manually verified workflows, not an automated payment gateway.** No card data is collected. Payment links, provider onboarding and actual refunds are handled in the provider dashboard. All prices in the shop are PKR.
 
 Read [BUSINESS-LAUNCH.md](BUSINESS-LAUNCH.md) for the seller setup sequence, payment limitations, Pakistan business/tax review, public HTTPS hosting, backups and privacy/retention operations. The app supports startup operations; it does not certify compliance or issue statutory tax invoices.
@@ -138,6 +140,7 @@ This builds and validates `preview-site/`, an allowlisted output with no live da
 ```bash
 cd "$HOME/Mahrukh"
 .venv/bin/python -m unittest discover -s tests -v
+node tests/test_checkout_browser.js  # Optional development check; Node is not needed to run the shop.
 .venv/bin/python make_art.py
 .venv/bin/python make_brand_art.py
 ```

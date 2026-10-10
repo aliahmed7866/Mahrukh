@@ -1,1 +1,1 @@
-{% extends 'base.html' %}{% block content %}<div class="page narrow"><p class="eyebrow">{{ t("A LITTLE SOMETHING FOR YOU") }}</p><h1>{{ t("Your bag") }}</h1>{% include 'cart_contents.html' %}</div>{% endblock %}
+{% extends 'base.html' %}{% block title %}{% if checkout_errors|default({}) %}{{ t('Please review your checkout details.') }} · {% endif %}{{ t('Your bag') }} · Mahrukh{% endblock %}{% block content %}<div class="page narrow"><p class="eyebrow">{{ t("A LITTLE SOMETHING FOR YOU") }}</p><h1>{{ t("Your bag") }}</h1>{% include 'cart_contents.html' %}</div>{% endblock %}

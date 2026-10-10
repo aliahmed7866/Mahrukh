@@ -3,6 +3,7 @@
   const drawer = document.querySelector('#cart-drawer');
   const body = document.querySelector('#cart-body');
   let opener;
+  document.querySelector('[data-checkout-errors]')?.focus();
   const toast = message => {
     const el = document.querySelector('#toast');
     el.textContent = message; el.hidden = false;
@@ -50,7 +51,7 @@
       body.innerHTML = await response.text();
       document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = response.headers.get('X-Cart-Count'); el.closest('[data-open-cart]')?.setAttribute('aria-label', t('Shopping cart, {count} items', {count: el.textContent})); });
       // Keep the non-modal cart page consistent after edits.
-      if (location.pathname === '/cart' && !drawer.open) { location.reload(); return; }
+      if (['/cart', '/checkout'].includes(location.pathname) && !drawer.open) { location.href = form.action; return; }
       openDrawer();
       if (wasOpen) { body.querySelector('input[type=number], .button, a')?.focus(); }
       toast(removing ? t('Item removed from your bag.') : t('Your bag is updated.'));
