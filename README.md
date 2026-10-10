@@ -123,7 +123,7 @@ The seller studio remains in English. Product editors accept optional Urdu names
 
 Before leaving a checkout with unsent details, JavaScript warns that switching language will clear those details and offers Cancel. Delivery details are not copied into URLs or browser storage. Without JavaScript, the selector and core live shopping forms still work; choose a language before filling checkout because the leave-page warning requires JavaScript. Receipts preserve both seller-language versions as they were when the order was submitted, plus the purchase language. Changing the viewing language does not rewrite an order.
 
-The bilingual storefront and refined language control are merged into `main` (PRs #7 and #9). Fluent Urdu review and testing on the owner's Android/Termux device are still pending; the translations are not final. The older preview-refresh PR #8 remains open and diverged from main, so its 28-page output must not be treated as the current main build. Public preview publication and live shop deployment are separate from source merges. Read [BILINGUAL.md](BILINGUAL.md) for the review checklist, validation commands and isolated Termux review setup.
+The bilingual storefront and refined language control are merged into `main` (PRs #7 and #9). Fluent Urdu review and testing on the owner's Android/Termux device are still pending; the translations are not final. The useful preview-refresh changes from the older, diverged PR #8 have been reconciled with the newer header/artwork source. The current build produces 28 non-selling pages; publishing them is a separate step. Public preview publication and live shop deployment are separate from source merges. Read [BILINGUAL.md](BILINGUAL.md) for the review checklist, validation commands and isolated Termux review setup.
 
 ## Shareable design preview
 
@@ -142,6 +142,7 @@ cd "$HOME/Mahrukh"
 .venv/bin/python -m unittest discover -s tests -v
 node tests/test_checkout_browser.js  # Optional development checks; Node is not needed to run the shop.
 node tests/test_cart_browser.js
+node tests/test_preview_browser.js
 .venv/bin/python make_art.py
 .venv/bin/python make_brand_art.py
 ```

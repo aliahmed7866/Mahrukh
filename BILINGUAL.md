@@ -2,7 +2,7 @@
 
 Source status (10 October 2026): `feat/english-urdu-storefront` was merged in PR #7, and the refined language control was merged in PR #9. Both are present on `main`.
 
-This document describes the bilingual release candidate. It does not certify final Urdu wording, Android compatibility or business/legal readiness. Fluent Urdu review and testing on the owner's Android/Termux device remain pending. Source merge is complete; live deployment is separate. The older preview-refresh PR #8 remains open and conflicts with newer main changes. No human reviewer has yet been confirmed. The historical review commands below document the original branch review; they are not instructions to deploy that older branch. Merging source does not deploy the live shop or publish GitHub Pages.
+This document describes the bilingual release candidate. It does not certify final Urdu wording, Android compatibility or business/legal readiness. Fluent Urdu review and testing on the owner's Android/Termux device remain pending. Source merge is complete; live deployment is separate. The useful source changes from the older, diverged preview-refresh PR #8 have been reconciled with newer main. This does not republish GitHub Pages or validate Urdu fluency. No human reviewer has yet been confirmed. The historical review commands below document the original branch review; they are not instructions to deploy that older branch. Merging source does not deploy the live shop or publish GitHub Pages.
 
 ## Customer behavior
 

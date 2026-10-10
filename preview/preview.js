@@ -46,23 +46,31 @@
   }
  }
  const selectedDemoSize=document.querySelector('[name=demo-size]:checked');
- if(selectedDemoSize)document.querySelector('#size-preview').textContent=t('Previewing size: {size}',{size:selectedDemoSize.value});
- document.querySelectorAll('[name=demo-size]').forEach(input=>input.addEventListener('change',()=>{document.querySelector('#size-preview').textContent=t('Previewing size: {size}',{size:input.value});}));
+ if(selectedDemoSize)document.querySelector('#size-preview').textContent=t('Previewing size: {size}',{size:t(selectedDemoSize.value)});
+ document.querySelectorAll('[name=demo-size]').forEach(input=>input.addEventListener('change',()=>{document.querySelector('#size-preview').textContent=t('Previewing size: {size}',{size:t(input.value)});}));
 })();
 
 (() => {
  const t=window.MahrukhI18n.t;
  const cart=document.querySelector('#demo-cart'),help=document.querySelector('#demo-help');
  let opener,items=[];
- try{const stored=JSON.parse(sessionStorage.getItem('mahrukh-demo-bag')||'[]');if(Array.isArray(stored))items=stored.filter(x=>Number.isFinite(x.price)&&Number.isInteger(x.quantity)&&x.quantity>0&&x.quantity<=10&&typeof x.name==='string'&&typeof x.size==='string').slice(0,20);}catch{}
+ const catalog=JSON.parse(document.querySelector('#demo-catalog').textContent);
+ try{const stored=JSON.parse(sessionStorage.getItem('mahrukh-demo-bag')||'[]');
+  if(Array.isArray(stored))for(const value of stored.slice(0,20)){
+   if(!value||!Number.isInteger(value.quantity)||value.quantity<1||value.quantity>10)continue;
+   const product=catalog.find(product=>String(product.id)===String(value.id));
+   if(!product||!product.sizes.includes(value.size)||items.some(item=>item.id===String(product.id)&&item.size===value.size))continue;
+   items.push({id:String(product.id),name:product.name,price:product.price,size:value.size,quantity:value.quantity});
+  }
+ }catch{}
  const money=n=>'PKR '+n.toLocaleString('en-PK');
- function save(){try{sessionStorage.setItem('mahrukh-demo-bag',JSON.stringify(items));}catch{} render();}
- function element(tag,text,cls){const e=document.createElement(tag);if(text)e.textContent=text;if(cls)e.className=cls;return e;}
+ function save(){try{sessionStorage.setItem('mahrukh-demo-bag',JSON.stringify(items));}catch{document.querySelector('#demo-cart .notice').textContent=t('Browser storage is unavailable. Your sample bag will last only on this page.');} render();}
+ function element(tag,text,cls){const e=document.createElement(tag);if(tag==='strong')e.dir='ltr';if(text)e.textContent=text;if(cls)e.className=cls;return e;}
  function render(){
   document.querySelectorAll('[data-cart-count]').forEach(el=>{el.textContent=items.reduce((n,x)=>n+x.quantity,0);el.closest('button')?.setAttribute('aria-label',t('Preview shopping cart, {count} sample items',{count:el.textContent}));});
   const container=document.querySelector('#demo-cart-lines');container.replaceChildren();
   if(!items.length){const empty=element('div','','empty');empty.append(element('h3',t('Your next favourite awaits.')),element('p',t('Explore a sample piece and try adding a size to see the bag design.')));container.append(empty);}
-  items.forEach((item,i)=>{const row=element('article','','demo-bag-line');const details=element('div');details.append(element('h3',t(item.name)),element('p',t('{size} · Qty {quantity}',{size:item.size,quantity:item.quantity}),'muted'),element('strong',money(item.price*item.quantity)));const remove=element('button',t('Remove'),'text-button');remove.type='button';remove.setAttribute('aria-label',t('Remove {name} size {size}',{name:t(item.name),size:item.size}));remove.addEventListener('click',()=>{items.splice(i,1);save();cart.querySelector('button')?.focus();});row.append(details,remove);container.append(row);});
+  items.forEach((item,i)=>{const row=element('article','','demo-bag-line');const details=element('div');details.append(element('h3',t(item.name)),element('p',t('{size} · Qty {quantity}',{size:t(item.size),quantity:item.quantity}),'muted'),element('strong',money(item.price*item.quantity)));const remove=element('button',t('Remove'),'text-button');remove.type='button';remove.setAttribute('aria-label',t('Remove {name} size {size}',{name:t(item.name),size:t(item.size)}));remove.addEventListener('click',()=>{items.splice(i,1);save();cart.querySelector('button')?.focus();});row.append(details,remove);container.append(row);});
   if(items.length){const total=element('div','','cart-total');total.append(element('span',t('Illustrative subtotal')),element('strong',money(items.reduce((n,x)=>n+x.price*x.quantity,0))));container.append(total);}
  }
  function open(d){opener=document.activeElement;d.showModal();document.body.classList.add('drawer-open');}

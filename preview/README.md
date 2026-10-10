@@ -32,7 +32,7 @@ The six `photos/*.webp` files were generated with the built-in image-generation 
 
 Prompt set: portrait 4:5 premium studio catalog photographs on warm ivory plaster backgrounds, soft daylight, full modest outfits: emerald embroidered shalwar kameez; dusty rose kameez with ivory trousers; ivory antique-gold peshwas; midnight-black abaya; ruby embroidered lehenga; and folded indigo/cream unstitched fabrics. No logos, text or watermarks. The unstitched image is a textile still life with no person. All images are for a non-commercial website design preview.
 
-The enhanced preview also includes a session-only sample bag, an illustrative contact page, and a read-only seller feature tour. Social/WhatsApp controls open explanatory dialogs; they never send a message or lead to checkout. Preview photos remain fictional AI-generated concepts. Thirteen HTML pages are built and checked. The cultural notebook and fabric/fit guide are shared with the Flask app. Filters use only the fictional fixture data; size charts and fabric dimensions are explicitly illustrative, not real product specifications.
+The enhanced preview also includes a session-only sample bag, an illustrative contact page, and a read-only seller feature tour. Social/WhatsApp controls open explanatory dialogs; they never send a message or lead to checkout. Preview photos remain fictional AI-generated concepts. Fourteen pages per language are built and checked, including the read-only shopping-journey tour. The cultural notebook and fabric/fit guide are shared with the Flask app. Filters use only the fictional fixture data; size charts and fabric dimensions are explicitly illustrative, not real product specifications.
 
 ## Boutique refinements
 
@@ -42,7 +42,7 @@ Product cards and the homepage now render shared templates directly. The build n
 
 ## English / اردو preview
 
-The builder now emits the same 13 pages twice: English at `index.html` and Urdu at `ur/index.html` (26 HTML pages total). Every page has a labelled language selector linking to its equivalent page. Urdu pages use `lang="ur"`, right-to-left layout and the locally bundled Noto Naskh Arabic font; the font's open-source licence is copied with the assets. Assets and links stay relative for `/Mahrukh/` hosting.
+The builder now emits the same 14 pages twice: English at `index.html` and Urdu at `ur/index.html` (28 HTML pages total). Every page has a labelled language selector linking to its equivalent page. Urdu pages use `lang="ur"`, right-to-left layout and the locally bundled Noto Naskh Arabic font; the font's open-source licence is copied with the assets. Assets and links stay relative for `/Mahrukh/` hosting.
 
 Switching keeps query filters, the page fragment and selected sample size. The sample bag and saved pieces share their existing tab-session storage across languages. The browser remembers the chosen preview language; no customer details are stored. Search checks the fictional fixture's stored English and Urdu names, descriptions and fabric text. Prices, IDs, measurements and size codes are shared unchanged. Sample product Urdu fields are translations of the explicitly fictional fixture, not real product information.
 
@@ -51,3 +51,11 @@ Switching keeps query filters, the page fragment and selected sample size. The s
 ## Editorial image refresh
 
 The preview homepage now pairs a courtyard outfit concept with a textile still life and photographic category tiles. The new images are explicitly labelled AI concepts in both languages. They stay under `preview/photos/`; the Flask storefront continues to use its decorative SVG artwork and seller-supplied product photographs. See [IMAGERY.md](IMAGERY.md) for provenance and the exact generation prompts. The full images are encoded as WebP without cropping or resizing.
+
+## Source reconciliation (10 October 2026)
+
+The useful source changes from the older, diverged PR #8 are reconciled with current main: the bilingual shopping-journey and expanded seller tours, canonical sample-bag recovery, illustrative product corrections, visibly pending Urdu review and stricter build validation. The newer PR #9 language dropdown, editorial imagery and styling remain intact. Live checkout improvements from PRs #10 and #11 remain separate from this non-selling demo.
+
+The builder replaces only its generated `preview-site/` output before rebuilding, preventing stale pages/assets from leaking into the allowlisted package. The validator checks 28 pages, titles, equivalent-language links, local assets and the no-transactions boundary. Stored sample bags are revalidated against the current public fixtures; names/prices from browser storage are not trusted.
+
+Validation for this reconciliation uses Python export/coverage tests and mocked-DOM JavaScript tests (`node tests/test_preview_browser.js`). Browser layout, screen-reader, Android and fluent Urdu reviews remain pending. No historical screenshot or browser-test claim from PR #8 applies automatically to this reconciled output. Source merge does not publish the generated preview or change the live Flask shop.
