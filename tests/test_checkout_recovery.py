@@ -95,6 +95,24 @@ class CheckoutRecoveryTests(unittest.TestCase):
         self.assertEqual(quote, fields['quote_hash'])
         self.assertEqual(self.post('/checkout', {**fields, 'quote_hash': quote}).status_code, 409)
 
+    def test_cart_refresh_uses_fresh_server_tokens_and_total(self):
+        fields = self.fields()
+        page = self.client.get('/cart').get_data(as_text=True)
+        self.assertIn('id="cart-page-contents"', page)
+        response = self.post('/cart', dict(action='update', id=1, size='M', quantity=2),
+                             headers={'X-Mahrukh-Drawer': '1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['X-Cart-Count'], '2')
+        fresh = FormParser(response.get_data(as_text=True))
+        self.assertNotEqual(fresh.named('checkout_token')[0]['value'], fields['checkout_token'])
+        self.assertNotIn('checked', fresh.named('agree')[0])
+        self.assertEqual(self.post('/checkout', fields).status_code, 400)
+        for key in ('checkout_token', 'quote_hash'):
+            fields[key] = fresh.named(key)[0]['value']
+        self.assertEqual(self.post('/checkout', fields).status_code, 303)
+        with sqlite3.connect(self.database) as db:
+            self.assertEqual(db.execute('SELECT total FROM orders').fetchone()[0], 13230)
+
     def test_urdu_recovery_and_csrf_still_required(self):
         fields = self.fields()
         response = self.post('/checkout?lang=ur', {**fields, 'contact': 'bad'})
