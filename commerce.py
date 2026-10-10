@@ -178,14 +178,35 @@ def install_commerce(app, db, admin_required, cart_lines, product):
         old = db().execute('SELECT reference FROM orders WHERE request_id=? AND owner=?', (token, owner())).fetchone()
         if old: return redirect(url_for('order_detail', reference=old['reference']), code=303)
         if not s['accepting_orders'] or launch_gaps(s): abort(503, t('Ordering is paused. Please contact Mahrukh for help.'))
-        if request.form.get('agree') != 'yes': abort(400, t('Please read and accept the terms and privacy notice.'))
         details = {k: ' '.join(request.form.get(k,'').split()) for k in ('name','city','contact','address')}
-        if not all(details.values()) or any(len(v)>300 for v in details.values()): abort(400, t('Complete your name, phone, city and address (up to 300 characters each).'))
-        if not re.fullmatch(r'\+?[\d ()-]{7,30}', details['contact']): abort(400, t('Enter a valid contact phone number.'))
-        cities = [x.strip().casefold() for x in s['service_cities'].splitlines() if x.strip()]
-        if details['city'].casefold() not in cities: abort(400, t('Please choose one of our listed delivery cities.'))
         method = request.form.get('payment_method','')
-        if method not in ('cod','transfer','hosted') or not s[method]: abort(400, t('Choose an available payment method.'))
+        errors = {}
+        for field, value in details.items():
+            if not value or len(value) > 300:
+                errors[field] = t('Complete your name, phone, city and address (up to 300 characters each).')
+        if ('contact' not in errors and
+                (not re.fullmatch(r'\+?[\d ()-]{7,30}', details['contact']) or
+                 sum(c.isdecimal() for c in details['contact']) < 7)):
+            errors['contact'] = t('Enter a valid contact phone number.')
+        cities = [x.strip().casefold() for x in s['service_cities'].splitlines() if x.strip()]
+        if 'city' not in errors and details['city'].casefold() not in cities:
+            errors['city'] = t('Please choose one of our listed delivery cities.')
+        if method not in ('cod','transfer','hosted') or not s[method]:
+            errors['payment_method'] = t('Choose an available payment method.')
+        if request.form.get('agree') != 'yes':
+            errors['agree'] = t('Please read and accept the terms and privacy notice.')
+        if errors:
+            lines = cart_lines()
+            context = checkout_context(lines)
+            # Retain the submitted quote: validation must not silently approve
+            # a price/policy change that happened after the shopper reviewed it.
+            context['quote_hash'] = request.form.get('quote_hash', '')
+            # Echo only bounded form fields into this no-store response. Never
+            # persist delivery details in cookies, URLs or browser storage.
+            values = {k: request.form.get(k, '')[:1000] for k in (*details, 'payment_method', 'agree')}
+            return render_template('cart.html', lines=lines,
+                total=sum(x['subtotal'] for x in lines), checkout_values=values,
+                checkout_errors=errors, **context), 400
         connection = db()
         try:
             connection.execute('BEGIN IMMEDIATE')

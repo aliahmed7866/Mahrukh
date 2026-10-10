@@ -96,7 +96,8 @@ def language_url(locale):
     """Equivalent GET page, keeping filters and stable identifiers only in place."""
     args = [(key, value) for key, values in request.args.lists() if key != 'lang' for value in values]
     args.append(('lang', locale if locale in LANGUAGES else 'en'))
-    return request.path + '?' + urlencode(args)
+    path = '/cart' if request.endpoint == 'checkout' else request.path
+    return path + '?' + urlencode(args)
 
 
 def install_i18n(app):

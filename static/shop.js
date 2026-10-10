@@ -3,6 +3,7 @@
   const drawer = document.querySelector('#cart-drawer');
   const body = document.querySelector('#cart-body');
   let opener;
+  document.querySelector('[data-checkout-errors]')?.focus();
   const toast = message => {
     const el = document.querySelector('#toast');
     el.textContent = message; el.hidden = false;
@@ -40,9 +41,11 @@
     e.preventDefault();
     const data = new FormData(form);
     if (e.submitter?.name) data.set(e.submitter.name, e.submitter.value);
+    // A control named action shadows form.action in the DOM.
+    const actionUrl = form.getAttribute('action');
     const buttons = [...form.querySelectorAll('button')]; buttons.forEach(b => b.disabled = true);
     try {
-      const response = await fetch(form.action, {method: 'POST', body: data, headers: {'X-Mahrukh-Drawer': '1'}});
+      const response = await fetch(actionUrl, {method: 'POST', body: data, headers: {'X-Mahrukh-Drawer': '1'}});
       if (!response.ok) {
         const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
         toast(doc.querySelector('main .page p:not(.eyebrow)')?.textContent || t('Unable to update the bag. Reload and try again.')); return;
@@ -50,7 +53,7 @@
       body.innerHTML = await response.text();
       document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = response.headers.get('X-Cart-Count'); el.closest('[data-open-cart]')?.setAttribute('aria-label', t('Shopping cart, {count} items', {count: el.textContent})); });
       // Keep the non-modal cart page consistent after edits.
-      if (location.pathname === '/cart' && !drawer.open) { location.reload(); return; }
+      if (['/cart', '/checkout'].includes(location.pathname) && !drawer.open) { location.href = actionUrl; return; }
       openDrawer();
       if (wasOpen) { body.querySelector('input[type=number], .button, a')?.focus(); }
       toast(removing ? t('Item removed from your bag.') : t('Your bag is updated.'));
