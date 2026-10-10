@@ -36,6 +36,34 @@ class PreviewLanguages(unittest.TestCase):
                         self.assertIn(product['name'], index)
                         self.assertIn(product['name_ur'], index)
 
+    def test_reconciled_preview_keeps_new_header_art_and_cleans_generated_output(self):
+        with tempfile.TemporaryDirectory(dir=exporter.ROOT) as temporary:
+            root = Path(temporary)
+            destination = root / 'site'
+            destination.mkdir()
+            (destination / 'obsolete.html').write_text('old output')
+            (root / 'keep.txt').write_text('outside generated output')
+            with patch.object(exporter, 'OUT', destination), patch.object(check, 'OUT', destination):
+                exporter.build()
+                check.validate()
+            self.assertFalse((destination / 'obsolete.html').exists())
+            self.assertEqual((root / 'keep.txt').read_text(), 'outside generated output')
+            self.assertEqual(len(list(destination.rglob('*.html'))), 28)
+            for locale in ('en', 'ur'):
+                folder = destination / 'ur' if locale == 'ur' else destination
+                home = (folder / 'index.html').read_text()
+                self.assertIn('<details class="language-switcher"', home)
+                self.assertIn('concept-editorial.webp', home)
+                self.assertIn('concept-textiles.webp', home)
+                self.assertIn('id="demo-catalog"', home)
+                self.assertIn('href="journey.html"', home)
+                journey = (folder / 'journey.html').read_text()
+                self.assertIn('data-design-preview="true"', journey)
+                self.assertNotIn('method="post"', journey)
+                self.assertNotIn('name="address"', journey)
+            products = json.loads((exporter.HERE / 'products.json').read_text())
+            self.assertTrue(all(product['compare_price'] == 0 for product in products))
+
     def test_preview_template_messages_have_urdu_entries(self):
         catalog = translation_catalog('ur')
         for path in (exporter.HERE / 'templates').glob('*.html'):
