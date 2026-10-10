@@ -140,7 +140,8 @@ This builds and validates `preview-site/`, an allowlisted output with no live da
 ```bash
 cd "$HOME/Mahrukh"
 .venv/bin/python -m unittest discover -s tests -v
-node tests/test_checkout_browser.js  # Optional development check; Node is not needed to run the shop.
+node tests/test_checkout_browser.js  # Optional development checks; Node is not needed to run the shop.
+node tests/test_cart_browser.js
 .venv/bin/python make_art.py
 .venv/bin/python make_brand_art.py
 ```
