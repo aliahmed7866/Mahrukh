@@ -27,6 +27,16 @@ If setup expires or an owner password is lost, an account administrator must per
 
 **Save draft** is private. **Preview draft** shows the last saved draft (the editor saves unsaved changes before opening it). **Publish changes** presents a review dialog, then updates the public website. Conflicting edits from another tab are rejected without clearing the current editor; export your edits before reloading. There is no automatic publication when switching modes or choosing a palette. The studio and publish review report clothing pieces separately from editorial notes and explain hidden entries or a hidden homepage collection. Selecting enquiries or catalogue enables the collection section in the draft. An empty published catalogue shows a collection-coming-soon message and WhatsApp contact instead of silently looking like portfolio mode; decorative art is never converted into merchandise. Custom collection headings are preserved.
 
+### Add clothing with the guided form
+
+In **Collection → Add clothing piece**, add the photo and choose a **Product group** and **Garment or set**. Suits and sets are separate from upperwear, lowerwear, outerwear and dupattas/shawls. The garment dropdown narrows to the selected group. For a set, review the included pieces: a dupatta is not assumed, and the piece count updates when you add one.
+
+Choose stitched, unstitched or made to order; select fabric, colour, design detail, occasion and sizes as applicable. Leave unknown facts blank. Optional sections hold fit, sleeve/neckline details, measurements and care. Unstitched fabric uses lengths instead of sewn sizes. Mixed-fabric notes can describe each component.
+
+**Suggested listing** previews the name, introduction, description and product facts. **Fill empty fields** preserves existing wording. Tick **Replace existing English wording and product facts** to replace it, or use **Undo last fill** to restore the previous fields. Review **Your listing**, set the price and availability, then enable **Show on website** and publish. Urdu wording remains editable separately. **Add a similar piece** makes a hidden copy for quicker entry of related products.
+
+Existing products keep their content. Structured groups drive public category filters after publication. See [category research and description rules](PRODUCT-CATEGORIES.md) for terminology and behaviour.
+
 ### What the modes do
 
 | Mode | Portfolio | Product prices | Product enquiry button |

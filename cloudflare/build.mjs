@@ -2,7 +2,7 @@ import {readFileSync,writeFileSync,readdirSync,mkdirSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('./',import.meta.url));
-const types={'.svg':'image/svg+xml','.webp':'image/webp','.css':'text/css;charset=utf-8','.js':'text/javascript;charset=utf-8','.ttf':'font/ttf'};
+const types={'.mjs':'text/javascript;charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp','.css':'text/css;charset=utf-8','.js':'text/javascript;charset=utf-8','.ttf':'font/ttf'};
 const assets={};
 function add(path,file){const data=readFileSync(file),ext=path.slice(path.lastIndexOf('.'));assets[path]={type:types[ext]||'application/octet-stream',body:data.toString('base64'),etag:'"'+createHash('sha256').update(data).digest('hex').slice(0,20)+'"'};}
 function walk(dir,prefix=''){for(const item of readdirSync(dir,{withFileTypes:true})){const p=prefix+'/'+item.name;if(item.isDirectory())walk(dir+'/'+item.name,p);else add(p,dir+'/'+item.name);}}

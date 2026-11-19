@@ -10,6 +10,14 @@ function fixture(){const DB=localDB();DB.raw.exec(readFileSync(new URL('../schem
 function call(env,path,{method='GET',body,cookie,csrf,originHeader=origin,type='application/json'}={}){return worker.fetch(new Request(origin+path,{method,headers:{Origin:originHeader,...(cookie?{Cookie:cookie}:{}),...(csrf?{'X-CSRF-Token':csrf}:{}),...(body!==undefined?{'Content-Type':type}:{})},body:body===undefined?undefined:typeof body==='string'||body instanceof Uint8Array?body:JSON.stringify(body)}),env);}
 async function signIn(env){env.DB.raw.prepare('INSERT INTO setup VALUES(1,?,?)').run(await hash(setupToken),Date.now()+60000);const r=await call(env,'/api/setup',{method:'POST',body:{token:setupToken,password}});assert.equal(r.status,200);const data=await r.json();return {cookie:r.headers.get('Set-Cookie').split(';')[0],csrf:data.csrf};}
 const newDoc=()=>structuredClone(defaults);
+test('studio loads its shared product builder as a JavaScript module',async()=>{
+ const env=fixture(),response=await call(env,'/product-builder.mjs');
+ assert.equal(response.status,200);
+ assert.match(response.headers.get('Content-Type'),/^text\/javascript/);
+ assert.equal(await response.text(),readFileSync(new URL('../public/product-builder.mjs',import.meta.url),'utf8'));
+ const script=await(await call(env,'/studio.js')).text();
+ assert.match(script,/from '\.\/product-builder\.mjs'/);
+});
 test('uploaded photographs return exact JPEG bytes from D1 for owner previews and published products',async()=>{
  const env=fixture(),auth=await signIn(env);
  const original=new Uint8Array(readFileSync(new URL('./fixtures/photo.jpg',import.meta.url)));
