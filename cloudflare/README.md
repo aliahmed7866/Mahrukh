@@ -20,12 +20,12 @@ If setup expires or an owner password is lost, an account administrator must per
 
 1. **Website mode:** portfolio, enquiries, or WhatsApp catalogue.
 2. **Words & language:** edit English and Urdu hero copy, introductions, story, signature and notices. Blank optional Urdu fields use English.
-3. **Collection:** create, hide, reorder or remove entries. Editorial notes appear as text-led cultural notes without shopping controls; real clothing pieces use the product gallery. Add your own photos, descriptive alt text, category, story, garment facts and prices. Real pieces require an uploaded photograph.
+3. **Collection:** create, hide, reorder or remove entries. Editorial notes appear as text-led cultural notes without shopping controls; real clothing pieces use the product gallery. Add your own photos, descriptive alt text, category, story, garment facts and prices. Visible real pieces require an uploaded photograph. Use **Add clothing piece** for products and **Add editorial note** for cultural notes. New pieces start hidden so unfinished entries can be saved privately; add a photo, enable **Show on website**, then publish.
 4. **Appearance:** select Garden noir, Indigo night or Rose dusk; choose a new fashion portrait or one of the original vector studies; show, hide and reorder homepage sections.
 5. **Contact & policies:** enter your real WhatsApp number with country code, Instagram username, email, response note, delivery and returns policies.
 6. **History & backups:** load one of the previous 12 revisions into the editor, export/import a content draft, and remove unreferenced uploads.
 
-**Save draft** is private. **Preview draft** shows the last saved draft (the editor saves unsaved changes before opening it). **Publish changes** presents a review dialog, then updates the public website. Conflicting edits from another tab are rejected without clearing the current editor; export your edits before reloading. There is no automatic publication when switching modes or choosing a palette.
+**Save draft** is private. **Preview draft** shows the last saved draft (the editor saves unsaved changes before opening it). **Publish changes** presents a review dialog, then updates the public website. Conflicting edits from another tab are rejected without clearing the current editor; export your edits before reloading. There is no automatic publication when switching modes or choosing a palette. The studio and publish review report clothing pieces separately from editorial notes and explain hidden entries or a hidden homepage collection. Selecting enquiries or catalogue enables the collection section in the draft. An empty published catalogue shows a collection-coming-soon message and WhatsApp contact instead of silently looking like portfolio mode; decorative art is never converted into merchandise. Custom collection headings are preserved.
 
 ### What the modes do
 

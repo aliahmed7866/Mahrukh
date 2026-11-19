@@ -10,6 +10,26 @@ function fixture(){const DB=localDB();DB.raw.exec(readFileSync(new URL('../schem
 function call(env,path,{method='GET',body,cookie,csrf,originHeader=origin,type='application/json'}={}){return worker.fetch(new Request(origin+path,{method,headers:{Origin:originHeader,...(cookie?{Cookie:cookie}:{}),...(csrf?{'X-CSRF-Token':csrf}:{}),...(body!==undefined?{'Content-Type':type}:{})},body:body===undefined?undefined:typeof body==='string'||body instanceof Uint8Array?body:JSON.stringify(body)}),env);}
 async function signIn(env){env.DB.raw.prepare('INSERT INTO setup VALUES(1,?,?)').run(await hash(setupToken),Date.now()+60000);const r=await call(env,'/api/setup',{method:'POST',body:{token:setupToken,password}});assert.equal(r.status,200);const data=await r.json();return {cookie:r.headers.get('Set-Cookie').split(';')[0],csrf:data.csrf};}
 const newDoc=()=>structuredClone(defaults);
+test('empty catalogue is visible in English and Urdu without turning artwork or hidden pieces into products',()=>{
+ const doc=newDoc();doc.mode='catalogue';doc.whatsapp='923001234567';
+ doc.items.push({...doc.items[0],id:'private-piece',title:'Private unfinished piece',kind:'piece',visible:false});
+ for(const path of ['/','/collection']){
+  const html=renderPage(doc,{path}).html;
+  assert.match(html,/The Mahrukh collection/);assert.match(html,/Clothing pieces are coming soon/);
+  assert.match(html,/Chat on WhatsApp/);assert.match(html,/From our notebook/);
+  assert.doesNotMatch(html,/class="piece-card"|Private unfinished piece|role="search"/);
+  assert.match(renderPage(doc,{path,lang:'ur'}).html,/ملبوسات جلد شامل کیے جائیں گے/);
+ }
+ doc.copy.en.collectionTitle='My own collection';
+ assert.match(renderPage(doc).html,/My own collection/);
+ doc.mode='portfolio';assert.doesNotMatch(renderPage(doc).html,/Clothing pieces are coming soon/);
+});
+test('unfinished clothing pieces can be saved privately but need a photograph before appearing',()=>{
+ const doc=newDoc();doc.items[0].kind='piece';doc.items[0].visible=false;
+ assert.equal(validateDocument(doc).items[0].kind,'piece');
+ assert.equal(renderPage(doc,{path:'/piece/indigo-stories'}).status,404);
+ doc.items[0].visible=true;assert.throws(()=>validateDocument(doc),/real photograph/);
+});
 test('decorative notes have no shopping controls; real pieces retain their gallery and enquiry flow',()=>{
  const doc=newDoc();
  let html=renderPage(doc,{path:'/piece/a-courtyard-in-bloom'}).html;
