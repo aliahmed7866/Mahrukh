@@ -2,7 +2,7 @@
 
 ## Cloudflare website and no-code studio
 
-The refined public website is live at **https://mahrukh.uk/** with an owner studio at `/studio`. Switch between a portfolio, WhatsApp enquiries and a WhatsApp catalogue; edit copy, photos, appearance and section order; save private drafts, preview and publish; recover previous revisions. Reference-inspired Pakistani fashion illustrations pair emerald florals and a madder dupatta with a rose-and-peacock look. Responsive artwork appears consistently across the public site and studio; the original courtyard, Ajrak-inspired, chai and marigold SVG studies remain available.
+The refined public website is live at **https://mahrukh.uk/** with an owner studio at `/studio`. Switch between a portfolio, WhatsApp enquiries and a WhatsApp catalogue; edit copy, photos, appearance and section order; save private drafts, preview and publish; recover previous revisions. Decorative Pakistani illustrations add character through a relaxed courtyard chai scene and airy SVG fabric and floral motifs. Inspiration entries appear as editorial notes; real clothing pieces have a separate product gallery and shopping controls. Artwork stays selectable in the owner studio.
 
 See [Cloudflare setup and owner guide](cloudflare/README.md). The cloud site starts with labelled art studies. Add your actual WhatsApp number and real product photos in the studio before enabling business modes. The existing Termux shop below remains independent; no private inventory or orders have been moved.
 

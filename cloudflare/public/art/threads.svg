@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+ <title id="title">A thread of home</title>
+ <desc id="desc">An airy decorative composition of a flowing dupatta, jasmine, marigold and fine stitched lines.</desc>
+ <defs>
+  <pattern id="buti" width="51" height="52" patternUnits="userSpaceOnUse"><path d="M25 36V21m0 7c-11 0-13-7-13-11 8-1 13 3 13 11m0-4c0-10 6-13 12-13 2 7-3 13-12 13" fill="none" stroke="#e7ccab" stroke-width="1.2"/><circle cx="25" cy="15" r="3.2" fill="#e7ccab"/></pattern>
+  <clipPath id="cloth"><path d="M187 155C264 92 343 102 367 170C400 254 268 294 315 371C351 434 470 419 510 483L454 534C401 478 268 504 229 413C186 310 315 264 279 209C258 180 228 178 187 198Z"/></clipPath>
+  <g id="flower"><path d="M0 0C-17-5-19-24-6-26C5-28 7-12 0 0M0 0C-1-19 15-27 22-15C29-4 15 3 0 0M0 0C15-10 30 0 23 13C17 24 3 14 0 0M0 0C14 12 5 29-7 23C-19 17-11 3 0 0M0 0C-6 16-25 14-24 1C-24-12-9-10 0 0" fill="#ebdfc3"/><circle r="4.5" fill="#c79d59"/></g>
+  <g id="leaf"><path d="M0 0C-26-10-30-40-12-59C10-43 12-18 0 0Z" fill="#809379"/><path d="M0 0-12-48" stroke="#d3c59b" stroke-width="1.2"/></g>
+ </defs>
+ <path d="M112 467C52 350 111 158 258 99C372 54 500 158 525 306" fill="none" stroke="#ad9565" stroke-width="1.1" stroke-dasharray="2 9" opacity=".6"/>
+ <path d="M187 155C264 92 343 102 367 170C400 254 268 294 315 371C351 434 470 419 510 483L454 534C401 478 268 504 229 413C186 310 315 264 279 209C258 180 228 178 187 198Z" fill="#a96759"/>
+ <g clip-path="url(#cloth)"><path d="M165 92H533V545H165Z" fill="url(#buti)"/><path d="M363 161C390 258 259 308 295 383C329 462 447 431 500 493" fill="none" stroke="#7f4c46" stroke-width="18"/><path d="M356 147C404 242 259 292 291 378C317 451 457 430 503 489" fill="none" stroke="#e6cba5" stroke-width="4"/><path d="M187 189C278 151 317 200 299 248C274 314 234 349 258 410C291 481 408 471 462 522" fill="none" stroke="#dfb5a0" stroke-width="2"/></g>
+ <path d="m455 535 5 17m5-22 7 16m5-23 7 16m5-23 7 16m5-23 7 16" fill="none" stroke="#d8b988" stroke-width="2" stroke-linecap="round"/>
+ <g fill="none" stroke="#b49a68" stroke-width="1.8" stroke-linecap="round"><path d="M137 527C168 451 174 352 139 284M157 442C111 403 91 374 94 342M165 405C207 366 222 333 216 305M427 389C456 339 472 277 457 222M463 307C511 285 528 255 522 232"/></g>
+ <use href="#leaf" transform="translate(155 476) rotate(-48)"/><use href="#leaf" transform="translate(166 415) rotate(49) scale(.85)"/><use href="#leaf" transform="translate(155 358) rotate(-35) scale(.8)"/><use href="#leaf" transform="translate(113 386) rotate(-52) scale(.7)"/><use href="#leaf" transform="translate(449 343) rotate(52) scale(.8)"/><use href="#leaf" transform="translate(468 295) rotate(-24) scale(.65)"/>
+ <use href="#flower" transform="translate(139 284) rotate(24)"/><use href="#flower" transform="translate(94 342) scale(.65)"/><use href="#flower" transform="translate(216 305) rotate(18) scale(.7)"/><use href="#flower" transform="translate(457 222) rotate(-20) scale(.9)"/>
+ <g transform="translate(522 232)" fill="#c59a4e"><ellipse ry="22" rx="10"/><ellipse ry="22" rx="10" transform="rotate(60)"/><ellipse ry="22" rx="10" transform="rotate(120)"/><circle r="7" fill="#94733f"/></g>
+ <path d="m106 233 3 10 10 3-10 3-3 10-3-10-10-3 10-3m306-83 2 7 7 2-7 2-2 7-2-7-7-2 7-2m114 253 2 7 7 2-7 2-2 7-2-7-7-2 7-2" fill="#c9ad75"/>
+</svg>

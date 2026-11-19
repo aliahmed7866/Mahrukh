@@ -20,7 +20,7 @@ If setup expires or an owner password is lost, an account administrator must per
 
 1. **Website mode:** portfolio, enquiries, or WhatsApp catalogue.
 2. **Words & language:** edit English and Urdu hero copy, introductions, story, signature and notices. Blank optional Urdu fields use English.
-3. **Collection:** create, hide, reorder or remove entries. Add your own photos, descriptive alt text, category, story, garment facts and prices. Real pieces require an uploaded photograph.
+3. **Collection:** create, hide, reorder or remove entries. Editorial notes appear as text-led cultural notes without shopping controls; real clothing pieces use the product gallery. Add your own photos, descriptive alt text, category, story, garment facts and prices. Real pieces require an uploaded photograph.
 4. **Appearance:** select Garden noir, Indigo night or Rose dusk; choose a new fashion portrait or one of the original vector studies; show, hide and reorder homepage sections.
 5. **Contact & policies:** enter your real WhatsApp number with country code, Instagram username, email, response note, delivery and returns policies.
 6. **History & backups:** load one of the previous 12 revisions into the editor, export/import a content draft, and remove unreferenced uploads.
@@ -60,7 +60,7 @@ npm run dev
 
 The development adapter uses a separate ignored SQLite file in `cloudflare/.local/`. Its fixed setup token is **development-only** (64 lowercase `a` characters in `/studio#setup=...`). Never deploy `dev.mjs` or the development database. The production entrypoint is only `cloudflare/worker.mjs`.
 
-The build bundles the local CSS, JavaScript, SVG, responsive WebP illustrations and Urdu font as Worker module assets. `assets.mjs` is generated and ignored. Editable vector sources, the layered portrait generator `figure-art.mjs` and the generator `art.mjs` are tracked; run `node cloudflare/art.mjs` to regenerate the five SVG studies. This command leaves the new lookbook artwork untouched. See [artwork sources and generation notes](ARTWORK.md) for the two new fashion portraits. The shared artwork catalogue in `content.mjs` keeps the public site, detail pages and studio previews consistent.
+The build bundles the local CSS, JavaScript, SVG, responsive WebP illustrations and Urdu font as Worker module assets. `assets.mjs` is generated and ignored. Editable vector sources, the layered portrait generator `figure-art.mjs` and the generator `art.mjs` are tracked; run `node cloudflare/art.mjs` to regenerate the five SVG studies. This command leaves the new lookbook artwork untouched. See [artwork sources and generation notes](ARTWORK.md) for the two new fashion portraits. The shared artwork catalogue in `content.mjs` keeps the public site, detail pages and studio previews consistent. The default brand artwork is a transparent courtyard conversation scene paired with a native SVG fabric-and-botanical composition. Decorative studies are editorial notes, not product cards. Legacy study URLs render as reading pages without save, zoom, price or enquiry controls. Real clothing pieces retain their gallery, filters, favourites, zoom and WhatsApp behaviour.
 
 For later deployments using an authenticated Cloudflare CLI:
 

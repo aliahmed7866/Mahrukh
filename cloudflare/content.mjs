@@ -1,8 +1,10 @@
 export const MODES = ['portfolio', 'enquiries', 'catalogue'];
 // Stable IDs keep saved documents compatible; one catalogue serves the site and editor.
 export const ARTWORK = {
- courtyard:{label:'Emerald & madder',src:'/art/courtyard-lookbook-640.webp',full:'/art/courtyard-lookbook.webp',srcset:'/art/courtyard-lookbook-640.webp 640w, /art/courtyard-lookbook.webp 1122w',alt:'Illustrated woman wearing an emerald floral kameez, ivory shalwar, madder dupatta and embroidered khussa in a pale courtyard arch'},
- festive:{label:'Rose & peacock',src:'/art/festive-lookbook-640.webp',full:'/art/festive-lookbook.webp',srcset:'/art/festive-lookbook-640.webp 640w, /art/festive-lookbook.webp 1122w',alt:'Illustrated woman in a rose embroidered kameez, ochre trousers and a peacock teal dupatta draped over her head'},
+ courtyard:{label:'Courtyard conversation · decorative',src:'/art/courtyard-moment-640.webp',full:'/art/courtyard-moment.webp',srcset:'/art/courtyard-moment-640.webp 640w, /art/courtyard-moment.webp 1122w',width:1122,height:1001,ambient:true,alt:'A decorative illustration of two women in Pakistani dress sharing chai and conversation'},
+ festive:{label:'A thread of home · vector',src:'/art/threads.svg',width:640,height:640,ambient:true,alt:'Flowing fabric, jasmine and marigolds in an airy decorative illustration'},
+ 'emerald-lookbook':{label:'Emerald & madder · detailed study',src:'/art/courtyard-lookbook-640.webp',full:'/art/courtyard-lookbook.webp',srcset:'/art/courtyard-lookbook-640.webp 640w, /art/courtyard-lookbook.webp 1122w',alt:'Illustrated emerald kameez and madder dupatta'},
+ 'rose-lookbook':{label:'Rose & peacock · detailed study',src:'/art/festive-lookbook-640.webp',full:'/art/festive-lookbook.webp',srcset:'/art/festive-lookbook-640.webp 640w, /art/festive-lookbook.webp 1122w',alt:'Illustrated rose kameez and teal dupatta'},
  ajrak:{label:'Indigo textile study',src:'/art/ajrak.svg',alt:'Indigo, madder and ivory geometric textile illustration'},
  chai:{label:'Chai & conversation',src:'/art/chai.svg',alt:'Illustrated chai, cardamom and jalebi on a patterned table'},
  marigold:{label:'Marigold evenings',src:'/art/marigold.svg',alt:'Marigold garlands and a rose textile in an arched botanical illustration'},
