@@ -10,6 +10,35 @@ function fixture(){const DB=localDB();DB.raw.exec(readFileSync(new URL('../schem
 function call(env,path,{method='GET',body,cookie,csrf,originHeader=origin,type='application/json'}={}){return worker.fetch(new Request(origin+path,{method,headers:{Origin:originHeader,...(cookie?{Cookie:cookie}:{}),...(csrf?{'X-CSRF-Token':csrf}:{}),...(body!==undefined?{'Content-Type':type}:{})},body:body===undefined?undefined:typeof body==='string'||body instanceof Uint8Array?body:JSON.stringify(body)}),env);}
 async function signIn(env){env.DB.raw.prepare('INSERT INTO setup VALUES(1,?,?)').run(await hash(setupToken),Date.now()+60000);const r=await call(env,'/api/setup',{method:'POST',body:{token:setupToken,password}});assert.equal(r.status,200);const data=await r.json();return {cookie:r.headers.get('Set-Cookie').split(';')[0],csrf:data.csrf};}
 const newDoc=()=>structuredClone(defaults);
+test('uploaded photographs return exact JPEG bytes from D1 for owner previews and published products',async()=>{
+ const env=fixture(),auth=await signIn(env);
+ const original=new Uint8Array(readFileSync(new URL('./fixtures/photo.jpg',import.meta.url)));
+ const uploaded=await call(env,'/api/media',{...auth,method:'POST',body:original,type:'image/jpeg'});
+ assert.equal(uploaded.status,201);
+ const {id,url}=await uploaded.json(),expected=cleanJpeg(original);
+ const stored=await env.DB.prepare('SELECT bytes FROM media WHERE id=?').bind(id).first();
+ assert.ok(Array.isArray(stored.bytes),'Exercise the production D1 BLOB representation');
+ const checkImage=async options=>{
+  const response=await call(env,url,options);
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get('Content-Type'),'image/jpeg');
+  assert.equal(response.headers.get('Cache-Control'),'no-store');
+  const actual=new Uint8Array(await response.arrayBuffer());
+  assert.deepEqual(actual,expected,'Return JPEG bytes, not an empty body or comma-separated numbers');
+ };
+ assert.equal((await call(env,url)).status,404);
+ await checkImage(auth);
+ const doc=newDoc();doc.items[0].kind='piece';doc.items[0].image=url;
+ assert.equal((await call(env,'/api/site',{...auth,method:'POST',body:{document:doc,version:1,action:'publish'}})).status,200);
+ await checkImage();
+ for(const path of ['/collection','/piece/'+doc.items[0].id])assert.ok((await(await call(env,path)).text()).includes(`src="${url}"`));
+ const head=await call(env,url,{method:'HEAD'});
+ assert.equal(head.status,200);assert.equal((await head.arrayBuffer()).byteLength,0);
+ doc.items[0].visible=false;
+ assert.equal((await call(env,'/api/site',{...auth,method:'POST',body:{document:doc,version:2,action:'publish'}})).status,200);
+ assert.equal((await call(env,url)).status,404);
+ await checkImage(auth);
+});
 test('empty catalogue is visible in English and Urdu without turning artwork or hidden pieces into products',()=>{
  const doc=newDoc();doc.mode='catalogue';doc.whatsapp='923001234567';
  doc.items.push({...doc.items[0],id:'private-piece',title:'Private unfinished piece',kind:'piece',visible:false});

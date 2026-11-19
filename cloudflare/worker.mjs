@@ -65,7 +65,8 @@ async function route(request,env){
   return json({error:'Not found'},404);
  }
  if(request.method==='POST')return json({error:'Not found'},404);
- if(path.startsWith('/media/')){const row=await state(env);const visible=row.published.items.some(x=>x.visible&&x.image===path);if(!visible&&!await session(request,env))return new Response('Not found',{status:404});const media=await env.DB.prepare('SELECT bytes FROM media WHERE id=?').bind(path.slice(7)).first();if(!media)return new Response('Not found',{status:404});return new Response(media.bytes,{headers:{'Content-Type':'image/jpeg','Cache-Control':'no-store'}});}
+ if(path.startsWith('/media/')){const row=await state(env);const visible=row.published.items.some(x=>x.visible&&x.image===path);if(!visible&&!await session(request,env))return new Response('Not found',{status:404});const media=await env.DB.prepare('SELECT bytes FROM media WHERE id=?').bind(path.slice(7)).first();if(!media)return new Response('Not found',{status:404});// D1 reads BLOBs as number arrays; Response needs binary bytes.
+ const bytes=Array.isArray(media.bytes)?Uint8Array.from(media.bytes):media.bytes;return new Response(bytes,{headers:{'Content-Type':'image/jpeg','Cache-Control':'no-store'}});}
  if(assets[path]){const a=assets[path],bytes=Uint8Array.from(atob(a.body),x=>x.charCodeAt(0));return new Response(bytes,{headers:{'Content-Type':a.type,'Cache-Control':'public,max-age=0,must-revalidate','ETag':a.etag}});}
  if(['/studio','/admin'].includes(path))return html(renderStudio());
  if(path==='/robots.txt')return new Response(`User-agent: *\nDisallow: /studio\nDisallow: /admin\nDisallow: /api/\nDisallow: /preview\nSitemap: ${url.origin}/sitemap.xml`,{headers:{'Content-Type':'text/plain'}});

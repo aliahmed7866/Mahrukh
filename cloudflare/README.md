@@ -73,6 +73,6 @@ npx wrangler@4.163.0 deploy
 
 ## Verification
 
-`npm test` exercises Worker routes, auth boundaries, one-time setup, session revocation, private drafts, publishing, stale revisions, bounded uploads, media visibility, catalogue gates, safe rendering and editor interactions. The legacy Flask tests remain under `tests/`.
+`npm test` verifies uploaded JPEG response bodies byte for byte using D1-style BLOB arrays, as well as Worker routes, auth boundaries, one-time setup, session revocation, private drafts, publishing, stale revisions, bounded uploads, media visibility, catalogue gates, safe rendering and editor interactions. The legacy Flask tests remain under `tests/`.
 
 Visual review of the deployed public website covers the hero, collection search, saved pieces, detail views, photo enlargement and Urdu navigation. Fluent Urdu proofreading remains advisable before a commercial launch. All artwork is a contemporary original interpretation; it is not presented as an authenticated historical pattern or an artisan-made product.
