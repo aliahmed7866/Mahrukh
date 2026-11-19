@@ -11,3 +11,39 @@
 @media(max-width:760px){.hero-visual.ambient-visual{padding:34px 0 25px;max-width:480px}.ambient-visual::before{inset:25px 6% 38px}.ambient-visual::after{inset:50px 12% 55px}.ambient-visual .art-urdu{font-size:1.6rem;bottom:13px}.ambient-visual .art-caption{left:0;bottom:-10px}.ambient-story{margin:auto}.ambient-story .vertical-note{font-size:.55rem}.journal-grid{grid-template-columns:1fr;row-gap:28px}.creative-journal{padding-block:55px}.journal-note{padding-left:35px}.journal-note h3{font-size:1.65rem}.journal-article{grid-template-columns:1fr;gap:35px}.journal-decoration{max-width:280px;margin:auto}.journal-copy .text-link{margin-bottom:30px}.pieces-heading{margin-top:45px}}
 
 .catalogue-empty{padding:clamp(24px,4vw,48px);border:1px solid var(--line);background:var(--surface);margin:0 0 40px}.catalogue-empty h3{font-size:clamp(1.8rem,4vw,2.5rem);margin:12px 0}.catalogue-empty p{max-width:620px}.catalogue-empty .button{margin-top:12px}
+/* Everyday scenes carry the brand between larger editorial moments. */
+.heritage-grid{gap:clamp(24px,4vw,64px)}
+.heritage-scene{height:clamp(240px,28vw,370px);display:flex;align-items:end;justify-content:center;position:relative;isolation:isolate}
+.heritage-scene::before{content:"";position:absolute;inset:15% 8% 0;background:var(--surface);border-radius:48% 48% 12% 12%;z-index:-1;opacity:.65}
+.heritage-grid .heritage-art{width:100%;height:100%;min-height:0;aspect-ratio:auto;object-fit:contain;object-position:center bottom}
+.heritage-grid article:nth-child(2) .heritage-scene{align-items:center;padding:30px 0}
+.heritage-grid h3{margin-top:28px}
+.decoration{pointer-events:none;user-select:none}
+.decoration img{width:100%;height:auto;object-fit:contain}
+.contact-art{width:270px;margin:0 auto 28px}
+.empty-art{width:110px;margin:0 auto 22px}
+.guide-intro{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:40px;align-items:center;margin-bottom:30px}
+.guide-intro h1{margin-bottom:0}
+.illustrated-guide{max-width:1050px}
+.guide-art{width:250px}
+.missing-art{width:180px;margin-bottom:28px}
+.missing-page h1{margin-bottom:25px}
+@media(max-width:760px){
+ .heritage-grid{gap:36px}
+ .heritage-grid article{grid-template-columns:minmax(120px,160px) minmax(0,1fr);column-gap:24px;align-items:center}
+ .heritage-scene{grid-row:1/3;height:190px;align-self:center}
+ .heritage-grid article:nth-child(2) .heritage-scene{padding:15px 0}
+ .heritage-grid h3{margin:0 0 10px;align-self:end}
+ .heritage-grid p{align-self:start}
+ .contact-art{width:220px;margin-bottom:24px}
+ .guide-intro{grid-template-columns:minmax(0,1fr) 130px;gap:16px}
+ .guide-art{width:130px}
+ .guide-intro h1{font-size:clamp(2.6rem,7vw,3.2rem)}
+}
+@media(max-width:400px){
+ .heritage-grid article{grid-template-columns:110px minmax(0,1fr);column-gap:18px}
+ .heritage-scene{height:155px}
+ .heritage-grid h3{font-size:1.4rem}
+ .guide-intro{grid-template-columns:1fr}
+ .guide-art{display:none}
+}

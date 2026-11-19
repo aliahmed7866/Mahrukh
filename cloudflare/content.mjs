@@ -1,6 +1,9 @@
 export const MODES = ['portfolio', 'enquiries', 'catalogue'];
 // Stable IDs keep saved documents compatible; one catalogue serves the site and editor.
 export const ARTWORK = {
+ 'craft':{label:'Quiet craft · decorative',src:'/art/craft-moment-480.webp',full:'/art/craft-moment.webp',srcset:'/art/craft-moment-480.webp 480w, /art/craft-moment.webp 960w',width:960,height:960,ambient:true,alt:'A woman in an indigo shalwar kameez embroidering beside a basket of thread'},
+ 'tea-time':{label:'One more cup · decorative',src:'/art/tea-moment-480.webp',full:'/art/tea-moment.webp',srcset:'/art/tea-moment-480.webp 480w, /art/tea-moment.webp 960w',width:960,height:640,ambient:true,alt:'Chai in floral cups with a ceramic teapot, jalebi and a folded sage napkin'},
+ 'celebration':{label:'Getting ready together · decorative',src:'/art/marigold-moment-480.webp',full:'/art/marigold-moment.webp',srcset:'/art/marigold-moment-480.webp 480w, /art/marigold-moment.webp 960w',width:960,height:960,ambient:true,alt:'A woman in rose and sage Pakistani dress making a marigold garland'},
  courtyard:{label:'Courtyard conversation · decorative',src:'/art/courtyard-moment-640.webp',full:'/art/courtyard-moment.webp',srcset:'/art/courtyard-moment-640.webp 640w, /art/courtyard-moment.webp 1122w',width:1122,height:1001,ambient:true,alt:'A decorative illustration of two women in Pakistani dress sharing chai and conversation'},
  festive:{label:'A thread of home · vector',src:'/art/threads.svg',width:640,height:640,ambient:true,alt:'Flowing fabric, jasmine and marigolds in an airy decorative illustration'},
  'emerald-lookbook':{label:'Emerald & madder · detailed study',src:'/art/courtyard-lookbook-640.webp',full:'/art/courtyard-lookbook.webp',srcset:'/art/courtyard-lookbook-640.webp 640w, /art/courtyard-lookbook.webp 1122w',alt:'Illustrated emerald kameez and madder dupatta'},
