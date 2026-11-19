@@ -1,0 +1,16 @@
+{
+  "name": "mahrukh-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node cloudflare/dev.mjs",
+    "build": "node cloudflare/build.mjs",
+    "test": "node --test cloudflare/tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "27.2.0"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mahrukh",
+  "main": "cloudflare/worker.mjs",
+  "compatibility_date": "2026-11-19",
+  "workers_dev": true,
+  "preview_urls": false,
+  "build": {"command": "npm run build"},
+  "d1_databases": [{"binding": "DB", "database_name": "mahrukh-studio", "database_id": "571e00fa-ee15-42cf-b7d9-f6c0c683eafc"}],
+  "observability": {"enabled": false},
+  "logpush": false
+}

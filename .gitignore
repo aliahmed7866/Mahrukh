@@ -3,3 +3,9 @@ instance/
 __pycache__/
 *.pyc
 preview-site/
+
+# Cloudflare build and development state
+cloudflare/assets.mjs
+cloudflare/.local/
+node_modules/
+.wrangler/
