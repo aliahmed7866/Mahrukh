@@ -1,5 +1,15 @@
 export const MODES = ['portfolio', 'enquiries', 'catalogue'];
-export const ARTS = ['courtyard', 'ajrak', 'chai', 'marigold', 'festive'];
+// Stable IDs keep saved documents compatible; one catalogue serves the site and editor.
+export const ARTWORK = {
+ courtyard:{label:'Emerald & madder',src:'/art/courtyard-lookbook-640.webp',full:'/art/courtyard-lookbook.webp',srcset:'/art/courtyard-lookbook-640.webp 640w, /art/courtyard-lookbook.webp 1122w',alt:'Illustrated woman wearing an emerald floral kameez, ivory shalwar, madder dupatta and embroidered khussa in a pale courtyard arch'},
+ festive:{label:'Rose & peacock',src:'/art/festive-lookbook-640.webp',full:'/art/festive-lookbook.webp',srcset:'/art/festive-lookbook-640.webp 640w, /art/festive-lookbook.webp 1122w',alt:'Illustrated woman in a rose embroidered kameez, ochre trousers and a peacock teal dupatta draped over her head'},
+ ajrak:{label:'Indigo textile study',src:'/art/ajrak.svg',alt:'Indigo, madder and ivory geometric textile illustration'},
+ chai:{label:'Chai & conversation',src:'/art/chai.svg',alt:'Illustrated chai, cardamom and jalebi on a patterned table'},
+ marigold:{label:'Marigold evenings',src:'/art/marigold.svg',alt:'Marigold garlands and a rose textile in an arched botanical illustration'},
+ 'courtyard-vector':{label:'Emerald courtyard · vector study',src:'/art/courtyard.svg',alt:'Emerald embroidered fashion figure in a dark courtyard garden'},
+ 'festive-vector':{label:'Rose dusk · vector study',src:'/art/festive.svg',alt:'Rose formalwear fashion figure in a dark courtyard garden'}
+};
+export const ARTS = Object.keys(ARTWORK);
 export const SECTIONS = ['collection', 'roots', 'story', 'contact'];
 export const COPY_FIELDS = {
  eyebrow: ['Welcome label',80], title: ['Hero headline',100], accent: ['Hero second line',100], intro: ['Hero introduction',500],

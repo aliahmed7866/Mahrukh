@@ -1,4 +1,4 @@
-import {defaults,validateDocument,publicDocument,InputError,COPY_FIELDS,ARTS,SECTIONS} from './content.mjs';
+import {defaults,validateDocument,publicDocument,InputError,COPY_FIELDS,ARTS,ARTWORK,SECTIONS} from './content.mjs';
 import {renderPage,renderStudio} from './render.mjs';
 import {assets} from './assets.mjs';
 const enc=new TextEncoder();
@@ -47,7 +47,7 @@ async function route(request,env){
  if(path.startsWith('/api/')){
   const s=await requireOwner(request,env);
   if(path==='/api/validate'&&request.method==='POST')return json({document:validateDocument((await bodyJSON(request)).document)});
-  if(path==='/api/site'&&request.method==='GET'){const row=await state(env);return json({...row,fields:COPY_FIELDS,arts:ARTS,sections:SECTIONS});}
+  if(path==='/api/site'&&request.method==='GET'){const row=await state(env);return json({...row,fields:COPY_FIELDS,arts:ARTS,artwork:ARTWORK,sections:SECTIONS});}
   if(path==='/api/history'&&request.method==='GET'){const r=await env.DB.prepare('SELECT version,document,created_at FROM history ORDER BY version DESC').all();return json(r.results.map(x=>({...x,document:JSON.parse(x.document)})));}
   if(path==='/api/media'&&request.method==='GET'){const r=await env.DB.prepare('SELECT id,size FROM media ORDER BY created_at DESC').all();return json(r.results);}
   if(path==='/api/site'&&request.method==='POST'){
