@@ -1,5 +1,5 @@
 export const MODES = ['portfolio', 'enquiries', 'catalogue'];
-export const ARTS = ['courtyard', 'ajrak', 'chai', 'marigold'];
+export const ARTS = ['courtyard', 'ajrak', 'chai', 'marigold', 'festive'];
 export const SECTIONS = ['collection', 'roots', 'story', 'contact'];
 export const COPY_FIELDS = {
  eyebrow: ['Welcome label',80], title: ['Hero headline',100], accent: ['Hero second line',100], intro: ['Hero introduction',500],

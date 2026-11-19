@@ -27,6 +27,14 @@ export function cleanJpeg(bytes){
 async function route(request,env){
  const url=new URL(request.url),path=url.pathname.replace(/\/$/,'')||'/';
  if(!['GET','HEAD','POST'].includes(request.method))return json({error:'Method not allowed'},405,{'Allow':'GET, HEAD, POST'});
+ // Keep one public origin without forwarding credentials or POST bodies between hosts.
+ if(env.APP_ORIGIN&&url.origin!==env.APP_ORIGIN){
+  const primary=new URL(env.APP_ORIGIN),aliases=(env.REDIRECT_HOSTS||'').split(',').map(x=>x.trim());
+  if(url.hostname!==primary.hostname&&!aliases.includes(url.hostname))return json({error:'Unknown website address.'},421);
+  if(request.method==='POST')return json({error:'Open the studio at '+primary.origin+'/studio and sign in again before saving.'},409);
+  primary.pathname=url.pathname;primary.search=url.search;
+  return new Response(null,{status:308,headers:{Location:primary.href,'Cache-Control':'no-store'}});
+ }
  if(request.method==='POST'&&(request.headers.get('Origin')!==url.origin||request.headers.get('Sec-Fetch-Site')==='cross-site'))throw new InputError('Use the studio on this website to make changes.',403);
  if(path==='/health')return json({ok:!!(await env.DB.prepare('SELECT id FROM site WHERE id=1').first()),version:'1.0.0'});
  if(request.method==='POST'&&['/api/login','/api/setup'].includes(path)){

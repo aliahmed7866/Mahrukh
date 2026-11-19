@@ -2,9 +2,11 @@
 
 The public boutique and owner studio run on a Cloudflare Worker with durable D1 content and photo storage.
 
-- Website: https://mahrukh.ammeemughal.workers.dev/
-- Owner studio: https://mahrukh.ammeemughal.workers.dev/studio
+- Website: https://mahrukh.uk/
+- Owner studio: https://mahrukh.uk/studio
 - Runtime health: `/health`
+
+`www.mahrukh.uk` and the former Workers address redirect to the main hostname, preserving paths and language choices. Owner sessions are host-specific: sign in at the new studio address. Existing private setup links retain their fragment through the redirect. POST requests to an old hostname are rejected with instructions to reopen the studio; they are never forwarded.
 
 This is a separate cloud publishing surface. The existing Flask/Termux shop, its inventory, customers, stock reservations and orders remain independent. No private Termux database was available during this deployment, so no inventory, customer records, seller number or credentials have been migrated. The initial public entries are explicitly labelled original art studies, not saleable stock or photographs.
 
@@ -19,7 +21,7 @@ If setup expires or an owner password is lost, an account administrator must per
 1. **Website mode:** portfolio, enquiries, or WhatsApp catalogue.
 2. **Words & language:** edit English and Urdu hero copy, introductions, story, signature and notices. Blank optional Urdu fields use English.
 3. **Collection:** create, hide, reorder or remove entries. Add your own photos, descriptive alt text, category, story, garment facts and prices. Real pieces require an uploaded photograph.
-4. **Appearance:** select Garden noir, Indigo night or Rose dusk; choose one of four original SVG illustrations; show, hide and reorder homepage sections.
+4. **Appearance:** select Garden noir, Indigo night or Rose dusk; choose one of five original SVG illustrations; show, hide and reorder homepage sections.
 5. **Contact & policies:** enter your real WhatsApp number with country code, Instagram username, email, response note, delivery and returns policies.
 6. **History & backups:** load one of the previous 12 revisions into the editor, export/import a content draft, and remove unreferenced uploads.
 
@@ -58,7 +60,7 @@ npm run dev
 
 The development adapter uses a separate ignored SQLite file in `cloudflare/.local/`. Its fixed setup token is **development-only** (64 lowercase `a` characters in `/studio#setup=...`). Never deploy `dev.mjs` or the development database. The production entrypoint is only `cloudflare/worker.mjs`.
 
-The build bundles the allowlisted local CSS, JavaScript, SVG and Urdu font as Worker module assets. `assets.mjs` is generated and ignored. Editable vector sources and the generator `art.mjs` are tracked; run `node cloudflare/art.mjs` to regenerate the four illustrations.
+The build bundles the allowlisted local CSS, JavaScript, SVG and Urdu font as Worker module assets. `assets.mjs` is generated and ignored. Editable vector sources, the layered portrait generator `figure-art.mjs` and the generator `art.mjs` are tracked; run `node cloudflare/art.mjs` to regenerate the five illustrations.
 
 For later deployments using an authenticated Cloudflare CLI:
 
@@ -67,7 +69,7 @@ npm run build
 npx wrangler@4.163.0 deploy
 ```
 
-`wrangler.jsonc` identifies the existing Worker and D1 database. Do not create a new D1 database for a normal code release. The initial deployment used the connected Cloudflare API to upload the same ES modules and configure the binding. The `schema.sql` migration is additive; seed defaults only if the `site` row is absent. Setup tokens must be generated randomly, stored as SHA256 hashes with an expiry and never committed. No automatic GitHub-to-Cloudflare deployment hook has been installed.
+`wrangler.jsonc` identifies the existing Worker, D1 database, custom domains and primary-origin variables. Preserve these variables and the existing `AUTH_PEPPER` secret when uploading with the API. Do not create a new D1 database for a normal code release. The initial deployment used the connected Cloudflare API to upload the same ES modules and configure the binding. The `schema.sql` migration is additive; seed defaults only if the `site` row is absent. Setup tokens must be generated randomly, stored as SHA256 hashes with an expiry and never committed. No automatic GitHub-to-Cloudflare deployment hook has been installed.
 
 ## Verification
 

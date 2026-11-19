@@ -5,6 +5,14 @@
   "compatibility_date": "2026-11-19",
   "workers_dev": true,
   "preview_urls": false,
+  "routes": [
+    {"pattern": "mahrukh.uk", "custom_domain": true},
+    {"pattern": "www.mahrukh.uk", "custom_domain": true}
+  ],
+  "vars": {
+    "APP_ORIGIN": "https://mahrukh.uk",
+    "REDIRECT_HOSTS": "www.mahrukh.uk,mahrukh.ammeemughal.workers.dev"
+  },
   "build": {"command": "npm run build"},
   "d1_databases": [{"binding": "DB", "database_name": "mahrukh-studio", "database_id": "571e00fa-ee15-42cf-b7d9-f6c0c683eafc"}],
   "observability": {"enabled": false},
